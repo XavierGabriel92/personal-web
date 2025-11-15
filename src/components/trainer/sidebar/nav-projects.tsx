@@ -1,7 +1,5 @@
-"use client";
-
 import { Link, useLocation } from "@tanstack/react-router";
-import { type LucideIcon, MoreHorizontal } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import {
 	SidebarGroup,
@@ -9,7 +7,6 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
 } from "@/components/ui/sidebar";
 
 export function NavProjects({
@@ -21,7 +18,6 @@ export function NavProjects({
 		icon: LucideIcon;
 	}[];
 }) {
-	const { isMobile } = useSidebar();
 	const location = useLocation();
 
 	return (

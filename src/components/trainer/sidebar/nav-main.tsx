@@ -8,13 +8,13 @@ import {
 } from "@/components/ui/collapsible";
 import {
 	SidebarGroup,
-	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarMenuSub,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
+	useSidebar,
 } from "@/components/ui/sidebar";
 
 export function NavMain({
@@ -32,15 +32,23 @@ export function NavMain({
 	}[];
 }) {
 	const location = useLocation();
+	const { isLgScreen, setOpenMobile } = useSidebar();
+
+	// Close mobile sidebar when route changes and screen is less than lg
+	const closeMobileSidebar = () => {
+		if (isLgScreen) {
+			setOpenMobile(false);
+		}
+	}
 
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel>Platform</SidebarGroupLabel>
+			{/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
 			<SidebarMenu>
 				{items.map((item) => {
 					const isActive =
 						location.pathname === item.url ||
-						location.pathname.startsWith(item.url + "/");
+						location.pathname.startsWith(`${item.url}/`);
 					const hasItems = item.items && item.items.length > 0;
 
 					if (hasItems) {
@@ -89,6 +97,7 @@ export function NavMain({
 								asChild
 								tooltip={item.title}
 								isActive={isActive || item.isActive}
+								onClick={closeMobileSidebar}
 							>
 								<Link to={item.url}>
 									{item.icon && <item.icon />}

@@ -9,20 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DasboardRouteRouteImport } from './routes/_dasboard/route'
+import { Route as TrainerRouteRouteImport } from './routes/trainer/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrainerHomeRouteImport } from './routes/trainer/home'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
-import { Route as DasboardTrainerRouteRouteImport } from './routes/_dasboard/_trainer/route'
+import { Route as TrainerClientsIndexRouteImport } from './routes/trainer/clients/index'
+import { Route as TrainerClientsClientIdRouteRouteImport } from './routes/trainer/clients/$clientId/route'
+import { Route as TrainerClientsClientIdSettingsRouteImport } from './routes/trainer/clients/$clientId/settings'
+import { Route as TrainerClientsClientIdProgramRouteImport } from './routes/trainer/clients/$clientId/program'
+import { Route as TrainerClientsClientIdOverviewRouteImport } from './routes/trainer/clients/$clientId/overview'
+import { Route as TrainerClientsClientIdMeasurementsRouteImport } from './routes/trainer/clients/$clientId/measurements'
 
-const DasboardRouteRoute = DasboardRouteRouteImport.update({
-  id: '/_dasboard',
+const TrainerRouteRoute = TrainerRouteRouteImport.update({
+  id: '/trainer',
+  path: '/trainer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TrainerHomeRoute = TrainerHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => TrainerRouteRoute,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/_auth/sign-up',
@@ -34,57 +46,138 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DasboardTrainerRouteRoute = DasboardTrainerRouteRouteImport.update({
-  id: '/_trainer',
-  getParentRoute: () => DasboardRouteRoute,
+const TrainerClientsIndexRoute = TrainerClientsIndexRouteImport.update({
+  id: '/clients/',
+  path: '/clients/',
+  getParentRoute: () => TrainerRouteRoute,
 } as any)
+const TrainerClientsClientIdRouteRoute =
+  TrainerClientsClientIdRouteRouteImport.update({
+    id: '/clients/$clientId',
+    path: '/clients/$clientId',
+    getParentRoute: () => TrainerRouteRoute,
+  } as any)
+const TrainerClientsClientIdSettingsRoute =
+  TrainerClientsClientIdSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+  } as any)
+const TrainerClientsClientIdProgramRoute =
+  TrainerClientsClientIdProgramRouteImport.update({
+    id: '/program',
+    path: '/program',
+    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+  } as any)
+const TrainerClientsClientIdOverviewRoute =
+  TrainerClientsClientIdOverviewRouteImport.update({
+    id: '/overview',
+    path: '/overview',
+    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+  } as any)
+const TrainerClientsClientIdMeasurementsRoute =
+  TrainerClientsClientIdMeasurementsRouteImport.update({
+    id: '/measurements',
+    path: '/measurements',
+    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/trainer': typeof TrainerRouteRouteWithChildren
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/home': typeof TrainerHomeRoute
+  '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/clients': typeof TrainerClientsIndexRoute
+  '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
+  '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
+  '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
+  '/trainer/clients/$clientId/settings': typeof TrainerClientsClientIdSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/trainer': typeof TrainerRouteRouteWithChildren
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/home': typeof TrainerHomeRoute
+  '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/clients': typeof TrainerClientsIndexRoute
+  '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
+  '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
+  '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
+  '/trainer/clients/$clientId/settings': typeof TrainerClientsClientIdSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_dasboard': typeof DasboardRouteRouteWithChildren
-  '/_dasboard/_trainer': typeof DasboardTrainerRouteRoute
+  '/trainer': typeof TrainerRouteRouteWithChildren
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
+  '/trainer/home': typeof TrainerHomeRoute
+  '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/clients/': typeof TrainerClientsIndexRoute
+  '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
+  '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
+  '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
+  '/trainer/clients/$clientId/settings': typeof TrainerClientsClientIdSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sign-in' | '/sign-up'
+  fullPaths:
+    | '/'
+    | '/trainer'
+    | '/sign-in'
+    | '/sign-up'
+    | '/trainer/home'
+    | '/trainer/clients/$clientId'
+    | '/trainer/clients'
+    | '/trainer/clients/$clientId/measurements'
+    | '/trainer/clients/$clientId/overview'
+    | '/trainer/clients/$clientId/program'
+    | '/trainer/clients/$clientId/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sign-in' | '/sign-up'
+  to:
+    | '/'
+    | '/trainer'
+    | '/sign-in'
+    | '/sign-up'
+    | '/trainer/home'
+    | '/trainer/clients/$clientId'
+    | '/trainer/clients'
+    | '/trainer/clients/$clientId/measurements'
+    | '/trainer/clients/$clientId/overview'
+    | '/trainer/clients/$clientId/program'
+    | '/trainer/clients/$clientId/settings'
   id:
     | '__root__'
     | '/'
-    | '/_dasboard'
-    | '/_dasboard/_trainer'
+    | '/trainer'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
+    | '/trainer/home'
+    | '/trainer/clients/$clientId'
+    | '/trainer/clients/'
+    | '/trainer/clients/$clientId/measurements'
+    | '/trainer/clients/$clientId/overview'
+    | '/trainer/clients/$clientId/program'
+    | '/trainer/clients/$clientId/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DasboardRouteRoute: typeof DasboardRouteRouteWithChildren
+  TrainerRouteRoute: typeof TrainerRouteRouteWithChildren
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_dasboard': {
-      id: '/_dasboard'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof DasboardRouteRouteImport
+    '/trainer': {
+      id: '/trainer'
+      path: '/trainer'
+      fullPath: '/trainer'
+      preLoaderRoute: typeof TrainerRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -93,6 +186,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/trainer/home': {
+      id: '/trainer/home'
+      path: '/home'
+      fullPath: '/trainer/home'
+      preLoaderRoute: typeof TrainerHomeRouteImport
+      parentRoute: typeof TrainerRouteRoute
     }
     '/_auth/sign-up': {
       id: '/_auth/sign-up'
@@ -108,31 +208,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_dasboard/_trainer': {
-      id: '/_dasboard/_trainer'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof DasboardTrainerRouteRouteImport
-      parentRoute: typeof DasboardRouteRoute
+    '/trainer/clients/': {
+      id: '/trainer/clients/'
+      path: '/clients'
+      fullPath: '/trainer/clients'
+      preLoaderRoute: typeof TrainerClientsIndexRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/clients/$clientId': {
+      id: '/trainer/clients/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/trainer/clients/$clientId'
+      preLoaderRoute: typeof TrainerClientsClientIdRouteRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/clients/$clientId/settings': {
+      id: '/trainer/clients/$clientId/settings'
+      path: '/settings'
+      fullPath: '/trainer/clients/$clientId/settings'
+      preLoaderRoute: typeof TrainerClientsClientIdSettingsRouteImport
+      parentRoute: typeof TrainerClientsClientIdRouteRoute
+    }
+    '/trainer/clients/$clientId/program': {
+      id: '/trainer/clients/$clientId/program'
+      path: '/program'
+      fullPath: '/trainer/clients/$clientId/program'
+      preLoaderRoute: typeof TrainerClientsClientIdProgramRouteImport
+      parentRoute: typeof TrainerClientsClientIdRouteRoute
+    }
+    '/trainer/clients/$clientId/overview': {
+      id: '/trainer/clients/$clientId/overview'
+      path: '/overview'
+      fullPath: '/trainer/clients/$clientId/overview'
+      preLoaderRoute: typeof TrainerClientsClientIdOverviewRouteImport
+      parentRoute: typeof TrainerClientsClientIdRouteRoute
+    }
+    '/trainer/clients/$clientId/measurements': {
+      id: '/trainer/clients/$clientId/measurements'
+      path: '/measurements'
+      fullPath: '/trainer/clients/$clientId/measurements'
+      preLoaderRoute: typeof TrainerClientsClientIdMeasurementsRouteImport
+      parentRoute: typeof TrainerClientsClientIdRouteRoute
     }
   }
 }
 
-interface DasboardRouteRouteChildren {
-  DasboardTrainerRouteRoute: typeof DasboardTrainerRouteRoute
+interface TrainerClientsClientIdRouteRouteChildren {
+  TrainerClientsClientIdMeasurementsRoute: typeof TrainerClientsClientIdMeasurementsRoute
+  TrainerClientsClientIdOverviewRoute: typeof TrainerClientsClientIdOverviewRoute
+  TrainerClientsClientIdProgramRoute: typeof TrainerClientsClientIdProgramRoute
+  TrainerClientsClientIdSettingsRoute: typeof TrainerClientsClientIdSettingsRoute
 }
 
-const DasboardRouteRouteChildren: DasboardRouteRouteChildren = {
-  DasboardTrainerRouteRoute: DasboardTrainerRouteRoute,
+const TrainerClientsClientIdRouteRouteChildren: TrainerClientsClientIdRouteRouteChildren =
+  {
+    TrainerClientsClientIdMeasurementsRoute:
+      TrainerClientsClientIdMeasurementsRoute,
+    TrainerClientsClientIdOverviewRoute: TrainerClientsClientIdOverviewRoute,
+    TrainerClientsClientIdProgramRoute: TrainerClientsClientIdProgramRoute,
+    TrainerClientsClientIdSettingsRoute: TrainerClientsClientIdSettingsRoute,
+  }
+
+const TrainerClientsClientIdRouteRouteWithChildren =
+  TrainerClientsClientIdRouteRoute._addFileChildren(
+    TrainerClientsClientIdRouteRouteChildren,
+  )
+
+interface TrainerRouteRouteChildren {
+  TrainerHomeRoute: typeof TrainerHomeRoute
+  TrainerClientsClientIdRouteRoute: typeof TrainerClientsClientIdRouteRouteWithChildren
+  TrainerClientsIndexRoute: typeof TrainerClientsIndexRoute
 }
 
-const DasboardRouteRouteWithChildren = DasboardRouteRoute._addFileChildren(
-  DasboardRouteRouteChildren,
+const TrainerRouteRouteChildren: TrainerRouteRouteChildren = {
+  TrainerHomeRoute: TrainerHomeRoute,
+  TrainerClientsClientIdRouteRoute:
+    TrainerClientsClientIdRouteRouteWithChildren,
+  TrainerClientsIndexRoute: TrainerClientsIndexRoute,
+}
+
+const TrainerRouteRouteWithChildren = TrainerRouteRoute._addFileChildren(
+  TrainerRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DasboardRouteRoute: DasboardRouteRouteWithChildren,
+  TrainerRouteRoute: TrainerRouteRouteWithChildren,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
 }

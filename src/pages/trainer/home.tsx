@@ -1,18 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import PageTitle from "@/components/core/page-title";
 
-export const Route = createFileRoute("/_trainer/")({
-	component: TrainerHome,
-});
-
-function TrainerHome() {
+export default function TrainerHome() {
 	return (
 		<div className="space-y-6">
-			<div>
-				<h1 className="text-3xl font-bold tracking-tight">Today</h1>
-				<p className="text-muted-foreground">
-					Welcome to your trainer dashboard
-				</p>
-			</div>
+			<PageTitle title="Today" description="Welcome to your trainer dashboard" />
 
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 				<div className="rounded-lg border bg-card p-6">
@@ -35,5 +26,5 @@ function TrainerHome() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

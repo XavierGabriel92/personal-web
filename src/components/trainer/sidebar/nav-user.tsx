@@ -37,7 +37,7 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar()
+  const { isLgScreen } = useSidebar()
 
   return (
     <SidebarMenu>
@@ -61,7 +61,7 @@ export function NavUser({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isLgScreen ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >

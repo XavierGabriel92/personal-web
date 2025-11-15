@@ -1,0 +1,82 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { TypographyH2 } from "../ui/typography"
+
+const chartConfig = {
+  duration: {
+    label: "Duração",
+    color: "var(--chart-1)",
+  },
+} satisfies ChartConfig
+
+interface DurationCardProps {
+  data?: Array<{ date: string; duration: number }>
+  currentValue?: string
+  timeframe?: string
+}
+
+export function DurationCard({
+  data = [],
+}: DurationCardProps) {
+  // Default data if none provided
+  const chartData = data.length > 0 ? data : [
+    { date: format(new Date(2024, 7, 17), "d MMM", { locale: ptBR }), duration: 300 },
+    { date: format(new Date(2024, 8, 7), "d MMM", { locale: ptBR }), duration: 230 },
+    { date: format(new Date(2024, 8, 28), "d MMM", { locale: ptBR }), duration: 279 },
+    { date: format(new Date(2024, 9, 19), "d MMM", { locale: ptBR }), duration: 320 },
+    { date: format(new Date(2024, 10, 9), "d MMM", { locale: ptBR }), duration: 360 },
+  ]
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Duração</CardTitle>
+        <div>
+          <TypographyH2 className="font-semibold">1:20h</TypographyH2>
+          <CardDescription>Essa semana</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[200px] w-full">
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => `${value}min`}
+            />
+            <ChartTooltip content={<ChartTooltipContent />} />
+            <Bar
+              dataKey="duration"
+              fill="var(--color-duration)"
+              radius={[4, 4, 0, 0]}
+              barSize={25}
+            />
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  )
+}
+

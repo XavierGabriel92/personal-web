@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Search } from "lucide-react"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -18,4 +19,19 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   )
 }
 
-export { Input }
+function SearchInput({ className, type, ...props }: React.ComponentProps<"input">) {
+  return (
+    <div className="relative flex-1 max-w-md">
+					<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+					<Input
+						type="search"
+						placeholder="Pesquisar um aluno..."
+						className="w-full bg-muted/50 pl-9 h-9"
+            {...props}
+					/>
+
+				</div>
+  )
+}
+
+export { Input, SearchInput }
