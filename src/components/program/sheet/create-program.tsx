@@ -15,19 +15,16 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { ProgramFormData } from "../form";
 
-interface CreateProgramSheetProps {
-  clientId: string;
-}
 
-export default function CreateProgramSheet({ clientId }: CreateProgramSheetProps) {
+export default function CreateProgramSheet() {
   const [open, setOpen] = useState(false);
 
   const handleSubmit = (data: ProgramFormData) => {
     console.log(data);
-    // TODO: Handle API call to create program
-    // After successful creation, close the sheet
-    toast.success(`Programa ${data.name} criado com sucesso!`);
-    setOpen(false);
+    setTimeout(() => {
+      toast.success(`Programa ${data.name} criado com sucesso!`);
+      setOpen(false);
+    }, 1000);
   };
 
   return (

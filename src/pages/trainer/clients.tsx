@@ -7,7 +7,7 @@ const actions = <CreateClientSheet />
 export default function TrainerClientsPage() {
 
   return <div className="space-y-6">
-    <PageTitle title="Alunos" actions={actions} />
+    <PageTitle title="Alunos" description="Convide e gerencie seus alunos" actions={actions} />
     <ClientsList />
   </div>
 }

@@ -1,4 +1,4 @@
-import { TypographyH5 } from "@/components/ui/typography"
+import { TypographyH4 } from "@/components/ui/typography"
 import type * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -31,7 +31,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <TypographyH5
+    <TypographyH4
       data-slot="card-title"
       className={cn("leading-none font-medium", className)}
       {...props}
@@ -76,7 +76,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("border-t flex items-center px-4 [.border-t]:pt-4", className)}
+      className={cn("flex items-center px-4 [.border-t]:pt-4", className)}
       {...props}
     />
   )

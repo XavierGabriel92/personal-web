@@ -1,15 +1,15 @@
+import { ModeToggle } from "@/components/theme-provider/mode-toggle";
+import { Button } from "@/components/ui/button";
+import { SearchInput } from "@/components/ui/input";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
 	Bell,
 	HelpCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SearchInput } from "@/components/ui/input";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { ModeToggle } from "@/components/theme-provider/mode-toggle";
 
 export default function TrainerHeader() {
 	return (
-		<header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-4 border-b bg-background px-5 md:px-10">
+		<header className="sticky top-0 z-50 flex h-(--header-height) shrink-0 items-center gap-4 border-b bg-background px-5 md:px-10">
 			<SidebarTrigger className="-ml-1 block lg:hidden" />
 
 			<div className="flex flex-1 items-center gap-4">

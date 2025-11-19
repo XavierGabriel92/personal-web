@@ -32,7 +32,7 @@ export function DatePicker({ label, id, date, setDate }: DatePickerProps) {
           <Button
             variant="outline"
             id={id}
-            className="w-full justify-between font-normal"
+            className="w-full justify-between"
           >
             {date ? date.toLocaleDateString("pt-BR") : "Selecione a data"}
             <ChevronDownIcon />

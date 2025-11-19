@@ -1,5 +1,4 @@
 import { Button, type buttonVariants } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/date-picker";
 import {
   Field,
   FieldContent,
@@ -8,25 +7,30 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { VariantProps } from "class-variance-authority";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const programFormSchema = z.object({
+export const programFormSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   description: z.string().optional(),
-  active: z.boolean(),
-  programExpiration: z.date().optional(),
+  duration: z.number().min(0).max(50),
 });
 
 export type ProgramFormData = z.infer<typeof programFormSchema>;
 
 interface ProgramFormProps {
   onSubmit: (data: ProgramFormData) => void;
-  initialValues?: Partial<ProgramFormData>;
+  initialValues?: ProgramFormData;
 }
 
 export default function ProgramForm({
@@ -40,16 +44,17 @@ export default function ProgramForm({
     formState: { errors },
   } = useForm<ProgramFormData>({
     resolver: zodResolver(programFormSchema),
-    defaultValues: {
-      active: true,
-      ...initialValues,
+    defaultValues: initialValues ?? {
+      name: "",
+      duration: 0,
+      description: "",
     },
   });
 
   return (
     <form id="program-form" onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
-        <div className="flex gap-4 items-start">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Field className="flex-1 min-w-0">
             <FieldLabel htmlFor="name">
               Nome <span className="text-destructive">*</span>
@@ -69,49 +74,39 @@ export default function ProgramForm({
             </FieldContent>
           </Field>
 
-          <Field className="w-fit">
-            <FieldLabel htmlFor="active">Ativo</FieldLabel>
+          <Field className="flex-1 min-w-0">
+            <FieldLabel htmlFor="duration">Duração do programa</FieldLabel>
             <FieldContent>
               <Controller
-                name="active"
+                name="duration"
                 control={control}
                 render={({ field }) => (
-                  <Switch
-                    id="active"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    aria-invalid={errors.active ? "true" : "false"}
-                  />
+                  <Select
+                    value={field.value?.toString() ?? "0"}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                  >
+                    <SelectTrigger id="duration" className="w-full">
+                      <SelectValue placeholder="Selecione a duração" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">Ilimitado</SelectItem>
+                      {Array.from({ length: 50 }, (_, i) => i + 1).map((week) => (
+                        <SelectItem key={week} value={week.toString()}>
+                          {week} {week === 1 ? "semana" : "semanas"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               />
-              {errors.active && (
-                <FieldError errors={[{ message: errors.active.message }]} />
+              {errors.duration && (
+                <FieldError
+                  errors={[{ message: errors.duration.message }]}
+                />
               )}
             </FieldContent>
           </Field>
         </div>
-
-        <Field>
-          <FieldLabel htmlFor="programExpiration">Vencimento do programa</FieldLabel>
-          <FieldContent>
-            <Controller
-              name="programExpiration"
-              control={control}
-              render={({ field }) => (
-                <DatePicker
-                  id="programExpiration"
-                  date={field.value}
-                  setDate={field.onChange}
-                />
-              )}
-            />
-            {errors.programExpiration && (
-              <FieldError
-                errors={[{ message: errors.programExpiration.message }]}
-              />
-            )}
-          </FieldContent>
-        </Field>
 
         <Field>
           <FieldLabel htmlFor="description">Descrição</FieldLabel>
@@ -127,8 +122,6 @@ export default function ProgramForm({
             )}
           </FieldContent>
         </Field>
-
-
       </FieldGroup>
     </form>
   );

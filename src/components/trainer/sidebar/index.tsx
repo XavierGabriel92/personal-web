@@ -4,15 +4,11 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 	SidebarLargeScreenTrigger,
-	SidebarRail,
 } from "@/components/ui/sidebar";
 import {
 	BookA,
-	CreditCard,
 	Dumbbell,
-	FileText,
 	Home,
-	Shield,
 	Users,
 } from "lucide-react";
 import type * as React from "react";
@@ -47,14 +43,14 @@ const data = {
 			icon: Users,
 		},
 		{
+			title: "Programas",
+			url: "/trainer/programs",
+			icon: BookA,
+		},
+		{
 			title: "Exercícios",
 			url: "/trainer/exercises",
 			icon: Dumbbell,
-		},
-		{
-			title: "Treinos",
-			url: "/trainer/workouts",
-			icon: BookA,
 		},
 		// {
 		// 	title: "Settings",
@@ -75,24 +71,7 @@ const data = {
 		// 		},
 		// 	],
 		// },
-	],
-	projects: [
-		{
-			name: "Subscriptions",
-			url: "/trainer/subscriptions",
-			icon: CreditCard,
-		},
-		{
-			name: "Reports",
-			url: "/trainer/reports",
-			icon: FileText,
-		},
-		{
-			name: "Security",
-			url: "/trainer/security",
-			icon: Shield,
-		},
-	],
+	]
 };
 
 export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -104,13 +83,11 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
 			<SidebarContent>
 				<NavMain items={data.navMain} />
 
-				{/* <NavProjects projects={data.projects} /> */}
 			</SidebarContent>
 			<SidebarFooter>
 				<NavPlan />
 				<NavUser user={data.user} />
 			</SidebarFooter>
-			<SidebarRail />
 			<div className="absolute top-[50%] right-[-30px] translate-y-[-50%] z-20 hidden sm:block">
 				<SidebarLargeScreenTrigger />
 			</div>

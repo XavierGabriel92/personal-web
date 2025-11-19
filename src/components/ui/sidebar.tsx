@@ -1,7 +1,3 @@
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
-import { ChevronLeftIcon, ChevronRightIcon, MenuIcon } from "lucide-react";
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -21,13 +17,18 @@ import {
 } from "@/components/ui/tooltip";
 import { useIsLgScreen } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { Slot } from "@radix-ui/react-slot";
+import { type VariantProps, cva } from "class-variance-authority";
+import { ChevronLeftIcon, ChevronRightIcon, MenuIcon } from "lucide-react";
+import * as React from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_MOBILE = "18rem";
+const SIDEBAR_WIDTH = "15rem";
+const SIDEBAR_WIDTH_MOBILE = "fit-content";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+const HEADER_HEIGHT = "var(--header-height)";
 
 type SidebarContextProps = {
 	state: "expanded" | "collapsed";
@@ -57,11 +58,13 @@ function SidebarProvider({
 	className,
 	style,
 	children,
+	sidebarWidth = SIDEBAR_WIDTH,
 	...props
 }: React.ComponentProps<"div"> & {
 	defaultOpen?: boolean;
 	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
+	sidebarWidth?: string;
 }) {
 	const isLgScreen = useIsLgScreen();
 	const [openMobile, setOpenMobile] = React.useState(false);
@@ -140,7 +143,7 @@ function SidebarProvider({
 					data-slot="sidebar-wrapper"
 					style={
 						{
-							"--sidebar-width": SIDEBAR_WIDTH,
+							"--sidebar-width": sidebarWidth,
 							"--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
 							...style,
 						} as React.CSSProperties
@@ -164,11 +167,17 @@ function Sidebar({
 	collapsible = "offcanvas",
 	className,
 	children,
+	noOverlay = false,
+	avoidFullHeight = false,
+	sideBarWidthMobile = SIDEBAR_WIDTH_MOBILE,
 	...props
 }: React.ComponentProps<"div"> & {
 	side?: "left" | "right";
 	variant?: "sidebar" | "floating" | "inset";
 	collapsible?: "offcanvas" | "icon" | "none";
+	noOverlay?: boolean;
+	avoidFullHeight?: boolean;
+	sideBarWidthMobile?: string;
 }) {
 	const { isLgScreen, state, openMobile, setOpenMobile } = useSidebar();
 
@@ -189,15 +198,19 @@ function Sidebar({
 
 	if (isLgScreen) {
 		return (
-			<Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+			<Sheet open={openMobile} onOpenChange={setOpenMobile} modal={!noOverlay} {...props}>
 				<SheetContent
 					data-sidebar="sidebar"
 					data-slot="sidebar"
 					data-mobile="true"
-					className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
+					data-no-overlay={noOverlay ? "true" : undefined}
+					className={cn(
+						"bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden",
+						avoidFullHeight && `h-[calc(100vh-${HEADER_HEIGHT})]! top-[${HEADER_HEIGHT}]! bottom-auto! `
+					)}
 					style={
 						{
-							"--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+							"--sidebar-width": sideBarWidthMobile,
 						} as React.CSSProperties
 					}
 					side={side}
@@ -244,6 +257,7 @@ function Sidebar({
 					variant === "floating" || variant === "inset"
 						? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
 						: "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+					avoidFullHeight && `h-[calc(100vh-${HEADER_HEIGHT})]! top-[${HEADER_HEIGHT}]! bottom-auto! `,
 					className,
 				)}
 				{...props}
@@ -387,7 +401,7 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
 		<div
 			data-slot="sidebar-footer"
 			data-sidebar="footer"
-			className={cn("flex flex-col gap-2 px-5 pb-5", open ? "px-5 pb-5" : "px-2 pb-2",className)}
+			className={cn("flex flex-col gap-2 px-5 pb-5", open ? "px-5 pb-5" : "px-2 pb-2", className)}
 			{...props}
 		/>
 	);
@@ -610,7 +624,7 @@ function SidebarMenuAction({
 				"peer-data-[size=lg]/menu-button:top-2.5",
 				"group-data-[collapsible=icon]:hidden",
 				showOnHover &&
-					"peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+				"peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
 				className,
 			)}
 			{...props}

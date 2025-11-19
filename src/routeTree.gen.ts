@@ -8,18 +8,27 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrainerRouteRouteImport } from './routes/trainer/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrainerHomeRouteImport } from './routes/trainer/home'
+import { Route as TrainerExercisesRouteImport } from './routes/trainer/exercises'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as TrainerClientsIndexRouteImport } from './routes/trainer/clients/index'
+import { Route as TrainerWorkoutsWorkoutIdRouteImport } from './routes/trainer/workouts/$workoutId'
+import { Route as TrainerProgramsProgramsLayoutRouteImport } from './routes/trainer/programs/_programsLayout'
+import { Route as TrainerProgramsProgramIdRouteImport } from './routes/trainer/programs/$programId'
 import { Route as TrainerClientsClientIdRouteRouteImport } from './routes/trainer/clients/$clientId/route'
-import { Route as TrainerClientsClientIdSettingsRouteImport } from './routes/trainer/clients/$clientId/settings'
+import { Route as TrainerProgramsProgramsLayoutIndexRouteImport } from './routes/trainer/programs/_programsLayout.index'
+import { Route as TrainerProgramsProgramsLayoutHomugProgramsRouteImport } from './routes/trainer/programs/_programsLayout.homug-programs'
 import { Route as TrainerClientsClientIdProgramRouteImport } from './routes/trainer/clients/$clientId/program'
 import { Route as TrainerClientsClientIdOverviewRouteImport } from './routes/trainer/clients/$clientId/overview'
 import { Route as TrainerClientsClientIdMeasurementsRouteImport } from './routes/trainer/clients/$clientId/measurements'
+
+const TrainerProgramsRouteImport = createFileRoute('/trainer/programs')()
 
 const TrainerRouteRoute = TrainerRouteRouteImport.update({
   id: '/trainer',
@@ -31,9 +40,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrainerProgramsRoute = TrainerProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => TrainerRouteRoute,
+} as any)
 const TrainerHomeRoute = TrainerHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => TrainerRouteRoute,
+} as any)
+const TrainerExercisesRoute = TrainerExercisesRouteImport.update({
+  id: '/exercises',
+  path: '/exercises',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
@@ -51,17 +70,40 @@ const TrainerClientsIndexRoute = TrainerClientsIndexRouteImport.update({
   path: '/clients/',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
+const TrainerWorkoutsWorkoutIdRoute =
+  TrainerWorkoutsWorkoutIdRouteImport.update({
+    id: '/workouts/$workoutId',
+    path: '/workouts/$workoutId',
+    getParentRoute: () => TrainerRouteRoute,
+  } as any)
+const TrainerProgramsProgramsLayoutRoute =
+  TrainerProgramsProgramsLayoutRouteImport.update({
+    id: '/_programsLayout',
+    getParentRoute: () => TrainerProgramsRoute,
+  } as any)
+const TrainerProgramsProgramIdRoute =
+  TrainerProgramsProgramIdRouteImport.update({
+    id: '/programs/$programId',
+    path: '/programs/$programId',
+    getParentRoute: () => TrainerRouteRoute,
+  } as any)
 const TrainerClientsClientIdRouteRoute =
   TrainerClientsClientIdRouteRouteImport.update({
     id: '/clients/$clientId',
     path: '/clients/$clientId',
     getParentRoute: () => TrainerRouteRoute,
   } as any)
-const TrainerClientsClientIdSettingsRoute =
-  TrainerClientsClientIdSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+const TrainerProgramsProgramsLayoutIndexRoute =
+  TrainerProgramsProgramsLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => TrainerProgramsProgramsLayoutRoute,
+  } as any)
+const TrainerProgramsProgramsLayoutHomugProgramsRoute =
+  TrainerProgramsProgramsLayoutHomugProgramsRouteImport.update({
+    id: '/homug-programs',
+    path: '/homug-programs',
+    getParentRoute: () => TrainerProgramsProgramsLayoutRoute,
   } as any)
 const TrainerClientsClientIdProgramRoute =
   TrainerClientsClientIdProgramRouteImport.update({
@@ -87,26 +129,35 @@ export interface FileRoutesByFullPath {
   '/trainer': typeof TrainerRouteRouteWithChildren
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/programs/$programId': typeof TrainerProgramsProgramIdRoute
+  '/trainer/programs': typeof TrainerProgramsProgramsLayoutRouteWithChildren
+  '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
-  '/trainer/clients/$clientId/settings': typeof TrainerClientsClientIdSettingsRoute
+  '/trainer/programs/homug-programs': typeof TrainerProgramsProgramsLayoutHomugProgramsRoute
+  '/trainer/programs/': typeof TrainerProgramsProgramsLayoutIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/trainer': typeof TrainerRouteRouteWithChildren
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/programs/$programId': typeof TrainerProgramsProgramIdRoute
+  '/trainer/programs': typeof TrainerProgramsProgramsLayoutIndexRoute
+  '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
-  '/trainer/clients/$clientId/settings': typeof TrainerClientsClientIdSettingsRoute
+  '/trainer/programs/homug-programs': typeof TrainerProgramsProgramsLayoutHomugProgramsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,13 +165,19 @@ export interface FileRoutesById {
   '/trainer': typeof TrainerRouteRouteWithChildren
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
+  '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/programs/$programId': typeof TrainerProgramsProgramIdRoute
+  '/trainer/programs': typeof TrainerProgramsRouteWithChildren
+  '/trainer/programs/_programsLayout': typeof TrainerProgramsProgramsLayoutRouteWithChildren
+  '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients/': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
-  '/trainer/clients/$clientId/settings': typeof TrainerClientsClientIdSettingsRoute
+  '/trainer/programs/_programsLayout/homug-programs': typeof TrainerProgramsProgramsLayoutHomugProgramsRoute
+  '/trainer/programs/_programsLayout/': typeof TrainerProgramsProgramsLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,39 +186,54 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/sign-in'
     | '/sign-up'
+    | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
+    | '/trainer/programs/$programId'
+    | '/trainer/programs'
+    | '/trainer/workouts/$workoutId'
     | '/trainer/clients'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program'
-    | '/trainer/clients/$clientId/settings'
+    | '/trainer/programs/homug-programs'
+    | '/trainer/programs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/trainer'
     | '/sign-in'
     | '/sign-up'
+    | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
+    | '/trainer/programs/$programId'
+    | '/trainer/programs'
+    | '/trainer/workouts/$workoutId'
     | '/trainer/clients'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program'
-    | '/trainer/clients/$clientId/settings'
+    | '/trainer/programs/homug-programs'
   id:
     | '__root__'
     | '/'
     | '/trainer'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
+    | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
+    | '/trainer/programs/$programId'
+    | '/trainer/programs'
+    | '/trainer/programs/_programsLayout'
+    | '/trainer/workouts/$workoutId'
     | '/trainer/clients/'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program'
-    | '/trainer/clients/$clientId/settings'
+    | '/trainer/programs/_programsLayout/homug-programs'
+    | '/trainer/programs/_programsLayout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -187,11 +259,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trainer/programs': {
+      id: '/trainer/programs'
+      path: '/programs'
+      fullPath: '/trainer/programs'
+      preLoaderRoute: typeof TrainerProgramsRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
     '/trainer/home': {
       id: '/trainer/home'
       path: '/home'
       fullPath: '/trainer/home'
       preLoaderRoute: typeof TrainerHomeRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/exercises': {
+      id: '/trainer/exercises'
+      path: '/exercises'
+      fullPath: '/trainer/exercises'
+      preLoaderRoute: typeof TrainerExercisesRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
     '/_auth/sign-up': {
@@ -215,6 +301,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerClientsIndexRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
+    '/trainer/workouts/$workoutId': {
+      id: '/trainer/workouts/$workoutId'
+      path: '/workouts/$workoutId'
+      fullPath: '/trainer/workouts/$workoutId'
+      preLoaderRoute: typeof TrainerWorkoutsWorkoutIdRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/programs/_programsLayout': {
+      id: '/trainer/programs/_programsLayout'
+      path: '/programs'
+      fullPath: '/trainer/programs'
+      preLoaderRoute: typeof TrainerProgramsProgramsLayoutRouteImport
+      parentRoute: typeof TrainerProgramsRoute
+    }
+    '/trainer/programs/$programId': {
+      id: '/trainer/programs/$programId'
+      path: '/programs/$programId'
+      fullPath: '/trainer/programs/$programId'
+      preLoaderRoute: typeof TrainerProgramsProgramIdRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
     '/trainer/clients/$clientId': {
       id: '/trainer/clients/$clientId'
       path: '/clients/$clientId'
@@ -222,12 +329,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerClientsClientIdRouteRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
-    '/trainer/clients/$clientId/settings': {
-      id: '/trainer/clients/$clientId/settings'
-      path: '/settings'
-      fullPath: '/trainer/clients/$clientId/settings'
-      preLoaderRoute: typeof TrainerClientsClientIdSettingsRouteImport
-      parentRoute: typeof TrainerClientsClientIdRouteRoute
+    '/trainer/programs/_programsLayout/': {
+      id: '/trainer/programs/_programsLayout/'
+      path: '/'
+      fullPath: '/trainer/programs/'
+      preLoaderRoute: typeof TrainerProgramsProgramsLayoutIndexRouteImport
+      parentRoute: typeof TrainerProgramsProgramsLayoutRoute
+    }
+    '/trainer/programs/_programsLayout/homug-programs': {
+      id: '/trainer/programs/_programsLayout/homug-programs'
+      path: '/homug-programs'
+      fullPath: '/trainer/programs/homug-programs'
+      preLoaderRoute: typeof TrainerProgramsProgramsLayoutHomugProgramsRouteImport
+      parentRoute: typeof TrainerProgramsProgramsLayoutRoute
     }
     '/trainer/clients/$clientId/program': {
       id: '/trainer/clients/$clientId/program'
@@ -257,7 +371,6 @@ interface TrainerClientsClientIdRouteRouteChildren {
   TrainerClientsClientIdMeasurementsRoute: typeof TrainerClientsClientIdMeasurementsRoute
   TrainerClientsClientIdOverviewRoute: typeof TrainerClientsClientIdOverviewRoute
   TrainerClientsClientIdProgramRoute: typeof TrainerClientsClientIdProgramRoute
-  TrainerClientsClientIdSettingsRoute: typeof TrainerClientsClientIdSettingsRoute
 }
 
 const TrainerClientsClientIdRouteRouteChildren: TrainerClientsClientIdRouteRouteChildren =
@@ -266,7 +379,6 @@ const TrainerClientsClientIdRouteRouteChildren: TrainerClientsClientIdRouteRoute
       TrainerClientsClientIdMeasurementsRoute,
     TrainerClientsClientIdOverviewRoute: TrainerClientsClientIdOverviewRoute,
     TrainerClientsClientIdProgramRoute: TrainerClientsClientIdProgramRoute,
-    TrainerClientsClientIdSettingsRoute: TrainerClientsClientIdSettingsRoute,
   }
 
 const TrainerClientsClientIdRouteRouteWithChildren =
@@ -274,16 +386,55 @@ const TrainerClientsClientIdRouteRouteWithChildren =
     TrainerClientsClientIdRouteRouteChildren,
   )
 
+interface TrainerProgramsProgramsLayoutRouteChildren {
+  TrainerProgramsProgramsLayoutHomugProgramsRoute: typeof TrainerProgramsProgramsLayoutHomugProgramsRoute
+  TrainerProgramsProgramsLayoutIndexRoute: typeof TrainerProgramsProgramsLayoutIndexRoute
+}
+
+const TrainerProgramsProgramsLayoutRouteChildren: TrainerProgramsProgramsLayoutRouteChildren =
+  {
+    TrainerProgramsProgramsLayoutHomugProgramsRoute:
+      TrainerProgramsProgramsLayoutHomugProgramsRoute,
+    TrainerProgramsProgramsLayoutIndexRoute:
+      TrainerProgramsProgramsLayoutIndexRoute,
+  }
+
+const TrainerProgramsProgramsLayoutRouteWithChildren =
+  TrainerProgramsProgramsLayoutRoute._addFileChildren(
+    TrainerProgramsProgramsLayoutRouteChildren,
+  )
+
+interface TrainerProgramsRouteChildren {
+  TrainerProgramsProgramsLayoutRoute: typeof TrainerProgramsProgramsLayoutRouteWithChildren
+}
+
+const TrainerProgramsRouteChildren: TrainerProgramsRouteChildren = {
+  TrainerProgramsProgramsLayoutRoute:
+    TrainerProgramsProgramsLayoutRouteWithChildren,
+}
+
+const TrainerProgramsRouteWithChildren = TrainerProgramsRoute._addFileChildren(
+  TrainerProgramsRouteChildren,
+)
+
 interface TrainerRouteRouteChildren {
+  TrainerExercisesRoute: typeof TrainerExercisesRoute
   TrainerHomeRoute: typeof TrainerHomeRoute
   TrainerClientsClientIdRouteRoute: typeof TrainerClientsClientIdRouteRouteWithChildren
+  TrainerProgramsProgramIdRoute: typeof TrainerProgramsProgramIdRoute
+  TrainerProgramsRoute: typeof TrainerProgramsRouteWithChildren
+  TrainerWorkoutsWorkoutIdRoute: typeof TrainerWorkoutsWorkoutIdRoute
   TrainerClientsIndexRoute: typeof TrainerClientsIndexRoute
 }
 
 const TrainerRouteRouteChildren: TrainerRouteRouteChildren = {
+  TrainerExercisesRoute: TrainerExercisesRoute,
   TrainerHomeRoute: TrainerHomeRoute,
   TrainerClientsClientIdRouteRoute:
     TrainerClientsClientIdRouteRouteWithChildren,
+  TrainerProgramsProgramIdRoute: TrainerProgramsProgramIdRoute,
+  TrainerProgramsRoute: TrainerProgramsRouteWithChildren,
+  TrainerWorkoutsWorkoutIdRoute: TrainerWorkoutsWorkoutIdRoute,
   TrainerClientsIndexRoute: TrainerClientsIndexRoute,
 }
 

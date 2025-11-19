@@ -1,11 +1,12 @@
 import {
 	type Locale,
 	differenceInDays,
+	differenceInHours,
+	differenceInMinutes,
 	differenceInWeeks,
 	format,
-	formatDistance,
+	isSameDay,
 	parseISO,
-	subDays,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -52,8 +53,6 @@ export const formatDateToLocaleString = (
 	locale = "pt-BR",
 ): string => {
 	const dateObj = parseLocalDate(date);
-
-	// Map locale strings to date-fns locale objects
 	const localeMap: Record<string, Locale> = {
 		"pt-BR": ptBR,
 	};
@@ -68,9 +67,33 @@ export const formatDateToText = (date: string): string => {
 	return format(dateObj, "d MMM, yyyy", { locale: ptBR });
 };
 
-export const formatRelativeDate = (dateString: string) => {
-	return formatDistance(subDays(new Date(dateString), 3), new Date(), {
-		addSuffix: true,
-		locale: ptBR,
-	});
+export const formatRelativeDate = (date: string) => {
+	const dateObj = new Date(date);
+	const now = new Date();
+	const hoursDiff = Math.abs(differenceInHours(now, dateObj));
+
+	if (hoursDiff >= 24) {
+		const dateObj = parseLocalDate(date);
+		return format(dateObj, "EEE, d MMM, yyyy", { locale: ptBR });
+	}
+
+	if (!isSameDay(dateObj, now)) {
+		const hour = format(dateObj, "HH:mm", { locale: ptBR });
+		return `Ontem às ${hour}`;
+	}
+
+	if (hoursDiff >= 1) {
+		return `${hoursDiff}h atrás`;
+	}
+
+	const minutesDiff = Math.abs(differenceInMinutes(now, dateObj));
+	return `${minutesDiff}min atrás`;
+};
+
+export const calculateWeeksFromDate = (startDate: string): number => {
+	const start = parseLocalDate(startDate);
+	const now = new Date();
+	const weeks = differenceInWeeks(now, start);
+	// Add 1 because we want "Semana 1" for the first week, not "Semana 0"
+	return Math.max(1, weeks + 1);
 };

@@ -197,6 +197,8 @@
 	--font-size-7xl: 3.75rem;
 	--font-size-8xl: 4.5rem;
 	--font-size-9xl: 6rem;
+
+	--header-height: 4rem;
 }
 
 body {
