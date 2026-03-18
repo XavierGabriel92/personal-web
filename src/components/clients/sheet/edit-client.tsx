@@ -10,39 +10,58 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { PencilIcon, PlusIcon } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
+import { getApiClientByIdSuspenseQueryKey } from "@/gen/hooks/useGetApiClientByIdSuspense";
+import { useGetApiClientByIdSuspense } from "@/gen/hooks/useGetApiClientByIdSuspense";
+import { getApiClientsSuspenseQueryKey } from "@/gen/hooks/useGetApiClientsSuspense";
+import { usePutApiClientById } from "@/gen/hooks/usePutApiClientById";
+import { queryClient } from "@/routes/__root";
+import { PencilIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { ClientFormData } from "../form";
 
-
-const mockClient = {
-  id: "5",
-  name: "Carlos Ferreira",
-  email: "carlos.ferreira@example.com",
-  phone: "(11) 94321-0987",
-  status: "pending",
-  createdAt: "2024-03-25",
+interface EditClientSheetProps {
+  clientId: string;
 }
 
-export default function EditClientSheet() {
+export default function EditClientSheet({ clientId }: EditClientSheetProps) {
   const [open, setOpen] = useState(false);
+  const { data: client } = useGetApiClientByIdSuspense(clientId);
+  const { mutateAsync: updateClient, isPending } = usePutApiClientById();
 
-  const handleSubmit = (data: ClientFormData) => {
-    console.log(data);
-    // TODO: Handle API call to create client
-    // After successful creation, close the sheet
-    toast.success(`Aluno ${data.name} atualizado com sucesso!`);
-    setOpen(false);
+  const handleSubmit = async (data: ClientFormData) => {
+    await updateClient({
+      id: clientId,
+      data: {
+        name: data.name,
+        phone: data.phone,
+        goals: data.goals || undefined,
+        active: data.active ?? true,
+      },
+    }, {
+      onSuccess: async () => {
+        toast.success(`Aluno ${data.name} atualizado com sucesso!`);
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: getApiClientsSuspenseQueryKey()
+          }),
+          queryClient.invalidateQueries({
+            queryKey: getApiClientByIdSuspenseQueryKey(clientId)
+          }),
+        ]);
+        setOpen(false);
+      },
+      onError: () => {
+        toast.error("Erro ao atualizar aluno. Tente novamente.");
+      }
+    });
   };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          size="sm"
-          variant="outline"
-        >
+        <Button size="sm" variant="outline">
           <PencilIcon />
           Editar aluno
         </Button>
@@ -55,12 +74,22 @@ export default function EditClientSheet() {
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-4">
-          <ClientForm onSubmit={handleSubmit} initialValues={mockClient} />
+          <ClientForm
+            onSubmit={handleSubmit}
+            initialValues={{
+              name: client.name,
+              phone: client.phone,
+              goals: client.goals,
+              active: client.active,
+            }}
+          />
         </div>
         <SheetFooter>
-          <CreateClientButton>Salvar Aluno</CreateClientButton>
+          <CreateClientButton disabled={isPending}>
+            {isPending ? <><Spinner /> Salvando... </> : "Salvar"}
+          </CreateClientButton>
           <SheetClose asChild>
-            <Button variant="outline">Cancelar</Button>
+            <Button variant="outline" disabled={isPending}>Cancelar</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

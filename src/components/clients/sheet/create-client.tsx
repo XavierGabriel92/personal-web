@@ -10,6 +10,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Spinner } from "@/components/ui/spinner";
+import { getApiClientsSuspenseQueryKey } from "@/gen/hooks/useGetApiClientsSuspense";
+import { usePostApiClientCreate } from "@/gen/hooks/usePostApiClientCreate";
+import { queryClient } from "@/routes/__root";
+import { useNavigate } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -17,13 +22,30 @@ import type { ClientFormData } from "../form";
 
 export default function CreateClientSheet() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (data: ClientFormData) => {
-    console.log(data);
-    // TODO: Handle API call to create client
-    // After successful creation, close the sheet
-    toast.success(`Aluno ${data.name} atualizado com sucesso!`);
-    setOpen(false);
+  const { mutateAsync: createClient, isPending } = usePostApiClientCreate();
+
+  const handleSubmit = async (data: ClientFormData) => {
+    await createClient({
+      data: {
+        name: data.name,
+        phone: data.phone,
+        goals: data.goals || undefined,
+      },
+    }, {
+      onSuccess: async (data) => {
+        toast.success(`Aluno ${data.name} criado com sucesso!`);
+        await queryClient.invalidateQueries({
+          queryKey: getApiClientsSuspenseQueryKey()
+        });
+        setOpen(false);
+        navigate({ to: "/trainer/clients/$clientId/overview", params: { clientId: data.id } });
+      },
+      onError: () => {
+        toast.error("Erro ao criar aluno. Tente novamente.");
+      }
+    });
   };
 
   return (
@@ -46,9 +68,11 @@ export default function CreateClientSheet() {
           <ClientForm onSubmit={handleSubmit} />
         </div>
         <SheetFooter>
-          <CreateClientButton>Criar Aluno</CreateClientButton>
+          <CreateClientButton disabled={isPending}>
+            {isPending ? <><Spinner /> Criando aluno... </> : "Criar Aluno"}
+          </CreateClientButton>
           <SheetClose asChild>
-            <Button variant="outline">Cancelar</Button>
+            <Button variant="outline" disabled={isPending}>Cancelar</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

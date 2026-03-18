@@ -1,4 +1,4 @@
-import ActiveProgram from "@/components/program/active-program";
+import ActiveProgram from "@/components/routine/active-routine";
 import { TypographyH3 } from "@/components/ui/typography";
 import WorkoutHistoryList from "@/components/workout-history/list";
 
@@ -12,7 +12,7 @@ export default function TrainerClientProgramsPage({ clientId }: TrainerClientPro
       <TypographyH3 className="font-medium">Histórico de treinos</TypographyH3>
       <WorkoutHistoryList clientId={clientId} />
     </div>
-    <div className="space-y-4 sticky top-0 self-start order-1 md:order-2">
+    <div className="space-y-4 block md:sticky top-0 self-start order-1 md:order-2">
       <TypographyH3 className="font-medium">Programa ativo</TypographyH3>
       <ActiveProgram clientId={clientId} />
     </div>

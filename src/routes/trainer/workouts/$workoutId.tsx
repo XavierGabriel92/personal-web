@@ -1,5 +1,7 @@
+import { Spinner } from '@/components/ui/spinner';
 import TrainerWorkoutPage from '@/pages/trainer/workout'
 import { createFileRoute } from '@tanstack/react-router'
+import { Suspense } from 'react';
 
 export const Route = createFileRoute('/trainer/workouts/$workoutId')({
   component: RouteComponent,
@@ -7,5 +9,13 @@ export const Route = createFileRoute('/trainer/workouts/$workoutId')({
 
 function RouteComponent() {
   const { workoutId } = Route.useParams();
-  return <TrainerWorkoutPage workoutId={workoutId} />
+  return (
+    <Suspense
+      fallback={
+        <Spinner className="size-8" />
+      }
+    >
+      <TrainerWorkoutPage workoutId={workoutId} />
+    </Suspense>
+  );
 }

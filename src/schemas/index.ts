@@ -1,24 +1,65 @@
 export interface Set {
 	type?: string;
-	reps: number;
-	weight: number;
-	restTime: number;
-	order: number;
+	reps?: number;
+	weight?: number;
+	rest?: number;
 }
 
-export interface Exercise {
+export interface ExerciseData {
 	id: string;
+	exerciseId: string;
 	name: string;
-	img: string;
+	videoUrl?: string;
+	thumbnailUrl?: string;
+	setsLogged: number;
+	instructions: string[];
+	alternativeExercises: string[];
+	primaryMuscle?: {
+		id: string;
+		name: string;
+	};
+	secondaryMuscles: {
+		id: string;
+		name: string;
+	}[];
+	equipments: {
+		id: string;
+		name: string;
+	}[];
+	ownerId?: string;
+	bodyPart?: string;
+}
+
+export interface WorkoutExercise {
+	id: string;
 	order: number;
-	notes?: string;
-	sets: Set[];
+	sets: Set[]; // Array of sets
+	exerciseData: ExerciseData;
 }
 
 export interface Workout {
 	id: string;
 	name: string;
 	description?: string;
+	ownerId: string;
+	routineId: string;
 	order: number;
-	exercises: Exercise[];
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface WorkoutExercises extends Workout {
+	exercises?: WorkoutExercise[];
+}
+
+export interface Routine {
+	id: string;
+	name: string;
+	description?: string;
+	duration: number;
+	ownerId: string;
+	clientId?: string;
+	createdAt: string;
+	updatedAt: string;
+	workouts: Workout[];
 }

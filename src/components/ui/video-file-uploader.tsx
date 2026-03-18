@@ -48,13 +48,19 @@ export default function VideoFileUploader({
     },
   })
 
+  // Track previous value to detect when it changes from string to null
+  const prevValueRef = useRef<File | string | null | undefined>(value)
+
   // Sync external value with internal state
   useEffect(() => {
     const currentFile = files[0]?.file instanceof File ? files[0].file : null
+    const prevValue = prevValueRef.current
+    const wasString = typeof prevValue === "string"
 
     // If external value is cleared, clear internal files
     if (value === null || value === undefined) {
-      if (currentFile) {
+      // Clear files if we have any files, or if we previously had a string value
+      if (currentFile || files.length > 0 || wasString) {
         isSyncingRef.current = true
         clearFiles()
         // Reset flag synchronously since clearFiles doesn't trigger onFilesChange
@@ -62,6 +68,7 @@ export default function VideoFileUploader({
           isSyncingRef.current = false
         }, 0)
       }
+      prevValueRef.current = value
       return
     }
 
@@ -77,12 +84,15 @@ export default function VideoFileUploader({
       }
     }
     // If value is a string (URL), we'll use it for preview but don't add to files
+    prevValueRef.current = value
   }, [value, files, addFiles, clearFiles])
 
   const previewUrl =
-    files[0]?.preview || (typeof value === "string" ? value : null)
+    value === null || value === undefined
+      ? null
+      : files[0]?.preview || (typeof value === "string" ? value : null)
   const fileName = files[0]?.file.name || (value instanceof File ? value.name : null)
-  const hasFile = files.length > 0 || (value instanceof File)
+  const hasFile = (value !== null && value !== undefined) && (files.length > 0 || value instanceof File || typeof value === "string")
 
   return (
     <div className="flex flex-col gap-2">
@@ -105,6 +115,7 @@ export default function VideoFileUploader({
             <div className="absolute inset-0 flex items-center justify-center p-4 w-full h-full">
               {previewUrl ? (
                 <video
+                  key={previewUrl}
                   src={previewUrl}
                   controls
                   className="w-full h-full max-h-full max-w-full rounded object-contain"
@@ -160,11 +171,23 @@ export default function VideoFileUploader({
             <button
               type="button"
               className="flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                // Set syncing flag to prevent onFilesChange from firing during removal
+                isSyncingRef.current = true
                 if (files.length > 0) {
                   removeFile(files[0]?.id)
+                } else {
+                  // If value is a string (URL) and not in files, clear files anyway
+                  clearFiles()
                 }
+                // Call onChange to notify parent immediately
                 onChange?.(null)
+                // Reset syncing flag after a brief delay
+                setTimeout(() => {
+                  isSyncingRef.current = false
+                }, 0)
               }}
               aria-label="Remover vídeo"
             >

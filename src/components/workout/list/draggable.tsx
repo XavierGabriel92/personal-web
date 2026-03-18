@@ -8,15 +8,19 @@ import { useNavigate } from "@tanstack/react-router";
 import { GripVerticalIcon } from "lucide-react";
 import { MoreVertical } from "lucide-react";
 import { Copy, Pencil, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WorkoutCollapsible from "../collapsible/workout";
 
 interface WorkoutListDraggableProps {
   workouts: Workout[];
+  onDelete: (workoutId: string) => void;
+  onCopy: (workoutId: string) => void;
+  onDrag: (workouts: Workout[]) => void;
 }
 
-export default function WorkoutListDraggable({ workouts }: WorkoutListDraggableProps) {
+export default function WorkoutListDraggable({ workouts, onDelete, onCopy, onDrag }: WorkoutListDraggableProps) {
   const [items, setItems] = useState(workouts);
+  const navigate = useNavigate();
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -27,8 +31,13 @@ export default function WorkoutListDraggable({ workouts }: WorkoutListDraggableP
     const [reorderedItem] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, reorderedItem);
 
+    onDrag(newItems);
     setItems(newItems);
   };
+
+  useEffect(() => {
+    setItems(workouts);
+  }, [workouts]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -53,9 +62,9 @@ export default function WorkoutListDraggable({ workouts }: WorkoutListDraggableP
                     >
                       <GripVerticalIcon className="w-4 h-4" />
                     </div>
-                    <Card className="w-full">
+                    <Card className="w-full cursor-pointer" onClick={() => navigate({ to: "/trainer/workouts/$workoutId", params: { workoutId: item.id } })}>
                       <CardContent>
-                        <WorkoutCollapsible workout={item} actions={<WorkoutActions workout={item} />} />
+                        <WorkoutCollapsible workout={item} actions={<WorkoutActions workout={item} onDelete={onDelete} onCopy={onCopy} />} />
                       </CardContent>
                     </Card>
                   </div>
@@ -97,9 +106,12 @@ function DeleteWorkoutDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Cancelar</AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleConfirm}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleConfirm();
+            }}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             Deletar
@@ -110,7 +122,7 @@ function DeleteWorkoutDialog({
   );
 }
 
-function WorkoutActions({ workout }: { workout: Workout }) {
+function WorkoutActions({ workout, onDelete, onCopy }: { workout: Workout, onDelete: (workoutId: string) => void, onCopy: (workoutId: string) => void }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -119,31 +131,35 @@ function WorkoutActions({ workout }: { workout: Workout }) {
   };
 
   const handleDelete = () => {
-    console.log("Deleting workout:", workout.id);
+    onDelete(workout.id);
+  };
+
+  const handleCopy = () => {
+    onCopy(workout.id);
   };
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
             <MoreVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={handleEdit}>
+          <DropdownMenuItem onSelect={handleEdit} onClick={(e) => e.stopPropagation()}>
             <Pencil className="mr-2 h-4 w-4" />
             Editar treino
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem onSelect={handleCopy} onClick={(e) => e.stopPropagation()}>
             <Copy className="mr-2 h-4 w-4" />
-            Copiar o programa
-          </DropdownMenuItem>
+            Copiar o treino
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem
             variant="destructive"
-            onSelect={(e) => {
-              e.preventDefault();
+            onClick={(e) => {
+              e.stopPropagation();
               setDeleteDialogOpen(true);
             }}
           >

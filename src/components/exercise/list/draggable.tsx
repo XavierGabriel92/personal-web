@@ -1,19 +1,24 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import type { Exercise } from "@/schemas";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import type { WorkoutExercise } from "@/schemas";
 import { DragDropContext, Draggable, type DropResult, Droppable } from '@hello-pangea/dnd';
-import { Copy, GripVerticalIcon, MoreVertical, Replace, Trash } from "lucide-react";
-import { useState } from "react";
+import { GripVerticalIcon, MoreVertical, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { ExerciseFormData } from "../collapsible/exercise";
 import ExerciseCollapsible from "../collapsible/exercise";
 
 interface ExerciseListDraggableProps {
-  exercises: Exercise[];
+  exercises: WorkoutExercise[];
   workoutId: string;
+  onDelete?: (exerciseWorkoutId: string) => void;
+  onDrag?: (exercises: WorkoutExercise[]) => void;
+  onUpdate?: (exerciseWorkoutId: string) => void;
+  onExerciseFormChange?: (exerciseWorkoutId: string, formData: ExerciseFormData) => void;
 }
 
-export default function ExerciseListDraggable({ exercises, workoutId }: ExerciseListDraggableProps) {
+export default function ExerciseListDraggable({ exercises, workoutId, onDelete, onDrag, onUpdate, onExerciseFormChange }: ExerciseListDraggableProps) {
   const [items, setItems] = useState(exercises);
 
   const onDragEnd = (result: DropResult) => {
@@ -24,9 +29,16 @@ export default function ExerciseListDraggable({ exercises, workoutId }: Exercise
     const newItems = Array.from(items);
     const [reorderedItem] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, reorderedItem);
-
     setItems(newItems);
+    if (onDrag) {
+      onDrag(newItems);
+    }
+
   };
+
+  useEffect(() => {
+    setItems(exercises);
+  }, [exercises]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -37,29 +49,37 @@ export default function ExerciseListDraggable({ exercises, workoutId }: Exercise
             ref={provided.innerRef}
             className="space-y-4"
           >
-            {items.map((item, index) => (
-              <Draggable key={item.id} draggableId={item.id} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    className="flex items-center w-full gap-1"
-                  >
+            {items.map((item, index) => {
+              const isPending = item.id.startsWith('temp-');
+              return (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided) => (
                     <div
-                      {...provided.dragHandleProps}
-                      className="cursor-grab active:cursor-grabbing text-muted-foreground"
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      className="flex items-center w-full gap-1"
                     >
-                      <GripVerticalIcon className="w-4 h-4" />
+                      <div
+                        {...(isPending ? {} : provided.dragHandleProps)}
+                        className="cursor-grab active:cursor-grabbing text-muted-foreground"
+                      >
+                        <GripVerticalIcon className="w-4 h-4" />
+                      </div>
+                      <Card className={`w-full transition-opacity ${isPending ? 'opacity-60 pointer-events-none' : ''}`}>
+                        <CardContent>
+                          <ExerciseCollapsible
+                            workoutId={workoutId}
+                            exercise={item}
+                            actions={<ExerciseActions exercise={item} onDelete={onDelete} onUpdate={onUpdate} />}
+                            onFormChange={onExerciseFormChange ? (formData) => onExerciseFormChange(item.id, formData) : undefined}
+                          />
+                        </CardContent>
+                      </Card>
                     </div>
-                    <Card className="w-full">
-                      <CardContent>
-                        <ExerciseCollapsible workoutId={workoutId} exercise={item} actions={<ExerciseActions exercise={item} />} />
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
-              </Draggable>
-            ))}
+                  )}
+                </Draggable>
+              );
+            })}
             {provided.placeholder}
           </div>
         )}
@@ -75,7 +95,7 @@ function DeleteExerciseDialog({
   onOpenChange,
   onConfirm,
 }: {
-  exercise: Exercise;
+  exercise: WorkoutExercise;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
@@ -91,7 +111,7 @@ function DeleteExerciseDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Deletar exercício</AlertDialogTitle>
           <AlertDialogDescription>
-            Tem certeza que deseja deletar o exercício "{exercise.name}"? Esta ação não pode ser desfeita.
+            Tem certeza que deseja deletar o exercício "{exercise.exerciseData.name}"? Esta ação não pode ser desfeita.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -108,19 +128,19 @@ function DeleteExerciseDialog({
   );
 }
 
-function ExerciseActions({ exercise }: { exercise: Exercise }) {
+function ExerciseActions({ exercise, onDelete, onUpdate }: { exercise: WorkoutExercise; onDelete?: (exerciseWorkoutId: string) => void; onUpdate?: (exerciseWorkoutId: string) => void }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleEdit = () => {
-    console.log("Editing exercise:", exercise.id);
+    if (onUpdate) {
+      onUpdate(exercise.id);
+    }
   };
 
   const handleDelete = () => {
-    console.log("Deleting exercise:", exercise.id);
-  };
-
-  const handleCopy = () => {
-    console.log("Copying exercise:", exercise.id);
+    if (onDelete) {
+      onDelete(exercise.id);
+    }
   };
 
   return (
@@ -132,15 +152,11 @@ function ExerciseActions({ exercise }: { exercise: Exercise }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={handleEdit}>
+          {/* <DropdownMenuItem onSelect={handleEdit}>
             <Replace className="mr-2 h-4 w-4" />
             Trocar exercício
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={handleCopy}>
-            <Copy className="mr-2 h-4 w-4" />
-            Copiar exercício
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator /> */}
           <DropdownMenuItem
             variant="destructive"
             onSelect={(e) => {

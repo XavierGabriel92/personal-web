@@ -13,11 +13,9 @@ export default function TrainerHeader() {
 			<SidebarTrigger className="-ml-1 block lg:hidden" />
 
 			<div className="flex flex-1 items-center gap-4">
-				{/* Search Bar */}
 				<SearchInput placeholder="Pesquisar um aluno..." />
 			</div>
 
-			{/* Utility Icons */}
 			<div className="flex items-center gap-2">
 				<ModeToggle />
 				<Button variant="ghost" size="icon" className="h-9 w-9">

@@ -18,16 +18,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { TypographyH5, TypographySpan } from "@/components/ui/typography";
-import type { Exercise } from "@/schemas";
+import { useDebounceCallback } from "@/hooks/use-debounce-callback";
+import type { WorkoutExercise } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDownIcon, ChevronUpIcon, Copy, HelpCircle, Plus, Trash } from "lucide-react";
-import { useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon, Copy, Plus, Trash } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -46,37 +42,119 @@ const exerciseFormSchema = z.object({
 
 export type ExerciseFormData = z.infer<typeof exerciseFormSchema>;
 
-interface ExerciseCollapsibleProps {
-  workoutId: string;
-  exercise: Exercise;
-  actions?: React.ReactNode;
-  onSubmit?: (data: ExerciseFormData) => void;
+// Simple deep equality check for ExerciseFormData
+function isEqualExerciseData(a: ExerciseFormData, b: ExerciseFormData): boolean {
+  if (a.notes !== b.notes) return false;
+  if (a.sets.length !== b.sets.length) return false;
+
+  for (let i = 0; i < a.sets.length; i++) {
+    const setA = a.sets[i];
+    const setB = b.sets[i];
+    if (
+      setA.type !== setB.type ||
+      setA.reps !== setB.reps ||
+      setA.weight !== setB.weight ||
+      setA.restTime !== setB.restTime
+    ) {
+      return false;
+    }
+  }
+  return true;
 }
 
-export default function ExerciseCollapsible({ workoutId, exercise, actions, onSubmit }: ExerciseCollapsibleProps) {
+interface ExerciseCollapsibleProps {
+  workoutId: string;
+  exercise: WorkoutExercise;
+  actions?: React.ReactNode;
+  onSubmit?: (data: ExerciseFormData) => void;
+  onFormChange?: (data: ExerciseFormData) => void;
+}
+
+export default function ExerciseCollapsible({ workoutId, exercise, actions, onSubmit, onFormChange }: ExerciseCollapsibleProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const {
     handleSubmit,
     control,
     getValues,
+    watch,
   } = useForm<ExerciseFormData>({
     resolver: zodResolver(exerciseFormSchema),
     defaultValues: {
-      sets: exercise.sets.map((set) => ({
-        type: set.type as "warm-up" | "valid" | undefined,
-        reps: set.reps ?? 0,
-        weight: set.weight ?? 0,
-        restTime: set.restTime ?? 0,
-        order: set.order ?? 0,
-      })),
+      sets: Array.isArray(exercise.sets) && exercise.sets.length > 0
+        ? exercise.sets.map((set, index) => ({
+          type: set.type as "warm-up" | "valid" | undefined,
+          reps: set.reps ?? 0,
+          weight: set.weight ?? 0,
+          restTime: set.rest ?? 0,
+          order: index,
+        }))
+        : [],
+      notes: "",
     },
   });
+
+  const previousValuesRef = useRef<ExerciseFormData | null>(null);
+  const isFirstRender = useRef(true);
+
+  const handleFormChange = useCallback(
+    (data: ExerciseFormData) => {
+      if (onFormChange) {
+        onFormChange(data);
+      }
+    },
+    [onFormChange]
+  );
+
+  // Create debounced callback for onFormChange
+  const debouncedOnFormChange = useDebounceCallback(handleFormChange, 750);
+
+  // Use subscription to watch all form values - this detects nested changes
+  useEffect(() => {
+    const subscription = watch((value) => {
+      const currentValues = value as ExerciseFormData;
+
+      // Skip first render
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        previousValuesRef.current = currentValues;
+        return;
+      }
+
+      const previousValues = previousValuesRef.current;
+
+      // Check if values actually changed (deep comparison)
+      if (previousValues && isEqualExerciseData(previousValues, currentValues)) {
+        return;
+      }
+
+      // Update previous values
+      previousValuesRef.current = currentValues;
+
+      // Always validate and trigger onFormChange if valid
+      // This ensures changes in nested fields are detected
+      const isValid = exerciseFormSchema.safeParse(currentValues).success;
+      if (isValid) {
+        debouncedOnFormChange(currentValues);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, debouncedOnFormChange]);
 
   const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "sets",
   });
+
+  // Helper function to trigger form change manually
+  const triggerFormChange = useCallback(() => {
+    const currentValues = getValues();
+    const isValid = exerciseFormSchema.safeParse(currentValues).success;
+    if (isValid) {
+      debouncedOnFormChange(currentValues);
+    }
+  }, [getValues, debouncedOnFormChange]);
 
   const handleCopySet = (index: number) => {
     const currentSet = getValues(`sets.${index}`);
@@ -109,12 +187,12 @@ export default function ExerciseCollapsible({ workoutId, exercise, actions, onSu
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 sm:gap-4">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={exercise.img} alt={exercise.name} />
-            <AvatarFallback>{exercise.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarImage src={exercise.exerciseData.thumbnailUrl} alt={exercise.exerciseData.name} />
+            <AvatarFallback>{exercise.exerciseData.name.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
-          <TypographyH5 className="">{exercise.name}</TypographyH5>
+          <TypographyH5 className="">{exercise.exerciseData.name}</TypographyH5>
           <TypographySpan className="text-muted-foreground">{fields.length} séries</TypographySpan>
-          <CollapsibleTrigger>
+          <CollapsibleTrigger className="cursor-pointer">
             {isOpen ? <ChevronUpIcon className="size-4" /> : <ChevronDownIcon className="size-4" />}
           </CollapsibleTrigger>
         </div>
@@ -218,6 +296,8 @@ export default function ExerciseCollapsible({ workoutId, exercise, actions, onSu
                                       onClick={() => {
                                         typeField.onChange(option.value);
                                         setOpen(false);
+                                        // Manually trigger form change
+                                        setTimeout(() => triggerFormChange(), 0);
                                       }}
                                       className={`${option.color} h-10 w-full items-center flex justify-start hover:${option.color}`}
                                     >
@@ -242,11 +322,21 @@ export default function ExerciseCollapsible({ workoutId, exercise, actions, onSu
                             type="number"
                             placeholder="Reps"
                             min="0"
-                            {...repsField}
-                            value={repsField.value ?? ""}
-                            onChange={(e) =>
-                              repsField.onChange(e.target.value === "" ? 0 : Number(e.target.value))
-                            }
+                            value={repsField.value === 0 ? "" : repsField.value ?? ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "") {
+                                repsField.onChange(0);
+                              } else {
+                                const numValue = Number(value);
+                                if (!Number.isNaN(numValue)) {
+                                  repsField.onChange(numValue);
+                                }
+                              }
+                              // Manually trigger form change
+                              setTimeout(() => triggerFormChange(), 0);
+                            }}
+                            onBlur={repsField.onBlur}
                           />
                         )}
                       />
@@ -260,11 +350,21 @@ export default function ExerciseCollapsible({ workoutId, exercise, actions, onSu
                             placeholder="Peso"
                             min="0"
                             step="0.5"
-                            {...weightField}
-                            value={weightField.value ?? ""}
-                            onChange={(e) =>
-                              weightField.onChange(e.target.value === "" ? 0 : Number(e.target.value))
-                            }
+                            value={weightField.value === 0 ? "" : weightField.value ?? ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "") {
+                                weightField.onChange(0);
+                              } else {
+                                const numValue = Number(value);
+                                if (!Number.isNaN(numValue)) {
+                                  weightField.onChange(numValue);
+                                }
+                              }
+                              // Manually trigger form change
+                              setTimeout(() => triggerFormChange(), 0);
+                            }}
+                            onBlur={weightField.onBlur}
                           />
                         )}
                       />
@@ -277,11 +377,21 @@ export default function ExerciseCollapsible({ workoutId, exercise, actions, onSu
                             type="number"
                             placeholder="Descanso"
                             min="0"
-                            {...restTimeField}
-                            value={restTimeField.value ?? ""}
-                            onChange={(e) =>
-                              restTimeField.onChange(e.target.value === "" ? 0 : Number(e.target.value))
-                            }
+                            value={restTimeField.value === 0 ? "" : restTimeField.value ?? ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "") {
+                                restTimeField.onChange(0);
+                              } else {
+                                const numValue = Number(value);
+                                if (!Number.isNaN(numValue)) {
+                                  restTimeField.onChange(numValue);
+                                }
+                              }
+                              // Manually trigger form change
+                              setTimeout(() => triggerFormChange(), 0);
+                            }}
+                            onBlur={restTimeField.onBlur}
                           />
                         )}
                       />
@@ -303,7 +413,6 @@ export default function ExerciseCollapsible({ workoutId, exercise, actions, onSu
                           className="text-destructive"
                           onClick={() => handleDeleteSet(index)}
                           aria-label="Deletar série"
-
                         >
                           <Trash />
                         </Button>

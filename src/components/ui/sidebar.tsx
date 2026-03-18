@@ -28,7 +28,7 @@ const SIDEBAR_WIDTH = "15rem";
 const SIDEBAR_WIDTH_MOBILE = "fit-content";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
-const HEADER_HEIGHT = "var(--header-height)";
+const HEADER_HEIGHT = "4rem";
 
 type SidebarContextProps = {
 	state: "expanded" | "collapsed";
@@ -206,7 +206,7 @@ function Sidebar({
 					data-no-overlay={noOverlay ? "true" : undefined}
 					className={cn(
 						"bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden",
-						avoidFullHeight && `h-[calc(100vh-${HEADER_HEIGHT})]! top-[${HEADER_HEIGHT}]! bottom-auto! `
+						avoidFullHeight && `!h-[calc(100vh_-_${HEADER_HEIGHT})] !top-[${HEADER_HEIGHT}] bottom-auto!`
 					)}
 					style={
 						{
@@ -237,6 +237,11 @@ function Sidebar({
 			{/* This is what handles the sidebar gap on desktop */}
 			<div
 				data-slot="sidebar-gap"
+				style={
+					{
+						"--header-height": HEADER_HEIGHT,
+					} as React.CSSProperties
+				}
 				className={cn(
 					"relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
 					"group-data-[collapsible=offcanvas]:w-0",
@@ -257,7 +262,7 @@ function Sidebar({
 					variant === "floating" || variant === "inset"
 						? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
 						: "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
-					avoidFullHeight && `h-[calc(100vh-${HEADER_HEIGHT})]! top-[${HEADER_HEIGHT}]! bottom-auto! `,
+					avoidFullHeight && "h-[calc(100vh-var(--header-height))]! top-(--header-height)! bottom-auto!",
 					className,
 				)}
 				{...props}

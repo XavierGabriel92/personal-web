@@ -1,6 +1,6 @@
 import LastActivities from "@/components/activities/last-activities";
 import ClientNotes from "@/components/clients/notes";
-import ProgramOverview from "@/components/program/overview";
+import ProgramOverview from "@/components/routine/overview";
 import { DurationCard } from "@/components/workout-history/duration";
 import { SetCard } from "@/components/workout-history/set";
 import { VolumeCard } from "@/components/workout-history/volume";

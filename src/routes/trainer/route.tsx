@@ -1,10 +1,18 @@
 import TrainerHeader from "@/components/trainer/header";
 import AppSidebar from "@/components/trainer/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { cachedSession } from "@/hooks/auth";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/trainer")({
 	component: TrainerDashboardLayout,
+	beforeLoad: async () => {
+		const data = await cachedSession();
+
+		if (!data?.session) {
+			throw redirect({ to: "/sign-in" });
+		}
+	},
 });
 
 function TrainerDashboardLayout() {

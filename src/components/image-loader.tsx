@@ -1,6 +1,6 @@
-import * as React from "react"
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { cn } from "@/lib/utils"
+import * as React from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const defaultColorCombinations = [
   { start: 'hsl(220, 15%, 8%)', middle: 'hsl(200, 12%, 18%)', end: 'hsl(240, 10%, 12%)' },
@@ -170,6 +170,21 @@ export function ImageLoader({
     setHasError(false)
   }, [src])
 
+  // Add cache-busting query parameter to prevent stale image cache
+  const cacheBustedSrc = useMemo(() => {
+    if (!src) return src
+    try {
+      const url = new URL(src)
+      // Add timestamp to force fresh fetch
+      url.searchParams.set('_t', Date.now().toString())
+      return url.toString()
+    } catch {
+      // If src is not a valid URL, append query parameter manually
+      const separator = src.includes('?') ? '&' : '?'
+      return `${src}${separator}_t=${Date.now()}`
+    }
+  }, [src])
+
   const patternData = useMemo(() => {
     const colorCombinations = customColors && customColors.length > 0 ? customColors : defaultColorCombinations
 
@@ -239,7 +254,7 @@ export function ImageLoader({
             if (imgRef.current) imgRef.current = img;
             handleImageRef(img);
           }}
-          src={src}
+          src={cacheBustedSrc}
           alt={alt}
           onLoad={handleLoad}
           onError={handleError}

@@ -9,22 +9,47 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Spinner } from "@/components/ui/spinner";
 import WorkoutForm, { CreateWorkoutButton } from "@/components/workout/form";
 import type { WorkoutFormData } from "@/components/workout/form";
+import { getApiRoutineByIdSuspenseQueryKey } from "@/gen/hooks/useGetApiRoutineByIdSuspense";
+import { usePostApiWorkoutCreate } from "@/gen/hooks/usePostApiWorkoutCreate";
+import { queryClient } from "@/routes/__root";
+import { useNavigate } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function CreateWorkoutSheet() {
+interface CreateWorkoutSheetProps {
+  routineId: string;
+  workoutsCount?: number;
+}
+export default function CreateWorkoutSheet({ routineId, workoutsCount = 0 }: CreateWorkoutSheetProps) {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { mutateAsync: createWorkout, isPending } = usePostApiWorkoutCreate();
 
   const handleSubmit = (data: WorkoutFormData) => {
-    // TODO: redirect to the workout page when done
-    console.log(data);
-    setTimeout(() => {
-      toast.success(`Treino ${data.name} criado com sucesso!`);
-      setOpen(false);
-    }, 1000);
+    createWorkout({
+      data: {
+        name: data.name,
+        description: data.description || undefined,
+        routineId: routineId,
+        order: workoutsCount,
+      },
+    }, {
+      onSuccess: async (workout) => {
+        toast.success(`Treino ${workout.name} criado com sucesso!`);
+        navigate({ to: "/trainer/workouts/$workoutId", params: { workoutId: workout.id } });
+        await queryClient.invalidateQueries({
+          queryKey: getApiRoutineByIdSuspenseQueryKey(routineId),
+        });
+
+      },
+      onError: () => {
+        toast.error("Erro ao criar treino. Tente novamente.");
+      },
+    });
   };
 
   return (
@@ -46,9 +71,11 @@ export default function CreateWorkoutSheet() {
           <WorkoutForm onSubmit={handleSubmit} />
         </div>
         <SheetFooter>
-          <CreateWorkoutButton>Criar Treino</CreateWorkoutButton>
+          <CreateWorkoutButton disabled={isPending}>
+            {isPending ? <><Spinner /> Criando treino... </> : "Criar Treino"}
+          </CreateWorkoutButton>
           <SheetClose asChild>
-            <Button variant="outline">Cancelar</Button>
+            <Button variant="outline" disabled={isPending}>Cancelar</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

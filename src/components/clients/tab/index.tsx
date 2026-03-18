@@ -44,12 +44,12 @@ export default function ClientsTab({ clientId }: { clientId: string }) {
         >
           Programa
         </TabsTrigger>
-        <TabsTrigger
+        {/* <TabsTrigger
           value="tab-3"
           onClick={() => onTabChange("measurements")}
         >
           Medidas corporais
-        </TabsTrigger>
+        </TabsTrigger> */}
       </TabsList>
     </Tabs>
   )

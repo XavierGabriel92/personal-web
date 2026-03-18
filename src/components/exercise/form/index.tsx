@@ -6,7 +6,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import ImgFileUploader from "@/components/ui/img-file-uploader";
 import { Input } from "@/components/ui/input";
 import MultipleSelector, { type Option } from "@/components/ui/multi-select";
 import {
@@ -17,83 +16,61 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import VideoFileUploader from "@/components/ui/video-file-uploader";
+import { useGetApiExercisesFilters } from "@/gen";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { VariantProps } from "class-variance-authority";
 import { PlusIcon, XIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-
-// Mock exercise types
-const EXERCISE_TYPES = [
-  { value: "strength", label: "Força" },
-  { value: "cardio", label: "Cardio" },
-  { value: "flexibility", label: "Flexibilidade" },
-  { value: "balance", label: "Equilíbrio" },
-  { value: "plyometric", label: "Pliométrico" },
-  { value: "power", label: "Potência" },
-  { value: "endurance", label: "Resistência" },
-];
-
-// Mock equipment data
-const MOCK_EQUIPMENT = [
-  { value: "none", label: "Nenhum" },
-  { value: "barbell", label: "Barra" },
-  { value: "dumbbell", label: "Halteres" },
-  { value: "cable", label: "Cabo" },
-  { value: "machine", label: "Máquina" },
-  { value: "bodyweight", label: "Peso corporal" },
-  { value: "kettlebell", label: "Kettlebell" },
-  { value: "resistance-band", label: "Faixa elástica" },
-  { value: "smith-machine", label: "Smith Machine" },
-];
-
-// Mock muscles data
-const MOCK_MUSCLES: Option[] = [
-  { value: "chest", label: "Peito" },
-  { value: "back", label: "Costas" },
-  { value: "shoulders", label: "Ombros" },
-  { value: "biceps", label: "Bíceps" },
-  { value: "triceps", label: "Tríceps" },
-  { value: "forearms", label: "Antebraços" },
-  { value: "abs", label: "Abdômen" },
-  { value: "quadriceps", label: "Quadríceps" },
-  { value: "hamstrings", label: "Posteriores" },
-  { value: "glutes", label: "Glúteos" },
-  { value: "calves", label: "Panturrilhas" },
-  { value: "traps", label: "Trapézios" },
-];
+import type { Exercise } from "../schemas";
 
 export const exerciseFormSchema = z.object({
-  img: z.union([z.instanceof(File), z.string()]).optional(),
-  name: z.string().min(1, "Nome é obrigatório"),
-  type: z.string().min(1, "Tipo é obrigatório"),
-  equipment: z.string().min(1, "Equipamento é obrigatório"),
-  primaryMuscle: z.string().min(1, "Músculo primário é obrigatório"),
-  otherMuscles: z.array(z.string()).optional(),
+  name: z.string().min(1, 'Name is required'),
+  equipmentIds: z.array(z.string()).optional(),
+  primaryMuscleId: z.string().optional(),
+  secondaryMuscleIds: z.array(z.string()).optional(),
   instructions: z.array(z.string()).optional(),
   video: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
 export type ExerciseFormData = z.infer<typeof exerciseFormSchema>;
 
+// Helper function to convert Exercise to form data
+export function exerciseToFormData(exercise: Exercise): ExerciseFormData {
+  return {
+    name: exercise.name,
+    equipmentIds: exercise.equipments.map((eq) => eq.id),
+    primaryMuscleId: exercise.primaryMuscle?.id,
+    secondaryMuscleIds: exercise.secondaryMuscles.map((m) => m.id) ?? [],
+    instructions: exercise.instructions ?? [],
+    video: exercise.videoUrl ?? undefined,
+  };
+}
+
 interface ExerciseFormProps {
   onSubmit: (data: ExerciseFormData) => void;
-  initialValues?: ExerciseFormData;
+  initialValues?: ExerciseFormData | Exercise;
 }
 
 export default function ExerciseForm({
   onSubmit,
   initialValues,
 }: ExerciseFormProps) {
+  const { data: filtersData } = useGetApiExercisesFilters();
+
+  const formInitialValues = initialValues
+    ? "exerciseId" in initialValues
+      ? exerciseToFormData(initialValues)
+      : initialValues
+    : undefined;
+
   const form = useForm<ExerciseFormData>({
     resolver: zodResolver(exerciseFormSchema),
-    defaultValues: initialValues ?? {
-      img: undefined,
+    defaultValues: formInitialValues ?? {
       name: "",
-      type: "",
-      equipment: "none",
-      primaryMuscle: "",
-      otherMuscles: [],
+      equipmentIds: [],
+      primaryMuscleId: undefined,
+      secondaryMuscleIds: [],
       instructions: [],
       video: undefined,
     },
@@ -103,34 +80,33 @@ export default function ExerciseForm({
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = form;
+
+  const videoValue = watch("video");
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "instructions" as never,
   });
 
+  // Convert API data to Option format for selects
+  const equipmentOptions: Option[] =
+    filtersData?.equipments.map((eq) => ({
+      value: eq.id,
+      label: eq.name,
+    })) ?? [];
+
+  const muscleOptions: Option[] =
+    filtersData?.muscles.map((m) => ({
+      value: m.id,
+      label: m.name,
+    })) ?? [];
+
   return (
     <form id="exercise-form" onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
-        <Field>
-          <FieldContent>
-            <Controller
-              name="img"
-              control={control}
-              render={({ field }) => (
-                <ImgFileUploader
-                  value={field.value ?? null}
-                  onChange={(file) => {
-                    field.onChange(file ?? undefined);
-                  }}
-                />
-              )}
-            />
-          </FieldContent>
-        </Field>
-
         <Field>
           <FieldLabel htmlFor="name">
             Nome <span className="text-destructive">*</span>
@@ -150,77 +126,57 @@ export default function ExerciseForm({
           </FieldContent>
         </Field>
 
-        <Field className="flex-1 min-w-0">
-          <FieldLabel htmlFor="type">
-            Tipo <span className="text-destructive">*</span>
+        <Field>
+          <FieldLabel htmlFor="equipments">
+            Equipamentos
           </FieldLabel>
           <FieldContent>
             <Controller
-              name="type"
+              name="equipmentIds"
               control={control}
-              render={({ field }) => (
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger id="type" className="w-full">
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {EXERCISE_TYPES.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.type && (
-              <FieldError errors={[{ message: errors.type.message }]} />
-            )}
-          </FieldContent>
-        </Field>
+              render={({ field }) => {
+                const selectedOptions =
+                  field.value
+                    ?.map((v) => equipmentOptions.find((eq) => eq.value === v))
+                    .filter((opt): opt is Option => opt !== undefined) || [];
 
-        <Field className="flex-1 min-w-0">
-          <FieldLabel htmlFor="equipment">
-            Equipamento <span className="text-destructive">*</span>
-          </FieldLabel>
-          <FieldContent>
-            <Controller
-              name="equipment"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger id="equipment" className="w-full">
-                    <SelectValue placeholder="Selecione o equipamento" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_EQUIPMENT.map((equipment) => (
-                      <SelectItem key={equipment.value} value={equipment.value}>
-                        {equipment.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+                return (
+                  <MultipleSelector
+                    value={selectedOptions}
+                    onChange={(options) => {
+                      field.onChange(options.map((opt) => opt.value));
+                    }}
+                    options={equipmentOptions}
+                    onSearchSync={(search) => {
+                      // Always return all options when search is empty, filtered options when searching
+                      if (!search || search.trim() === '') {
+                        return equipmentOptions;
+                      }
+                      const searchLower = search.toLowerCase().trim();
+                      return equipmentOptions.filter((option) =>
+                        option.label.toLowerCase().includes(searchLower)
+                      );
+                    }}
+                    placeholder="Selecione os equipamentos"
+                    emptyIndicator={
+                      <p className="text-center text-sm text-muted-foreground">
+                        Nenhum equipamento encontrado.
+                      </p>
+                    }
+                  />
+                );
+              }}
             />
-            {errors.equipment && (
-              <FieldError errors={[{ message: errors.equipment.message }]} />
-            )}
           </FieldContent>
         </Field>
 
         <Field className="flex-1 min-w-0">
           <FieldLabel htmlFor="primaryMuscle">
-            Músculo Primário <span className="text-destructive">*</span>
+            Músculo Primário
           </FieldLabel>
           <FieldContent>
             <Controller
-              name="primaryMuscle"
+              name="primaryMuscleId"
               control={control}
               render={({ field }) => (
                 <Select
@@ -231,7 +187,7 @@ export default function ExerciseForm({
                     <SelectValue placeholder="Selecione o músculo primário" />
                   </SelectTrigger>
                   <SelectContent>
-                    {MOCK_MUSCLES.map((muscle) => (
+                    {muscleOptions.map((muscle) => (
                       <SelectItem key={muscle.value} value={muscle.value}>
                         {muscle.label}
                       </SelectItem>
@@ -240,24 +196,19 @@ export default function ExerciseForm({
                 </Select>
               )}
             />
-            {errors.primaryMuscle && (
-              <FieldError
-                errors={[{ message: errors.primaryMuscle.message }]}
-              />
-            )}
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="otherMuscles">Outros Músculos</FieldLabel>
+          <FieldLabel htmlFor="secondaryMuscles">Músculos Secundários</FieldLabel>
           <FieldContent>
             <Controller
-              name="otherMuscles"
+              name="secondaryMuscleIds"
               control={control}
               render={({ field }) => {
                 const selectedOptions =
                   field.value
-                    ?.map((v) => MOCK_MUSCLES.find((m) => m.value === v))
+                    ?.map((v) => muscleOptions.find((m) => m.value === v))
                     .filter((opt): opt is Option => opt !== undefined) || [];
 
                 return (
@@ -266,8 +217,18 @@ export default function ExerciseForm({
                     onChange={(options) => {
                       field.onChange(options.map((opt) => opt.value));
                     }}
-                    options={MOCK_MUSCLES}
-                    placeholder="Selecione outros músculos"
+                    options={muscleOptions}
+                    onSearchSync={(search) => {
+                      // Always return all options when search is empty, filtered options when searching
+                      if (!search || search.trim() === '') {
+                        return muscleOptions;
+                      }
+                      const searchLower = search.toLowerCase().trim();
+                      return muscleOptions.filter((option) =>
+                        option.label.toLowerCase().includes(searchLower)
+                      );
+                    }}
+                    placeholder="Selecione os músculos secundários"
                     emptyIndicator={
                       <p className="text-center text-sm text-muted-foreground">
                         Nenhum músculo encontrado.
@@ -277,11 +238,6 @@ export default function ExerciseForm({
                 );
               }}
             />
-            {errors.otherMuscles && (
-              <FieldError
-                errors={[{ message: errors.otherMuscles.message }]}
-              />
-            )}
           </FieldContent>
         </Field>
 
@@ -345,8 +301,9 @@ export default function ExerciseForm({
               control={control}
               render={({ field }) => (
                 <VideoFileUploader
-                  value={field.value ?? null}
+                  value={videoValue ?? null}
                   onChange={(file) => {
+                    // Convert null to undefined to match schema validation (File | string | undefined)
                     field.onChange(file ?? undefined);
                   }}
                 />

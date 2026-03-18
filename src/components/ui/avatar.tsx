@@ -1,6 +1,7 @@
 
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
 import type * as React from "react"
+import { useMemo } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -22,12 +23,29 @@ function Avatar({
 
 function AvatarImage({
   className,
+  src,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+  // Add cache-busting query parameter to prevent stale image cache
+  const cacheBustedSrc = useMemo(() => {
+    if (!src) return src
+    try {
+      const url = new URL(src)
+      // Add timestamp to force fresh fetch
+      url.searchParams.set('_t', Date.now().toString())
+      return url.toString()
+    } catch {
+      // If src is not a valid URL, append query parameter manually
+      const separator = src.includes('?') ? '&' : '?'
+      return `${src}${separator}_t=${Date.now()}`
+    }
+  }, [src])
+
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
-      className={cn("aspect-square size-full", className)}
+      className={cn("aspect-square size-full object-cover", className)}
+      src={cacheBustedSrc}
       {...props}
     />
   )

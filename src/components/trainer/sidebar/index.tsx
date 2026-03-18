@@ -44,7 +44,7 @@ const data = {
 		},
 		{
 			title: "Programas",
-			url: "/trainer/programs",
+			url: "/trainer/routines",
 			icon: BookA,
 		},
 		{
