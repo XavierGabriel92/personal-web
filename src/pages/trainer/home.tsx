@@ -9,7 +9,7 @@ export default function TrainerHome() {
 				<div className="rounded-lg border bg-card p-6">
 					<h3 className="font-semibold">Overview</h3>
 					<p className="text-sm text-muted-foreground mt-2">
-						Your dashboard overview
+						Testing
 					</p>
 				</div>
 				<div className="rounded-lg border bg-card p-6">
