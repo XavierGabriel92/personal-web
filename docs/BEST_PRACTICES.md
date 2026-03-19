@@ -26,13 +26,15 @@ For general architecture patterns, see [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ## Data Fetching
 
-- ✅ Use generated React Query hooks
-- ✅ Use Suspense queries for route-level data
-- ✅ Implement optimistic updates for better UX
-- ✅ Invalidate queries after mutations
-- ✅ Use query keys consistently
-- ✅ Handle loading and error states
-- ✅ Use staleTime to reduce unnecessary refetches
+- ✅ Always use `*Suspense` hooks (e.g. `useGetApiClientsSuspense`) for UI data — never the non-suspense variants
+- ✅ Always wrap components using `*Suspense` hooks in `<Suspense fallback={<Spinner />}>` to prevent blank-page blinks
+- ✅ Place `<Suspense>` boundaries at the route component level (`src/routes/`), not inside pages/components
+- ✅ Always disable mutation triggers and show `<Spinner>` while `isPending`
+- ✅ Always handle `onSuccess` (invalidate cache + toast) and `onError` (toast) on every mutation
+- ✅ Use optimistic updates for instant-feedback interactions; rollback on error
+- ✅ Use generated query keys from Kubb — never hardcode them
+- ✅ Use `staleTime` to reduce unnecessary refetches
+- See [DATA_FETCHING.md](./DATA_FETCHING.md) for full patterns and examples
 
 ## Forms
 
