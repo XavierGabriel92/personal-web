@@ -1,0 +1,1 @@
+import{j as e}from"./index-DTJ28Koy.js";const n=()=>e.jsx("div",{className:"flex min-h-screen flex-col items-center justify-center",children:e.jsx("h1",{className:"text-4xl font-bold",children:"404 - Page Not Found"})});export{n as notFoundComponent};
