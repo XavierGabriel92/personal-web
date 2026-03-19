@@ -128,14 +128,8 @@ function DeleteExerciseDialog({
   );
 }
 
-function ExerciseActions({ exercise, onDelete, onUpdate }: { exercise: WorkoutExercise; onDelete?: (exerciseWorkoutId: string) => void; onUpdate?: (exerciseWorkoutId: string) => void }) {
+function ExerciseActions({ exercise, onDelete }: { exercise: WorkoutExercise; onDelete?: (exerciseWorkoutId: string) => void; onUpdate?: (exerciseWorkoutId: string) => void }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const handleEdit = () => {
-    if (onUpdate) {
-      onUpdate(exercise.id);
-    }
-  };
 
   const handleDelete = () => {
     if (onDelete) {

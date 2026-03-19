@@ -475,7 +475,7 @@ interface Exercise {
 interface WorkoutHistoryListProps {
   clientId: string;
 }
-export default function WorkoutHistoryList({ clientId }: WorkoutHistoryListProps) {
+export default function WorkoutHistoryList({ clientId: _clientId }: WorkoutHistoryListProps) {
   const data = mockWorkoutHistory;
   return (
     <div className="space-y-4">

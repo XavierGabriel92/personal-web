@@ -35,7 +35,7 @@ const measurementsList: MeasurementItem[] = [
   { value: "right-calf", text: "Panturrilha Direita" },
 ]
 
-export default function TrainerClientMeasurementsPage({ clientId }: TrainerClientMeasurementsPageProps) {
+export default function TrainerClientMeasurementsPage({ clientId: _clientId }: TrainerClientMeasurementsPageProps) {
 
   const [activeMeasurement, setActiveMeasurement] = useState<MeasurementItem>(measurementsList[0]);
 

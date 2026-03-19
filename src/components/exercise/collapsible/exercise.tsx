@@ -70,7 +70,7 @@ interface ExerciseCollapsibleProps {
   onFormChange?: (data: ExerciseFormData) => void;
 }
 
-export default function ExerciseCollapsible({ workoutId, exercise, actions, onSubmit, onFormChange }: ExerciseCollapsibleProps) {
+export default function ExerciseCollapsible({ workoutId: _workoutId, exercise, actions, onSubmit, onFormChange }: ExerciseCollapsibleProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const {

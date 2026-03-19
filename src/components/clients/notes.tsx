@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface ClientNotesProps {
   clientId: string;
 }
-export default function ClientNotes({ clientId }: ClientNotesProps) {
+export default function ClientNotes({ clientId: _clientId }: ClientNotesProps) {
   return <Card className="flex-1">
     <CardHeader className="border-b ">
       <CardTitle>Notas do aluno</CardTitle>

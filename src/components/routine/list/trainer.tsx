@@ -15,7 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
@@ -24,7 +23,7 @@ import { TypographyP, TypographySpan } from "@/components/ui/typography";
 import { useGetApiRoutinesSuspense } from "@/gen/hooks/useGetApiRoutinesSuspense";
 import type { Routine } from "@/schemas";
 import { useNavigate } from "@tanstack/react-router";
-import { Calendar, Copy, MoreVertical, Pencil, Trash, UserCheck } from "lucide-react";
+import { Calendar, MoreVertical, Pencil, UserCheck } from "lucide-react";
 import { useState } from "react";
 import AssignProgramSheet from "../sheet/assign-routine";
 import CreateProgramSheet from "../sheet/create-routine";

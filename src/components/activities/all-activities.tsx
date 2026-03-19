@@ -193,7 +193,7 @@ const mockActivities = [
 interface AllActivitiesSheetProps {
   clientId: string;
 }
-export default function AllActivitiesSheet({ clientId }: AllActivitiesSheetProps) {
+export default function AllActivitiesSheet({ clientId: _clientId }: AllActivitiesSheetProps) {
   const [open, setOpen] = useState(false);
   const data = mockActivities;
 

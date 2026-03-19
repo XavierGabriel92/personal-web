@@ -3,7 +3,6 @@ import type { RoutineFormData, } from "@/components/routine/form";
 import ProgramForm from "@/components/routine/form";
 import AssignRoutineSheet from "@/components/routine/sheet/assign-routine";
 import ResumeProgramSidebar from "@/components/routine/sidebar/resume-program";
-import { ResumeProgramSidebarTrigger } from "@/components/routine/sidebar/resume-program";
 import { Badge } from "@/components/ui/badge";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";

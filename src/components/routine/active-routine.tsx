@@ -564,7 +564,7 @@ const mockProgram = {
   ]
 }
 
-export default function ActiveProgram({ clientId }: ActiveProgramProps) {
+export default function ActiveProgram({ clientId: _clientId }: ActiveProgramProps) {
   const data = mockProgram;
   const hasActiveProgram = data.name;
   return (

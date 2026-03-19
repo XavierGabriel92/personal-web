@@ -7,7 +7,7 @@ import { DragDropContext, Draggable, type DropResult, Droppable } from '@hello-p
 import { useNavigate } from "@tanstack/react-router";
 import { GripVerticalIcon } from "lucide-react";
 import { MoreVertical } from "lucide-react";
-import { Copy, Pencil, Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import WorkoutCollapsible from "../collapsible/workout";
 
@@ -122,7 +122,7 @@ function DeleteWorkoutDialog({
   );
 }
 
-function WorkoutActions({ workout, onDelete, onCopy }: { workout: Workout, onDelete: (workoutId: string) => void, onCopy: (workoutId: string) => void }) {
+function WorkoutActions({ workout, onDelete }: { workout: Workout, onDelete: (workoutId: string) => void, onCopy: (workoutId: string) => void }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -132,10 +132,6 @@ function WorkoutActions({ workout, onDelete, onCopy }: { workout: Workout, onDel
 
   const handleDelete = () => {
     onDelete(workout.id);
-  };
-
-  const handleCopy = () => {
-    onCopy(workout.id);
   };
 
   return (

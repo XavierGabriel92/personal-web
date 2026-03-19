@@ -20,6 +20,6 @@ function getPostApiClientByIdWhatsappInviteUrl(id: PostApiClientByIdWhatsappInvi
 export async function postApiClientByIdWhatsappInvite(id: PostApiClientByIdWhatsappInvitePathParams["id"], config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config
 
-  const res = await request<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, undefined>({ method : "POST", url : getPostApiClientByIdWhatsappInviteUrl(id).url.toString(), ... requestConfig })
+  const res = await request<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, undefined>({ method : "POST", url : getPostApiClientByIdWhatsappInviteUrl(id).url.toString(), ... requestConfig } as RequestConfig<undefined>)
   return res.data
 }

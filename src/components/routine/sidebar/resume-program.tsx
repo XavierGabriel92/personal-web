@@ -24,7 +24,7 @@ interface ResumeProgramSidebarProps {
 }
 
 
-export function ResumeProgramSidebarTrigger({ className }: { className?: string }) {
+export function ResumeProgramSidebarTrigger({ className: _className }: { className?: string }) {
   const { toggleSidebar, open, openMobile, isLgScreen } = useSidebar();
   // On mobile, use openMobile; on desktop, use open
   const isOpen = isLgScreen ? openMobile : open;
@@ -37,7 +37,7 @@ export function ResumeProgramSidebarTrigger({ className }: { className?: string 
           variant="ghost"
           size="icon-lg"
           className="size-8"
-          onClick={(event) => {
+          onClick={(_event) => {
             toggleSidebar();
           }}
         >

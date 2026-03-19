@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
 });
 
-const personalClient = async <TData, TError = unknown, TVariables = unknown>(
+const personalClient = async <TData, _TError = unknown, TVariables = unknown>(
 	config: RequestConfig<TVariables>,
 ): Promise<ResponseConfig<TData>> => {
 	try {

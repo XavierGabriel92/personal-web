@@ -54,7 +54,7 @@ export function ExerciseSidebarTrigger() {
 
 function ExerciseSidebarContent({
   onExerciseSelect,
-  searchKey,
+  searchKey: _searchKey,
 }: ExerciseSidebarProps) {
   const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
   const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
