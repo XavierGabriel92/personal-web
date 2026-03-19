@@ -225,11 +225,44 @@ import { Link } from "@tanstack/react-router";
 </Link>
 ```
 
+## Suspense Boundaries in Route Components
+
+When a route component (or a component it renders) uses a Suspense query (`useSuspenseQuery` / `*Suspense` hooks), it **must** be wrapped in a `<Suspense>` boundary. Without it, the thrown Promise bubbles up to TanStack Router's internal boundary, which renders nothing — causing a visible blank-page blink during navigation.
+
+```tsx
+// ✅ Correct — Suspense boundary wraps the suspense-query component
+function RouteComponent() {
+  const { clientId } = Route.useParams();
+  return (
+    <>
+      <Suspense fallback={<Spinner className="size-8" />}>
+        <ClientLayout clientId={clientId} />
+      </Suspense>
+      <Outlet />
+    </>
+  );
+}
+
+// ❌ Wrong — no boundary; causes blank page blink on navigation
+function RouteComponent() {
+  const { clientId } = Route.useParams();
+  return (
+    <>
+      <ClientLayout clientId={clientId} /> {/* uses useGetApiClientByIdSuspense internally */}
+      <Outlet />
+    </>
+  );
+}
+```
+
+Use the existing `<Spinner />` component (`@/components/ui/spinner`) as the fallback.
+
 ## Best Practices
 
 - ✅ Use file-based routing structure
 - ✅ Protect routes with `beforeLoad` guards
 - ✅ Use Suspense queries for route-level data loading
+- ✅ Wrap components using Suspense queries in `<Suspense>` boundaries to prevent blank-page blinks
 - ✅ Leverage type-safe navigation
 - ✅ Use route parameters for dynamic segments
 - ✅ Use search parameters for filters/pagination

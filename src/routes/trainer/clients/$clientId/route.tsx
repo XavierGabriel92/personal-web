@@ -1,5 +1,7 @@
 import TrainerLayoutClient from '@/pages/trainer/client/layout'
+import { Spinner } from '@/components/ui/spinner'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
+import { Suspense } from 'react'
 
 export const Route = createFileRoute('/trainer/clients/$clientId')({
   component: RouteComponent,
@@ -8,7 +10,9 @@ export const Route = createFileRoute('/trainer/clients/$clientId')({
 function RouteComponent() {
   const { clientId } = Route.useParams();
   return <>
-    <TrainerLayoutClient clientId={clientId} />
+    <Suspense fallback={<Spinner className="size-8" />}>
+      <TrainerLayoutClient clientId={clientId} />
+    </Suspense>
     <Outlet />
   </>
 }
