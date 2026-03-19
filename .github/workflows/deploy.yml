@@ -33,3 +33,8 @@ jobs:
             VITE_API_URL=${{ vars.VITE_API_URL }}
             VITE_APP_URL=${{ vars.VITE_APP_URL }}
             VITE_WHATSAPP_BOT_PHONE=${{ vars.VITE_WHATSAPP_BOT_PHONE }}
+
+      - name: Trigger Coolify deployment
+        run: |
+          curl -X GET "${{ secrets.COOLIFY_WEBHOOK_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
