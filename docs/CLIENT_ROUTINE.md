@@ -30,7 +30,7 @@ Dialog for assigning a routine to a client. Two flows:
 4. Invalidates `getApiClientByIdSuspenseQueryKey(clientId)` → `ProgramOverview` re-renders with the new active routine
 
 **Create from scratch:**
-1. Trainer clicks "Criar rotina do zero"
+1. Trainer clicks "Criar programa do zero"
 2. Calls `usePostApiRoutineCreate` with `{ name: "Nova rotina", duration: 0, clientId }`
 3. Backend creates an empty routine with `clientId` set (not a library routine)
 4. Navigates trainer to `/trainer/routines/$newRoutineId` to fill in workouts

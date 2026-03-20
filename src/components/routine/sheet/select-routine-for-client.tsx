@@ -125,11 +125,10 @@ export default function SelectRoutineForClientDialog({
                 onClick={() =>
                   setSelectedRoutineId(selectedRoutineId === routine.id ? null : routine.id)
                 }
-                className={`w-full text-left rounded-lg border p-3 transition-colors ${
-                  selectedRoutineId === routine.id
+                className={`w-full text-left rounded-lg border p-3 transition-colors ${selectedRoutineId === routine.id
                     ? "border-primary bg-primary/5"
                     : "border-border hover:border-primary/50"
-                }`}
+                  }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex flex-col gap-1">
@@ -171,7 +170,7 @@ export default function SelectRoutineForClientDialog({
             className="gap-2"
           >
             {isCreating ? <Spinner /> : <PlusIcon className="h-4 w-4" />}
-            Criar rotina do zero
+            Criar programa do zero
           </Button>
           <Button
             onClick={handleConfirm}
