@@ -15,8 +15,32 @@ import { getApiClientsSuspenseQueryKey } from "@/gen/hooks/useGetApiClientsSuspe
 import { usePostApiClientCreate } from "@/gen/hooks/usePostApiClientCreate";
 import { queryClient } from "@/routes/__root";
 import { useNavigate } from "@tanstack/react-router";
-import { MessageCircle, PlusIcon } from "lucide-react";
+import { Check, Copy, PlusIcon } from "lucide-react";
 import { useState } from "react";
+
+function InviteLink({ url }: { url: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="space-y-2">
+      <p className="text-sm text-muted-foreground">
+        Compartilhe esse link com seu aluno para que ele conecte o WhatsApp e comece a receber acompanhamento pelo assistente.
+      </p>
+      <div className="flex items-center gap-2 rounded-md border bg-muted px-3 py-2">
+        <span className="flex-1 truncate text-sm text-muted-foreground">{url}</span>
+        <Button variant="ghost" size="icon" onClick={handleCopy} className="shrink-0">
+          {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+        </Button>
+      </div>
+    </div>
+  );
+}
 import { toast } from "sonner";
 import type { ClientFormData } from "../form";
 
@@ -85,21 +109,9 @@ export default function CreateClientSheet() {
                 {created.name} foi adicionado com sucesso. Compartilhe o link do WhatsApp para ele começar.
               </SheetDescription>
             </SheetHeader>
-            <div className="flex-1 flex flex-col items-center justify-center gap-4 px-4">
+            <div className="flex-1 flex flex-col justify-center gap-3 px-4">
               {created.whatsappToken && (
-                <Button
-                  className="w-full bg-green-500 hover:bg-green-600 text-white"
-                  asChild
-                >
-                  <a
-                    href={buildWhatsappInviteUrl(created.whatsappToken)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Compartilhar no WhatsApp
-                  </a>
-                </Button>
+                <InviteLink url={buildWhatsappInviteUrl(created.whatsappToken)} />
               )}
             </div>
             <SheetFooter>
