@@ -84,17 +84,20 @@ export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientPro
     </div>
 
     <Dialog open={!!inviteUrl} onOpenChange={(open) => { if (!open) setInviteUrl(null); }}>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Link de convite</DialogTitle>
           <DialogDescription>
             Compartilhe esse link com seu aluno para que ele conecte o WhatsApp e comece a receber acompanhamento pelo assistente.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center gap-2 rounded-md border bg-muted px-3 py-2">
-          <span className="flex-1 truncate text-sm text-muted-foreground">{inviteUrl}</span>
-          <Button variant="ghost" size="icon" onClick={handleCopy} className="shrink-0">
-            {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+        <div className="rounded-lg border bg-muted p-3 space-y-2">
+          <p className="text-xs text-muted-foreground break-all">{inviteUrl ? decodeURIComponent(inviteUrl) : ""}</p>
+          <Button variant="outline" size="sm" onClick={handleCopy} className="w-full gap-2">
+            {copied
+              ? <><Check className="h-4 w-4 text-green-500" /> Copiado!</>
+              : <><Copy className="h-4 w-4" /> Copiar link</>
+            }
           </Button>
         </div>
       </DialogContent>
