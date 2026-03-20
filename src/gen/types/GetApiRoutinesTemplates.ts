@@ -7,7 +7,7 @@
 /**
  * @description Response for status 200
 */
-export type GetApiRoutines200 = {
+export type GetApiRoutinesTemplates200 = {
     /**
      * @type array
     */
@@ -212,9 +212,9 @@ export type GetApiRoutines200 = {
     }[];
 };
 
-export type GetApiRoutinesQueryResponse = GetApiRoutines200;
+export type GetApiRoutinesTemplatesQueryResponse = GetApiRoutinesTemplates200;
 
-export type GetApiRoutinesQuery = {
-    Response: GetApiRoutines200;
+export type GetApiRoutinesTemplatesQuery = {
+    Response: GetApiRoutinesTemplates200;
     Errors: any;
 };

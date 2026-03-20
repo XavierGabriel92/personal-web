@@ -41,7 +41,7 @@ export interface Workout {
 	id: string;
 	name: string;
 	description?: string;
-	ownerId: string;
+	ownerId?: string | null;
 	routineId: string;
 	order: number;
 	createdAt: string;
@@ -57,8 +57,10 @@ export interface Routine {
 	name: string;
 	description?: string;
 	duration: number;
-	ownerId: string;
+	ownerId?: string | null;
 	clientId?: string;
+	isTemplate?: boolean;
+	category?: string | null;
 	createdAt: string;
 	updatedAt: string;
 	workouts: Workout[];

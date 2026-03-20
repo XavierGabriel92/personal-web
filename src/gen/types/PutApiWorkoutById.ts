@@ -27,10 +27,7 @@ export type PutApiWorkoutById200 = {
      * @type string | undefined
     */
     description?: string;
-    /**
-     * @type string
-    */
-    ownerId: string;
+    ownerId?: (string | null);
     /**
      * @type string
     */

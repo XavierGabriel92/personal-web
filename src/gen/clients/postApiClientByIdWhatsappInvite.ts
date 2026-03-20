@@ -8,18 +8,18 @@ import type { PostApiClientByIdWhatsappInviteMutationResponse, PostApiClientById
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getPostApiClientByIdWhatsappInviteUrl(id: PostApiClientByIdWhatsappInvitePathParams["id"]) {
-  const res = { method: 'POST', url: `/api/client/${id}/whatsapp-invite` as const }
+  const res = { method: 'POST', url: `/api/client/${id}/whatsapp-invite` as const }  
   return res
 }
 
 /**
- * @description Generates or regenerates a WhatsApp binding token for the client.
+ * @description Generates or regenerates a WhatsApp binding token for the client. Clears any previously bound phone.
  * @summary Regenerate WhatsApp invite
  * {@link /api/client/:id/whatsapp-invite}
  */
 export async function postApiClientByIdWhatsappInvite(id: PostApiClientByIdWhatsappInvitePathParams["id"], config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
-
-  const res = await request<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, undefined>({ method : "POST", url : getPostApiClientByIdWhatsappInviteUrl(id).url.toString(), ... requestConfig } as RequestConfig<undefined>)
+  const { client: request = fetch, ...requestConfig } = config  
+  
+  const res = await request<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, unknown>({ method : "POST", url : getPostApiClientByIdWhatsappInviteUrl(id).url.toString(), ... requestConfig })  
   return res.data
 }

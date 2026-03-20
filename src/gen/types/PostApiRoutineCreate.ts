@@ -26,14 +26,17 @@ export type PostApiRoutineCreate200 = {
      * @type integer
     */
     duration: number;
-    /**
-     * @type string
-    */
-    ownerId: string;
+    ownerId?: (string | null);
     /**
      * @type string | undefined
     */
     clientId?: string;
+    /**
+     * @default false
+     * @type boolean
+    */
+    isTemplate: boolean;
+    category?: (string | null);
     /**
      * @type array
     */
@@ -50,10 +53,7 @@ export type PostApiRoutineCreate200 = {
          * @type string | undefined
         */
         description?: string;
-        /**
-         * @type string
-        */
-        ownerId: string;
+        ownerId?: (string | null);
         /**
          * @type string
         */

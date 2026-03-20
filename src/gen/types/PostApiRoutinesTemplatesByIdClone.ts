@@ -4,7 +4,7 @@
 */
 
 
-export type GetApiRoutineByIdPathParams = {
+export type PostApiRoutinesTemplatesByIdClonePathParams = {
     /**
      * @type string
     */
@@ -14,7 +14,7 @@ export type GetApiRoutineByIdPathParams = {
 /**
  * @description Response for status 200
 */
-export type GetApiRoutineById200 = {
+export type PostApiRoutinesTemplatesByIdClone200 = {
     /**
      * @type string
     */
@@ -214,10 +214,10 @@ export type GetApiRoutineById200 = {
     updatedAt: string;
 };
 
-export type GetApiRoutineByIdQueryResponse = GetApiRoutineById200;
+export type PostApiRoutinesTemplatesByIdCloneMutationResponse = PostApiRoutinesTemplatesByIdClone200;
 
-export type GetApiRoutineByIdQuery = {
-    Response: GetApiRoutineById200;
-    PathParams: GetApiRoutineByIdPathParams;
+export type PostApiRoutinesTemplatesByIdCloneMutation = {
+    Response: PostApiRoutinesTemplatesByIdClone200;
+    PathParams: PostApiRoutinesTemplatesByIdClonePathParams;
     Errors: any;
 };

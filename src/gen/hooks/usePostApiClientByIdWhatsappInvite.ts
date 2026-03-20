@@ -16,7 +16,7 @@ export type PostApiClientByIdWhatsappInviteMutationKey = ReturnType<typeof postA
 
 export function postApiClientByIdWhatsappInviteMutationOptions(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const mutationKey = postApiClientByIdWhatsappInviteMutationKey()
-  return mutationOptions<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, { id: PostApiClientByIdWhatsappInvitePathParams["id"] }, typeof mutationKey>({
+  return mutationOptions<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, {id: PostApiClientByIdWhatsappInvitePathParams["id"]}, typeof mutationKey>({
     mutationKey,
     mutationFn: async({ id }) => {
       return postApiClientByIdWhatsappInvite(id, config)
@@ -25,13 +25,13 @@ export function postApiClientByIdWhatsappInviteMutationOptions(config: Partial<R
 }
 
 /**
- * @description Generates or regenerates a WhatsApp binding token for the client.
+ * @description Generates or regenerates a WhatsApp binding token for the client. Clears any previously bound phone.
  * @summary Regenerate WhatsApp invite
  * {@link /api/client/:id/whatsapp-invite}
  */
-export function usePostApiClientByIdWhatsappInvite<TContext>(options:
+export function usePostApiClientByIdWhatsappInvite<TContext>(options: 
 {
-  mutation?: UseMutationOptions<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, { id: PostApiClientByIdWhatsappInvitePathParams["id"] }, TContext> & { client?: QueryClient },
+  mutation?: UseMutationOptions<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, {id: PostApiClientByIdWhatsappInvitePathParams["id"]}, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch },
 }
  = {}) {
@@ -39,11 +39,11 @@ export function usePostApiClientByIdWhatsappInvite<TContext>(options:
   const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey = mutationOptions.mutationKey ?? postApiClientByIdWhatsappInviteMutationKey()
 
-  const baseOptions = postApiClientByIdWhatsappInviteMutationOptions(config) as UseMutationOptions<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, { id: PostApiClientByIdWhatsappInvitePathParams["id"] }, TContext>
+  const baseOptions = postApiClientByIdWhatsappInviteMutationOptions(config) as UseMutationOptions<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, {id: PostApiClientByIdWhatsappInvitePathParams["id"]}, TContext>
 
-  return useMutation<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, { id: PostApiClientByIdWhatsappInvitePathParams["id"] }, TContext>({
+  return useMutation<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, {id: PostApiClientByIdWhatsappInvitePathParams["id"]}, TContext>({
     ...baseOptions,
     mutationKey,
     ...mutationOptions,
-  }, queryClient) as UseMutationResult<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, { id: PostApiClientByIdWhatsappInvitePathParams["id"] }, TContext>
+  }, queryClient) as UseMutationResult<PostApiClientByIdWhatsappInviteMutationResponse, ResponseErrorConfig<Error>, {id: PostApiClientByIdWhatsappInvitePathParams["id"]}, TContext>
 }

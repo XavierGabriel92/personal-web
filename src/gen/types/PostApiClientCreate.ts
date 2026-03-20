@@ -44,6 +44,10 @@ export type PostApiClientCreate200 = {
      * @type string
     */
     updatedAt: string;
+    /**
+     * @type string
+    */
+    whatsappToken: string;
 };
 
 export type PostApiClientCreateMutationRequest = {

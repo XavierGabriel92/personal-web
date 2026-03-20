@@ -4,6 +4,7 @@ This document provides an overview of the personal-web frontend application arch
 
 ## Quick Links
 
+- [Product Overview](./docs/PRODUCT.md) - What the product does, users, domain model, key decisions
 - [Routing](./docs/ROUTING.md) - TanStack Router patterns and route configuration
 - [Data Fetching](./docs/DATA_FETCHING.md) - TanStack Query patterns and server state management
 - [API Client](./docs/API_CLIENT.md) - Kubb configuration and generated API clients

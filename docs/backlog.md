@@ -49,51 +49,6 @@ Each card shows a count + a `>` arrow that navigates to the filtered clients lis
 
 ---
 
-## CLIENT EXPERIENCE — WHATSAPP AI INTEGRATION
-**Scope:** Cross-cutting feature. Touches backend (AI agent, WhatsApp integration), client web app, and trainer web app (activity feed + charts).
-
-> ⚠️ This is a high-level concept entry. Before starting implementation, the agent **must ask the user** about:
-> - Which WhatsApp Business API provider to use (Twilio, Meta Cloud API, Z-API, etc.)
-> - Where the AI agent lives (personal-ai-api repo or a new service)
-> - Business rules: what happens if a client skips a workout? Can they log partial sessions? Can they log a workout not in their assigned routine?
-> - Auth: how does the WhatsApp conversation identify the client (phone number bound to account)?
-> - Data model: does the backend already have a `WorkoutSession` / `ActivityLog` table, or does it need to be created?
-
----
-
-### [MISSING] Trainer generates a WhatsApp invite link for a new client
-
-**Problem:** After registering a client, the trainer has no way to onboard them to the WhatsApp AI experience.
-
-**Idea:**
-- On the client creation success step (or client detail page), show a "Share WhatsApp link" button.
-- The link is a `wa.me` deep link pre-filled with a greeting message that includes a unique client token (e.g., `https://wa.me/+55...?text=Oi!%20Meu%20código%20é%20{token}`).
-- The token lets the AI agent identify and bind the WhatsApp number to the client's account on first message.
-
----
-
-### [MISSING] WhatsApp AI agent — conversational client interface
-
-**Problem:** Clients need a zero-friction way to interact with their training program without opening an app.
-
-**Idea — the AI handles 3 core flows via conversation:**
-
-#### Flow 1: View next workout
-- Client sends something like "qual é meu próximo treino?" ("what's my next workout?")
-- AI looks up their assigned routine, finds the next pending workout, and replies with a structured summary (workout name, exercises, sets/reps).
-
-#### Flow 2: Log a workout session (conversational UI)
-- Client says "vou treinar agora" ("I'm going to train now") or similar.
-- AI guides them through the session as a chat: confirms the workout, then asks for each exercise's sets/reps/weight one by one (or all at once if they prefer).
-- When the session is complete, AI confirms and saves it to the backend as a `WorkoutSession`.
-- AI sends a summary: total volume, sets completed, duration.
-
-#### Flow 3: View workout history
-- Client asks "meus últimos treinos" ("my last workouts").
-- AI returns a list of recent sessions with date, workout name, and key stats.
-
----
-
 ### [MISSING] Activity feed module — typed activity events
 
 **Problem:** Completed workout sessions (and other client events) need to be stored as rich, typed activity records that can be rendered with specific UI components.
@@ -144,22 +99,3 @@ Each card shows a count + a `>` arrow that navigates to the filtered clients lis
 2. Remove or scope it: only keep navigation inside the "Edit" button's `onClick`.
 3. Make sure drag handles still work and that the collapsible expand/collapse still works without triggering navigation.
 
----
-
-## READY-MADE PROGRAMS
-**Route:** `/trainer/routines/homug-programs`
-**Files:** `src/pages/trainer/routines/homug-programs.tsx` (or equivalent), `src/components/routine/list/`
-
----
-
-### [MISSING] Copy a ready-made program to the trainer's own programs
-
-**Problem:** Trainers can browse pre-built programs but cannot copy them to their own library to customize.
-
-**Plan:**
-1. In the homug-programs list component, add a "Copy to my programs" action button or menu item on each program card.
-2. On click, call a "duplicate" or "copy" API endpoint. Check `src/gen/` for something like `usePostApiRoutineCopy()` or `usePostApiRoutineDuplicate()`. If not available, may need to create a new routine by POSTing the existing routine's data with a new name.
-3. On success: show a toast "Program copied to your library" and optionally navigate to the trainer's programs list.
-4. Handle loading state on the button to prevent double-clicks.
-
----

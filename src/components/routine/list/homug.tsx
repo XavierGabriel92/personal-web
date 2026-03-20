@@ -101,11 +101,13 @@ export function Categories({
 interface ProgramsListProps {
   programs: HomugProgram[];
   onAddToLibrary?: (programId: string) => void;
+  loadingId?: string | null;
 }
 
 export function ProgramsList({
   programs,
   onAddToLibrary,
+  loadingId,
 }: ProgramsListProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -119,6 +121,7 @@ export function ProgramsList({
             key={program.id}
             program={program}
             onAddToLibrary={onAddToLibrary}
+            isLoading={loadingId === program.id}
           />
         ))
       )}
@@ -130,9 +133,10 @@ export function ProgramsList({
 interface ProgramCardProps {
   program: HomugProgram;
   onAddToLibrary?: (programId: string) => void;
+  isLoading?: boolean;
 }
 
-function ProgramCard({ program, onAddToLibrary }: ProgramCardProps) {
+function ProgramCard({ program, onAddToLibrary, isLoading }: ProgramCardProps) {
   return (
     <Card className="">
       <CardHeader>
@@ -144,9 +148,10 @@ function ProgramCard({ program, onAddToLibrary }: ProgramCardProps) {
           <Button
             onClick={() => onAddToLibrary?.(program.id)}
             className="hidden lg:flex shrink-0"
+            disabled={isLoading}
           >
             <Download />
-            Adicionar aos meus programas
+            {isLoading ? "Adicionando..." : "Adicionar aos meus programas"}
           </Button>
         </div>
       </CardHeader>
@@ -163,9 +168,10 @@ function ProgramCard({ program, onAddToLibrary }: ProgramCardProps) {
         <Button
           onClick={() => onAddToLibrary?.(program.id)}
           className="w-full"
+          disabled={isLoading}
         >
           <Download />
-          Adicionar aos meus programas
+          {isLoading ? "Adicionando..." : "Adicionar aos meus programas"}
         </Button>
       </CardFooter>
     </Card>
