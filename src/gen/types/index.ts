@@ -9,7 +9,7 @@ export type { GetApiExercisesFilters200, GetApiExercisesFiltersQueryResponse, Ge
 export type { GetApiRoutineByIdPathParams, GetApiRoutineById200, GetApiRoutineByIdQueryResponse, GetApiRoutineByIdQuery } from "./GetApiRoutineById.ts";
 export type { GetApiRoutines200, GetApiRoutinesQueryResponse, GetApiRoutinesQuery } from "./GetApiRoutines.ts";
 export type { GetApiRoutinesTemplates200, GetApiRoutinesTemplatesQueryResponse, GetApiRoutinesTemplatesQuery } from "./GetApiRoutinesTemplates.ts";
-export type { GetApiSessionsClientByClientIdPathParams, SessionsSourceEnumKey, GetApiSessionsClientByClientId200, GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdQuery } from "./GetApiSessionsClientByClientId.ts";
+export type { GetApiSessionsClientByClientIdPathParams, GetApiSessionsClientByClientIdQueryParams, SessionsSourceEnumKey, GetApiSessionsClientByClientId200, GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdQuery } from "./GetApiSessionsClientByClientId.ts";
 export type { GetApiSessionsTrainerRecent200, GetApiSessionsTrainerRecentQueryResponse, GetApiSessionsTrainerRecentQuery } from "./GetApiSessionsTrainerRecent.ts";
 export type { GetApiWorkoutByIdPathParams, GetApiWorkoutById200, GetApiWorkoutByIdQueryResponse, GetApiWorkoutByIdQuery } from "./GetApiWorkoutById.ts";
 export type { GetApiWorkoutRoutineByRoutineIdPathParams, GetApiWorkoutRoutineByRoutineId200, GetApiWorkoutRoutineByRoutineIdQueryResponse, GetApiWorkoutRoutineByRoutineIdQuery } from "./GetApiWorkoutRoutineByRoutineId.ts";

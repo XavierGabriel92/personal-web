@@ -8,16 +8,18 @@ See the backend doc at `personal-ai-api/docs/client-routine.md` for the data mod
 
 ## Components
 
-### `ProgramOverview` (`src/components/routine/overview.tsx`)
+### `ActiveProgram` (`src/components/routine/active-routine.tsx`)
 
-Displayed on the client overview page. Shows:
-- **Loading state**: spinner while fetching routine by ID
+Displayed on the client program page. Shows:
+- **Loading state**: spinner while fetching routine by ID (uses non-suspense hook with `enabled` guard)
 - **Active routine**: name, workout count, duration, "Editar programa" link to `/trainer/routines/$routineId`
 - **Empty state**: "Criar programa" button that opens `SelectRoutineForClientDialog`
 
 Data flow:
 1. `useGetApiClientByIdSuspense(clientId)` → get `activeRoutineId`
-2. `useGetApiRoutineById(activeRoutineId, { query: { enabled: !!activeRoutineId } })` → get routine details
+2. `useGetApiRoutineById(activeRoutineId, { query: { enabled: !!activeRoutineId } })` → get routine details (non-suspense because it is conditional)
+
+The component handles the `isLoading` state from step 2 manually (renders a `<Spinner>` card) since the query is conditional and cannot use the suspense variant.
 
 ### `SelectRoutineForClientDialog` (`src/components/routine/sheet/select-routine-for-client.tsx`)
 
@@ -27,7 +29,7 @@ Dialog for assigning a routine to a client. Two flows:
 1. Lists trainer's library routines via `useGetApiRoutinesSuspense()` (only returns routines with no `clientId`)
 2. Trainer selects a routine and clicks "Confirmar"
 3. Calls `usePostApiClientByIdAssignRoutine` → backend clones the routine for the client
-4. Invalidates `getApiClientByIdSuspenseQueryKey(clientId)` → `ProgramOverview` re-renders with the new active routine
+4. Invalidates `getApiClientByIdSuspenseQueryKey(clientId)` → `ActiveProgram` re-renders with the new active routine
 
 **Create from scratch:**
 1. Trainer clicks "Criar programa do zero"
@@ -45,7 +47,18 @@ await queryClient.invalidateQueries({
 });
 ```
 
-This triggers a refetch of the client, which updates `activeRoutineId`, causing `ProgramOverview` to switch from empty state to the active routine card.
+This triggers a refetch of the client, which updates `activeRoutineId`, causing `ActiveProgram` to switch from empty state to the active routine card.
+
+## Suspense Boundaries
+
+`ActiveProgram` uses `useGetApiClientByIdSuspense` internally, so it must be wrapped in a `<Suspense>` boundary by its parent:
+
+```tsx
+// src/pages/trainer/client/program.tsx
+<Suspense fallback={<Spinner className="size-6" />}>
+  <ActiveProgram clientId={clientId} />
+</Suspense>
+```
 
 ## Generated Hooks
 
@@ -59,5 +72,5 @@ Relevant generated hooks:
 - `useGetApiRoutinesSuspense` — list library routines
 - `usePostApiClientByIdAssignRoutine` — assign (clone) a routine to a client
 - `usePostApiRoutineCreate` — create a new routine (accepts optional `clientId`)
-- `useGetApiRoutineById` — fetch routine by ID (used for active routine display)
+- `useGetApiRoutineById` — fetch routine by ID (used for active routine display; non-suspense with `enabled` guard)
 - `useGetApiClientByIdSuspense` — fetch client with `activeRoutineId`

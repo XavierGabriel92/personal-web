@@ -4,24 +4,24 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdPathParams } from "../types/GetApiSessionsClientByClientId.ts";
+import type { GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdPathParams, GetApiSessionsClientByClientIdQueryParams } from "../types/GetApiSessionsClientByClientId.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from "@tanstack/react-query";
 import { getApiSessionsClientByClientId } from "../clients/getApiSessionsClientByClientId.ts";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-export const getApiSessionsClientByClientIdQueryKey = (clientId: GetApiSessionsClientByClientIdPathParams["clientId"]) => [{ url: '/api/sessions/client/:clientId', params: {clientId:clientId} }] as const
+export const getApiSessionsClientByClientIdQueryKey = (clientId: GetApiSessionsClientByClientIdPathParams["clientId"], params: GetApiSessionsClientByClientIdQueryParams) => [{ url: '/api/sessions/client/:clientId', params: {clientId:clientId} }, ...(params ? [params] : [])] as const
 
 export type GetApiSessionsClientByClientIdQueryKey = ReturnType<typeof getApiSessionsClientByClientIdQueryKey>
 
-export function getApiSessionsClientByClientIdQueryOptions(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
-  const queryKey = getApiSessionsClientByClientIdQueryKey(clientId)
+export function getApiSessionsClientByClientIdQueryOptions(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], params: GetApiSessionsClientByClientIdQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
+  const queryKey = getApiSessionsClientByClientIdQueryKey(clientId, params)
   return queryOptions<GetApiSessionsClientByClientIdQueryResponse, ResponseErrorConfig<Error>, GetApiSessionsClientByClientIdQueryResponse, typeof queryKey>({
-   enabled: !!(clientId),
+   enabled: !!(clientId&& params),
    queryKey,
    queryFn: async ({ signal }) => {
       config.signal = signal
-      return getApiSessionsClientByClientId(clientId, config)
+      return getApiSessionsClientByClientId(clientId, params, config)
    },
   })
 }
@@ -31,7 +31,7 @@ export function getApiSessionsClientByClientIdQueryOptions(clientId: GetApiSessi
  * @summary List sessions for a client
  * {@link /api/sessions/client/:clientId}
  */
-export function useGetApiSessionsClientByClientId<TData = GetApiSessionsClientByClientIdQueryResponse, TQueryData = GetApiSessionsClientByClientIdQueryResponse, TQueryKey extends QueryKey = GetApiSessionsClientByClientIdQueryKey>(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], options: 
+export function useGetApiSessionsClientByClientId<TData = GetApiSessionsClientByClientIdQueryResponse, TQueryData = GetApiSessionsClientByClientIdQueryResponse, TQueryKey extends QueryKey = GetApiSessionsClientByClientIdQueryKey>(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], params: GetApiSessionsClientByClientIdQueryParams, options: 
 {
   query?: Partial<QueryObserverOptions<GetApiSessionsClientByClientIdQueryResponse, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch }
@@ -39,10 +39,10 @@ export function useGetApiSessionsClientByClientId<TData = GetApiSessionsClientBy
  = {}) {
   const { query: queryConfig = {}, client: config = {} } = options ?? {}
   const { client: queryClient, ...queryOptions } = queryConfig
-  const queryKey = queryOptions?.queryKey ?? getApiSessionsClientByClientIdQueryKey(clientId)
+  const queryKey = queryOptions?.queryKey ?? getApiSessionsClientByClientIdQueryKey(clientId, params)
 
   const query = useQuery({
-   ...getApiSessionsClientByClientIdQueryOptions(clientId, config),
+   ...getApiSessionsClientByClientIdQueryOptions(clientId, params, config),
    queryKey,
    ...queryOptions
   } as unknown as QueryObserverOptions, queryClient) as UseQueryResult<TData, ResponseErrorConfig<Error>> & { queryKey: TQueryKey }

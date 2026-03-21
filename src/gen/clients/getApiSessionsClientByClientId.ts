@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdPathParams } from "../types/GetApiSessionsClientByClientId.ts";
+import type { GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdPathParams, GetApiSessionsClientByClientIdQueryParams } from "../types/GetApiSessionsClientByClientId.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getGetApiSessionsClientByClientIdUrl(clientId: GetApiSessionsClientByClientIdPathParams["clientId"]) {
@@ -17,9 +17,9 @@ function getGetApiSessionsClientByClientIdUrl(clientId: GetApiSessionsClientByCl
  * @summary List sessions for a client
  * {@link /api/sessions/client/:clientId}
  */
-export async function getApiSessionsClientByClientId(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
+export async function getApiSessionsClientByClientId(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], params: GetApiSessionsClientByClientIdQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<GetApiSessionsClientByClientIdQueryResponse, ResponseErrorConfig<Error>, unknown>({ method : "GET", url : getGetApiSessionsClientByClientIdUrl(clientId).url.toString(), ... requestConfig })  
+  const res = await request<GetApiSessionsClientByClientIdQueryResponse, ResponseErrorConfig<Error>, unknown>({ method : "GET", url : getGetApiSessionsClientByClientIdUrl(clientId).url.toString(), params, ... requestConfig })  
   return res.data
 }

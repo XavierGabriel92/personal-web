@@ -6,458 +6,16 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Spinner } from "@/components/ui/spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TypographyH5, TypographySpan, TypographySpanXSmall } from "@/components/ui/typography";
+import { getApiSessionsClientByClientId } from "@/gen/clients/getApiSessionsClientByClientId";
 import { formatRelativeDate } from "@/lib/date";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const mockWorkoutHistory = [
-  {
-    id: "1",
-    name: "Treino de Bíceps",
-    finishedAt: "2025-11-15T15:00:00",
-    duration: 60,
-    volume: 660,
-    sets: 10,
-    exercises: [
-      {
-        id: "1",
-        name: "Rosca Direta com Halteres",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-        ],
-        img: "https://minio-storage.homug.com.br/exercises/imgs/dumbbell-bicep-curl.jpg"
-      },
-      {
-        id: "2",
-        name: "Rosca com Barra W",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/ez-bar-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-      {
-        id: "3",
-        name: "Rosca no Banco Scott",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/preacher-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-    ],
-  },
-  {
-    id: "1",
-    name: "Treino de Pernas",
-    finishedAt: "2025-11-14T15:00:00",
-    duration: 60,
-    volume: 660,
-    sets: 10,
-    exercises: [
-      {
-        id: "1",
-        name: "Rosca Direta com Halteres",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-        ],
-        img: "https://minio-storage.homug.com.br/exercises/imgs/dumbbell-bicep-curl.jpg"
-      },
-      {
-        id: "2",
-        name: "Rosca com Barra W",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/ez-bar-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-      {
-        id: "3",
-        name: "Rosca no Banco Scott",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/preacher-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "Treino de Ombros",
-    finishedAt: "2025-11-13T15:00:00",
-    duration: 60,
-    volume: 660,
-    sets: 10,
-    exercises: [
-      {
-        id: "1",
-        name: "Rosca Direta com Halteres",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-        ],
-        img: "https://minio-storage.homug.com.br/exercises/imgs/dumbbell-bicep-curl.jpg"
-      },
-      {
-        id: "2",
-        name: "Rosca com Barra W",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/ez-bar-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-      {
-        id: "3",
-        name: "Rosca no Banco Scott",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/preacher-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-    ],
-  },
-  {
-    id: "4",
-    name: "Treino de Peito",
-    finishedAt: "2025-11-11T15:00:00",
-    duration: 60,
-    volume: 660,
-    sets: 10,
-    exercises: [
-      {
-        id: "1",
-        name: "Rosca Direta com Halteres",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-        ],
-        img: "https://minio-storage.homug.com.br/exercises/imgs/dumbbell-bicep-curl.jpg"
-      },
-      {
-        id: "2",
-        name: "Rosca com Barra W",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/ez-bar-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-      {
-        id: "3",
-        name: "Rosca no Banco Scott",
-        img: "https://minio-storage.homug.com.br/exercises/imgs/preacher-curl.jpg",
-        sets: [
-          {
-            type: "warm-up",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-          {
-            type: "valid",
-            reps: 10,
-            weight: 10,
-            restTime: 10,
-          },
-
-        ],
-      },
-    ],
-  },
-]
+const PAGE_SIZE = 10;
 
 interface Set {
   type: string;
@@ -475,40 +33,91 @@ interface Exercise {
 interface WorkoutHistoryListProps {
   clientId: string;
 }
-export default function WorkoutHistoryList({ clientId: _clientId }: WorkoutHistoryListProps) {
-  const data = mockWorkoutHistory;
+
+export default function WorkoutHistoryList({ clientId }: WorkoutHistoryListProps) {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery({
+    queryKey: ["sessions", clientId],
+    queryFn: ({ pageParam }) =>
+      getApiSessionsClientByClientId(clientId, { limit: PAGE_SIZE, offset: pageParam }),
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.sessions.length < PAGE_SIZE) return undefined;
+      return allPages.flatMap((p) => p.sessions).length;
+    },
+    initialPageParam: 0,
+  });
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) fetchNextPage();
+    }, { threshold: 0.1 });
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const sessions = data.pages.flatMap((p) => p.sessions);
+
   return (
     <div className="space-y-4">
-      {data.map((workout) => (
-        <Card key={workout.id}>
-          <CardHeader className="gap-4">
-            <div className="flex gap-2 items-center ">
-              <TypographyH5 className="font-medium">{workout.name}</TypographyH5>
-              <TypographySpanXSmall className="text-muted-foreground">Feito {formatRelativeDate(workout.finishedAt)}</TypographySpanXSmall>
-            </div>
+      {sessions.map((session) => {
+        const finishedAt = session.completedAt ?? session.createdAt;
+        const duration =
+          session.completedAt && session.startedAt
+            ? Math.round(
+                (new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000
+              )
+            : 0;
+        const exercises: Exercise[] = (session.exercises ?? []).map((ex) => ({
+          id: ex.exerciseId,
+          name: ex.exerciseName,
+          img: ex.thumbnailUrl ?? "",
+          sets: ex.sets.map((s) => ({
+            type: "-",
+            reps: s.reps,
+            weight: s.weight_kg,
+            restTime: 0,
+          })),
+        }));
+        const volume = (session.exercises ?? []).reduce(
+          (sum, ex) => sum + ex.sets.reduce((s, set) => s + set.reps * set.weight_kg, 0),
+          0
+        );
 
-            <div className="flex gap-4">
-              <div className="flex flex-col gap-2">
-                <TypographySpanXSmall className="text-muted-foreground">Duração</TypographySpanXSmall>
-                <TypographySpan className="font-medium">{workout.duration}min</TypographySpan>
+        return (
+          <Card key={session.id}>
+            <CardHeader className="gap-4">
+              <div className="flex gap-2 items-center ">
+                <TypographyH5 className="font-medium">{session.workoutName ?? "Treino livre"}</TypographyH5>
+                <TypographySpanXSmall className="text-muted-foreground">Feito {formatRelativeDate(finishedAt)}</TypographySpanXSmall>
               </div>
-              <div className="flex flex-col gap-2">
-                <TypographySpanXSmall className="text-muted-foreground">Volume</TypographySpanXSmall>
-                <TypographySpan className="font-medium">{workout.volume}kg</TypographySpan>
+
+              <div className="flex gap-4">
+                <div className="flex flex-col gap-2">
+                  <TypographySpanXSmall className="text-muted-foreground">Duração</TypographySpanXSmall>
+                  <TypographySpan className="font-medium">{duration}min</TypographySpan>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <TypographySpanXSmall className="text-muted-foreground">Volume</TypographySpanXSmall>
+                  <TypographySpan className="font-medium">{volume}kg</TypographySpan>
+                </div>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4 border-t pt-4">
+            </CardHeader>
+            <CardContent className="space-y-4 border-t pt-4">
 
-            <TypographyH5 className="font-medium">Exercícios</TypographyH5>
+              <TypographyH5 className="font-medium">Exercícios</TypographyH5>
 
-            {workout.exercises.map((exercise) => (
-              <ExerciseCard key={exercise.id} exercise={exercise} />
-            ))}
+              {exercises.map((exercise) => (
+                <ExerciseCard key={exercise.id} exercise={exercise} />
+              ))}
 
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
+      {isFetchingNextPage && <Spinner className="size-5 my-2 mx-auto" />}
+      <div ref={sentinelRef} />
     </div>
   )
 }

@@ -62,14 +62,14 @@ export default function TrainerHeader() {
 
 			<div className="flex items-center gap-2">
 				<ModeToggle />
-				<Button variant="ghost" size="icon" className="h-9 w-9">
+				{/* <Button variant="ghost" size="icon" className="h-9 w-9">
 					<HelpCircle className="h-4 w-4" />
 					<span className="sr-only">Ajuda</span>
 				</Button>
 				<Button variant="ghost" size="icon" className="h-9 w-9">
 					<Bell className="h-4 w-4" />
 					<span className="sr-only">Notificações</span>
-				</Button>
+				</Button> */}
 				{/* <Button variant="ghost" size="icon" className="h-9 w-9">
 					<Settings className="h-4 w-4" />
 					<span className="sr-only">Settings</span>

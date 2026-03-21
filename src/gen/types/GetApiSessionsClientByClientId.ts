@@ -11,6 +11,19 @@ export type GetApiSessionsClientByClientIdPathParams = {
     clientId: string;
 };
 
+export type GetApiSessionsClientByClientIdQueryParams = {
+    /**
+     * @default 10
+     * @type number
+    */
+    limit: number;
+    /**
+     * @default 0
+     * @type number
+    */
+    offset: number;
+};
+
 export const sessionsSourceEnum = {
     "whatsapp": "whatsapp",
     "app": "app"
@@ -38,6 +51,10 @@ export type GetApiSessionsClientByClientId200 = {
          * @type string | undefined
         */
         workoutId?: string;
+        /**
+         * @type string | undefined
+        */
+        workoutName?: string;
         /**
          * @type string
         */
@@ -71,6 +88,10 @@ export type GetApiSessionsClientByClientId200 = {
             */
             exerciseName: string;
             /**
+             * @type string | undefined
+            */
+            thumbnailUrl?: string;
+            /**
              * @type array
             */
             sets: {
@@ -96,5 +117,6 @@ export type GetApiSessionsClientByClientIdQueryResponse = GetApiSessionsClientBy
 export type GetApiSessionsClientByClientIdQuery = {
     Response: GetApiSessionsClientByClientId200;
     PathParams: GetApiSessionsClientByClientIdPathParams;
+    QueryParams: GetApiSessionsClientByClientIdQueryParams;
     Errors: any;
 };
