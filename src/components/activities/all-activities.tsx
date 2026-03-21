@@ -80,9 +80,7 @@ function ClientActivitiesContent({ clientId }: { clientId: string }) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery({
     queryKey: ["activities-all", clientId],
     queryFn: ({ pageParam }) =>
-      getApiActivitiesClientByClientId(clientId, {
-        params: { limit: PAGE_SIZE, offset: pageParam },
-      }),
+      getApiActivitiesClientByClientId(clientId, { limit: PAGE_SIZE, offset: pageParam }),
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.activities.length < PAGE_SIZE) return undefined;
       return allPages.flatMap((p) => p.activities).length;

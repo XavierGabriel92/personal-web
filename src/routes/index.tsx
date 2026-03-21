@@ -21,7 +21,7 @@ function App() {
 		if (session?.user) {
 			const redirectTo =
 				session.user.type === "member" ? "/client/home" : "/trainer/home";
-			navigate({ to: redirectTo });
+			navigate({ to: redirectTo as never });
 		} else {
 			navigate({ to: "/sign-in" });
 		}

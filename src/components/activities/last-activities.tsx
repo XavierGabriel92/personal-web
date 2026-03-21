@@ -13,9 +13,7 @@ interface LastActivitiesProps {
 type Activity = GetApiActivitiesClientByClientId200["activities"][number];
 
 export default function LastActivities({ clientId }: LastActivitiesProps) {
-  const { data } = useGetApiActivitiesClientByClientIdSuspense(clientId, {
-    client: { params: { limit: 5, offset: 0 } },
-  });
+  const { data } = useGetApiActivitiesClientByClientIdSuspense(clientId, { limit: 5, offset: 0 });
   const activities = data?.activities ?? [];
 
   return <Card className="h-[400px] overflow-y-auto">

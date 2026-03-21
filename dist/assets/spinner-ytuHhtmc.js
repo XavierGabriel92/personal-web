@@ -1,1 +1,0 @@
-import{j as e,Y as r}from"./index-DTJ28Koy.js";import{c as i}from"./typography-BOOG0PEb.js";function o({className:s,...a}){return e.jsx("div",{className:"flex items-center justify-center",children:e.jsx(r,{role:"status","aria-label":"Loading",className:i("size-4 animate-spin",s),...a})})}export{o as S};

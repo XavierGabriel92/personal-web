@@ -1,1 +1,0 @@
-import{p as o}from"./client-CUr7h7-x.js";function i(t){return{method:"GET",url:`/api/routine/${t}`}}async function a(t,e={}){const{client:r=o,...n}=e;return(await r({method:"GET",url:i(t).url.toString(),...n})).data}export{a as g};

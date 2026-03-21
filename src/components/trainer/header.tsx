@@ -1,13 +1,8 @@
 import { ModeToggle } from "@/components/theme-provider/mode-toggle";
-import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useGetApiClients } from "@/gen/hooks/useGetApiClients";
 import { useNavigate } from "@tanstack/react-router";
-import {
-	Bell,
-	HelpCircle,
-} from "lucide-react";
 import { useState } from "react";
 
 function ClientSearchList({ search }: { search: string }) {

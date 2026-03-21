@@ -1,1 +1,0 @@
-import{b as o,a as n,r}from"./index-DTJ28Koy.js";function i(){const{data:e}=o(),s=n();return r.useEffect(()=>{if(e?.user){const t=e.user.type==="member"?"/client/home":"/trainer/home";s({to:t})}else s({to:"/sign-in"})},[e?.user,s]),null}export{i as component};
