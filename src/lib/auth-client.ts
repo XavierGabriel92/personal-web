@@ -16,6 +16,10 @@ export const authClient = createAuthClient({
 					enum: ["trainer", "member"],
 					defaultValue: "trainer",
 				},
+				onboardingFinished: {
+					type: "boolean",
+					defaultValue: false,
+				},
 			},
 		}),
 	],

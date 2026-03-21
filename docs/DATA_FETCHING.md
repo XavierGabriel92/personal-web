@@ -110,6 +110,104 @@ const { data } = useGetApiRoutinesSuspense(); // clean, no branching
 
 ---
 
+## Infinite Scroll (Paginated Lists)
+
+For lists that load more items as the user scrolls, use `useSuspenseInfiniteQuery` combined with an `IntersectionObserver` sentinel element.
+
+### Pattern
+
+```tsx
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { useEffect, useRef } from 'react';
+import { getApiActivitiesTrainer } from '@/gen/clients/getApiActivitiesTrainer';
+import { Spinner } from '@/components/ui/spinner';
+
+const PAGE_SIZE = 15;
+
+function ActivitiesContent() {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery({
+      queryKey: ['activities-all-trainer'],
+      queryFn: ({ pageParam }) =>
+        getApiActivitiesTrainer({ limit: PAGE_SIZE, offset: pageParam }),
+      getNextPageParam: (lastPage, allPages) => {
+        // Stop when the last page returned fewer items than the page size
+        if (lastPage.activities.length < PAGE_SIZE) return undefined;
+        return allPages.flatMap((p) => p.activities).length;
+      },
+      initialPageParam: 0,
+    });
+
+  const activities = data.pages.flatMap((p) => p.activities);
+
+  return <ActivityList
+    activities={activities}
+    fetchNextPage={fetchNextPage}
+    hasNextPage={hasNextPage}
+    isFetchingNextPage={isFetchingNextPage}
+  />;
+}
+
+function ActivityList({ activities, fetchNextPage, hasNextPage, isFetchingNextPage }) {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage)
+          fetchNextPage();
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  return (
+    <div className="flex flex-col gap-4 overflow-y-auto">
+      {activities.map((item) => <ActivityCard key={item.id} activity={item} />)}
+      {isFetchingNextPage && <Spinner className="size-5 my-2" />}
+      {/* Invisible sentinel — triggers fetchNextPage when it scrolls into view */}
+      <div ref={sentinelRef} />
+    </div>
+  );
+}
+```
+
+### Key points
+
+- `initialPageParam: 0` — first call uses offset 0.
+- `getNextPageParam` returns the next offset (total items fetched so far) or `undefined` to stop.
+- The sentinel `<div>` sits at the bottom of the list; when it enters the viewport the observer fires `fetchNextPage`.
+- The observer is re-created whenever `hasNextPage` or `isFetchingNextPage` changes to keep the closure fresh.
+- Show a `<Spinner>` while `isFetchingNextPage` is true so the user knows more items are loading.
+- The component using `useSuspenseInfiniteQuery` must be wrapped in a `<Suspense>` boundary just like regular suspense queries.
+
+### Deferred content inside sheets
+
+When an infinite list lives inside a `<Sheet>` (or other lazy-opened overlay), render the content **only when the sheet is open** and wrap it in `<Suspense>`:
+
+```tsx
+function ActivitiesSheet({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild><Button>Ver todas</Button></SheetTrigger>
+      <SheetContent>
+        <Suspense fallback={<Spinner className="size-8" />}>
+          {open && children}  {/* mount only when visible */}
+        </Suspense>
+      </SheetContent>
+    </Sheet>
+  );
+}
+```
+
+Gating on `open` prevents the suspense query from firing until the sheet is actually opened.
+
+---
+
 ## Mutations
 
 ### Always reflect `isPending` in the UI
@@ -224,6 +322,8 @@ On first page load this hits the network; on subsequent navigations within 5 min
 - ✅ Always use `*Suspense` hooks for UI data fetches
 - ✅ Always wrap suspense-query components in `<Suspense fallback={<Spinner />}>`
 - ✅ Place `<Suspense>` boundaries at the route component level (`src/routes/`)
+- ✅ Use `useSuspenseInfiniteQuery` + IntersectionObserver sentinel for infinite-scroll lists
+- ✅ Gate sheet/overlay content on `open` state to defer suspense queries until needed
 - ✅ Always disable mutation triggers and show `<Spinner>` while `isPending`
 - ✅ Always handle `onSuccess` (invalidate/update cache + toast) and `onError` (toast) on mutations
 - ✅ Use optimistic updates for instant-feedback interactions (drag, toggles)

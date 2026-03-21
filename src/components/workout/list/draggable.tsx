@@ -20,7 +20,6 @@ interface WorkoutListDraggableProps {
 
 export default function WorkoutListDraggable({ workouts, onDelete, onCopy, onDrag }: WorkoutListDraggableProps) {
   const [items, setItems] = useState(workouts);
-  const navigate = useNavigate();
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -62,7 +61,7 @@ export default function WorkoutListDraggable({ workouts, onDelete, onCopy, onDra
                     >
                       <GripVerticalIcon className="w-4 h-4" />
                     </div>
-                    <Card className="w-full cursor-pointer" onClick={() => navigate({ to: "/trainer/workouts/$workoutId", params: { workoutId: item.id } })}>
+                    <Card className="w-full">
                       <CardContent>
                         <WorkoutCollapsible workout={item} actions={<WorkoutActions workout={item} onDelete={onDelete} onCopy={onCopy} />} />
                       </CardContent>

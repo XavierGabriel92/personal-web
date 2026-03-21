@@ -52,7 +52,16 @@ function buildWhatsappInviteUrl(token: string): string {
   return `https://wa.me/${botPhone ?? ""}?text=${text}`;
 }
 
-export default function CreateClientSheet() {
+type CreateClientSheetProps = {
+  Trigger?: React.ReactNode
+}
+
+export default function CreateClientSheet({
+  Trigger = <Button size="sm">
+    <PlusIcon />
+    Adicionar aluno
+  </Button>
+}: CreateClientSheetProps) {
   const [open, setOpen] = useState(false);
   const [created, setCreated] = useState<CreatedClient | null>(null);
   const navigate = useNavigate();
@@ -95,10 +104,7 @@ export default function CreateClientSheet() {
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button size="sm">
-          <PlusIcon />
-          Adicionar aluno
-        </Button>
+        {Trigger}
       </SheetTrigger>
       <SheetContent side="right" className="flex flex-col">
         {created ? (

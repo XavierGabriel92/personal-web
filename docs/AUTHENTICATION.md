@@ -19,12 +19,16 @@ export const authClient = createAuthClient({
   plugins: [
     organizationClient(),      // Organization support
     customSessionClient(),     // Custom session handling
-    inferAdditionalFields({   // User type field
+    inferAdditionalFields({   // Custom user fields
       user: {
         type: {
           type: "string",
           enum: ["trainer", "member"],
           defaultValue: "trainer",
+        },
+        onboardingFinished: {
+          type: "boolean",
+          defaultValue: false,
         },
       },
     }),
@@ -300,6 +304,27 @@ const redirectTo = session.user.type === "member"
   ? "/client/home" 
   : "/trainer/home";
 ```
+
+## Custom Session Fields
+
+The session user object includes both BetterAuth built-in fields (`id`, `name`, `email`, `image`) and custom fields declared via `inferAdditionalFields`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | `string` | Trainer's display name (built-in) |
+| `type` | `"trainer" \| "member"` | User role |
+| `onboardingFinished` | `boolean` | Whether the trainer completed the onboarding checklist |
+
+### `onboardingFinished`
+
+Set to `true` once a trainer completes all 3 onboarding steps (create a routine, invite a client, assign a session). Used by `OnboardingChecklist` to skip 3 API calls for trainers who have already finished:
+
+```typescript
+// Component returns null immediately — no API calls — for completed trainers
+if (session?.user.onboardingFinished) return null;
+```
+
+The flag is set via `PATCH /api/trainer/onboarding-finished` and the session is invalidated immediately after.
 
 ## Best Practices
 

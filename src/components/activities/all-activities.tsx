@@ -8,221 +8,137 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useState } from "react";
-import type { ActivityType, WeightAddedData, WorkoutFinishedData } from "./schemas";
+import { Spinner } from "@/components/ui/spinner";
+import { getApiActivitiesClientByClientId } from "@/gen/clients/getApiActivitiesClientByClientId";
+import { getApiActivitiesTrainer } from "@/gen/clients/getApiActivitiesTrainer";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { Suspense, useEffect, useRef, useState } from "react";
+import type { WeightAddedData, WorkoutFinishedData } from "./schemas";
 import WeightAdded from "./weight-added";
 import WorkoutFinished from "./workout-finished";
 
-const mockActivities = [
-  {
-    id: "1",
-    clientName: "xaviergabrielaluno",
-    data: {
-      workoutName: "Pull",
-      duration: 52,
-      weight: 1620,
-      series: 5,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-11-14T12:30:00"
-  },
-  {
-    id: "2",
-    clientName: "xaviergabrielaluno",
-    data: {
-      weight: 80,
-      weightDifference: 6,
-      direction: "up",
-    },
-    type: "weight-added" as ActivityType,
-    createdAt: "2025-01-01T10:15:00"
-  },
-  {
-    id: "3",
-    clientName: "joaosilva",
-    data: {
-      workoutName: "Push",
-      duration: 45,
-      weight: 1850,
-      series: 6,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-15T14:20:00"
-  },
-  {
-    id: "4",
-    clientName: "mariasantos",
-    data: {
-      workoutName: "Legs",
-      duration: 60,
-      weight: 2100,
-      series: 7,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-15T09:00:00"
-  },
-  {
-    id: "5",
-    clientName: "pedrooliveira",
-    data: {
-      weight: 75,
-      weightDifference: 2,
-      direction: "up",
-    },
-    type: "weight-added" as ActivityType,
-    createdAt: "2025-01-14T18:30:00"
-  },
-  {
-    id: "6",
-    clientName: "anacosta",
-    data: {
-      workoutName: "Upper Body",
-      duration: 50,
-      weight: 1200,
-      series: 4,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-14T16:45:00"
-  },
-  {
-    id: "7",
-    clientName: "carlosferreira",
-    data: {
-      weight: 92,
-      weightDifference: 1.5,
-      direction: "down",
-    },
-    type: "weight-added" as ActivityType,
-    createdAt: "2025-01-14T08:00:00"
-  },
-  {
-    id: "8",
-    clientName: "julialima",
-    data: {
-      workoutName: "Full Body",
-      duration: 55,
-      weight: 1450,
-      series: 5,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-13T19:15:00"
-  },
-  {
-    id: "9",
-    clientName: "xaviergabrielaluno",
-    data: {
-      workoutName: "Push",
-      duration: 48,
-      weight: 1750,
-      series: 6,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-13T13:30:00"
-  },
-  {
-    id: "10",
-    clientName: "rafaelmartins",
-    data: {
-      weight: 88,
-      weightDifference: 3,
-      direction: "up",
-    },
-    type: "weight-added" as ActivityType,
-    createdAt: "2025-01-13T11:20:00"
-  },
-  {
-    id: "11",
-    clientName: "fernandarodrigues",
-    data: {
-      workoutName: "Back & Biceps",
-      duration: 58,
-      weight: 1680,
-      series: 5,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-12T17:00:00"
-  },
-  {
-    id: "12",
-    clientName: "mariasantos",
-    data: {
-      weight: 65,
-      weightDifference: 0.5,
-      direction: "down",
-    },
-    type: "weight-added" as ActivityType,
-    createdAt: "2025-01-12T10:45:00"
-  },
-  {
-    id: "13",
-    clientName: "joaosilva",
-    data: {
-      workoutName: "Chest & Triceps",
-      duration: 42,
-      weight: 1950,
-      series: 6,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-11T15:30:00"
-  },
-  {
-    id: "14",
-    clientName: "anacosta",
-    data: {
-      weight: 58,
-      weightDifference: 1,
-      direction: "up",
-    },
-    type: "weight-added" as ActivityType,
-    createdAt: "2025-01-11T09:15:00"
-  },
-  {
-    id: "15",
-    clientName: "pedrooliveira",
-    data: {
-      workoutName: "Legs & Glutes",
-      duration: 65,
-      weight: 2200,
-      series: 8,
-    },
-    type: "workout-finished" as ActivityType,
-    createdAt: "2025-01-10T18:00:00"
-  },
-];
+const PAGE_SIZE = 15;
 
-interface AllActivitiesSheetProps {
-  clientId: string;
+type Activity = {
+  id: string;
+  clientName: string;
+  type: string;
+  payload: Record<string, unknown>;
+  createdAt: string;
+};
+
+function ActivityList({ activities, fetchNextPage, hasNextPage, isFetchingNextPage }: {
+  activities: Activity[];
+  fetchNextPage: () => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+}) {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) fetchNextPage();
+    }, { threshold: 0.1 });
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  return (
+    <div className="flex-1 overflow-y-auto px-4 gap-4 flex flex-col">
+      {activities.map((activity) => {
+        switch (activity.type) {
+          case "WORKOUT_COMPLETED":
+            return (
+              <WorkoutFinished
+                key={activity.id}
+                clientName={activity.clientName}
+                data={activity.payload as WorkoutFinishedData}
+                createdAt={activity.createdAt}
+              />
+            );
+          case "WEIGHT_LOGGED":
+            return (
+              <WeightAdded
+                key={activity.id}
+                clientName={activity.clientName}
+                data={activity.payload as WeightAddedData}
+                createdAt={activity.createdAt}
+              />
+            );
+          default:
+            return null;
+        }
+      })}
+      {isFetchingNextPage && <Spinner className="size-5 my-2" />}
+      <div ref={sentinelRef} />
+    </div>
+  );
 }
-export default function AllActivitiesSheet({ clientId: _clientId }: AllActivitiesSheetProps) {
+
+function ClientActivitiesContent({ clientId }: { clientId: string }) {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery({
+    queryKey: ["activities-all", clientId],
+    queryFn: ({ pageParam }) =>
+      getApiActivitiesClientByClientId(clientId, {
+        params: { limit: PAGE_SIZE, offset: pageParam },
+      }),
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.activities.length < PAGE_SIZE) return undefined;
+      return allPages.flatMap((p) => p.activities).length;
+    },
+    initialPageParam: 0,
+  });
+
+  return (
+    <ActivityList
+      activities={data.pages.flatMap((p) => p.activities)}
+      fetchNextPage={fetchNextPage}
+      hasNextPage={hasNextPage}
+      isFetchingNextPage={isFetchingNextPage}
+    />
+  );
+}
+
+function TrainerActivitiesContent() {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery({
+    queryKey: ["activities-all-trainer"],
+    queryFn: ({ pageParam }) =>
+      getApiActivitiesTrainer({ limit: PAGE_SIZE, offset: pageParam }),
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.activities.length < PAGE_SIZE) return undefined;
+      return allPages.flatMap((p) => p.activities).length;
+    },
+    initialPageParam: 0,
+  });
+
+  return (
+    <ActivityList
+      activities={data.pages.flatMap((p) => p.activities)}
+      fetchNextPage={fetchNextPage}
+      hasNextPage={hasNextPage}
+      isFetchingNextPage={isFetchingNextPage}
+    />
+  );
+}
+
+function ActivitiesSheet({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  const data = mockActivities;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          size="sm"
-          variant="link"
-        >
+        <Button size="sm" variant="link">
           Ver todas
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="flex flex-col">
         <SheetHeader>
-          <SheetTitle>Histórioco de Atividades</SheetTitle>
+          <SheetTitle>Histórico de Atividades</SheetTitle>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-4 gap-4 flex flex-col">
-          {data.map((activity) => {
-            switch (activity.type) {
-              case "workout-finished":
-                return <WorkoutFinished key={activity.id} {...activity} data={activity.data as WorkoutFinishedData} />
-              case "weight-added":
-                return <WeightAdded key={activity.id} {...activity} data={activity.data as WeightAddedData} />
-              default:
-                return <></>
-            }
-          })}
-        </div>
+        <Suspense fallback={<Spinner className="size-8" />}>
+          {open && children}
+        </Suspense>
         <SheetFooter>
           <SheetClose asChild>
             <Button variant="outline">Fechar</Button>
@@ -230,5 +146,25 @@ export default function AllActivitiesSheet({ clientId: _clientId }: AllActivitie
         </SheetFooter>
       </SheetContent>
     </Sheet>
+  );
+}
+
+interface AllActivitiesSheetProps {
+  clientId: string;
+}
+
+export default function AllActivitiesSheet({ clientId }: AllActivitiesSheetProps) {
+  return (
+    <ActivitiesSheet>
+      <ClientActivitiesContent clientId={clientId} />
+    </ActivitiesSheet>
+  );
+}
+
+export function AllTrainerActivitiesSheet() {
+  return (
+    <ActivitiesSheet>
+      <TrainerActivitiesContent />
+    </ActivitiesSheet>
   );
 }

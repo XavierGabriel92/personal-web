@@ -31,28 +31,21 @@ interface DurationCardProps {
 
 export function DurationCard({
   data = [],
+  currentValue,
 }: DurationCardProps) {
-  // Default data if none provided
-  const chartData = data.length > 0 ? data : [
-    { date: format(new Date(2024, 7, 17), "d MMM", { locale: ptBR }), duration: 300 },
-    { date: format(new Date(2024, 8, 7), "d MMM", { locale: ptBR }), duration: 230 },
-    { date: format(new Date(2024, 8, 28), "d MMM", { locale: ptBR }), duration: 279 },
-    { date: format(new Date(2024, 9, 19), "d MMM", { locale: ptBR }), duration: 320 },
-    { date: format(new Date(2024, 10, 9), "d MMM", { locale: ptBR }), duration: 360 },
-  ]
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Duração</CardTitle>
         <div>
-          <TypographyH2 className="font-semibold">1:20h</TypographyH2>
+          <TypographyH2 className="font-semibold">{currentValue ?? "—"}</TypographyH2>
           <CardDescription>Essa semana</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[200px] w-full">
-          <BarChart data={chartData}>
+          <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"

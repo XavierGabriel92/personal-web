@@ -1,5 +1,7 @@
 export type { DeleteApiWorkoutByIdPathParams, DeleteApiWorkoutById200, DeleteApiWorkoutByIdMutationResponse, DeleteApiWorkoutByIdMutation } from "./DeleteApiWorkoutById.ts";
 export type { DeleteApiWorkoutExerciseByExerciseWorkoutIdPathParams, DeleteApiWorkoutExerciseByExerciseWorkoutId200, DeleteApiWorkoutExerciseByExerciseWorkoutIdMutationResponse, DeleteApiWorkoutExerciseByExerciseWorkoutIdMutation } from "./DeleteApiWorkoutExerciseByExerciseWorkoutId.ts";
+export type { GetApiActivitiesClientByClientIdPathParams, GetApiActivitiesClientByClientIdQueryParams, PayloadDirectionEnumKey, GetApiActivitiesClientByClientId200, GetApiActivitiesClientByClientIdQueryResponse, GetApiActivitiesClientByClientIdQuery } from "./GetApiActivitiesClientByClientId.ts";
+export type { GetApiActivitiesTrainerQueryParams, PayloadDirectionEnum2Key, GetApiActivitiesTrainer200, GetApiActivitiesTrainerQueryResponse, GetApiActivitiesTrainerQuery } from "./GetApiActivitiesTrainer.ts";
 export type { GetApiClientByIdPathParams, GetApiClientById200, GetApiClientByIdQueryResponse, GetApiClientByIdQuery } from "./GetApiClientById.ts";
 export type { GetApiClients200, GetApiClientsQueryResponse, GetApiClientsQuery } from "./GetApiClients.ts";
 export type { GetApiExerciseByIdPathParams, GetApiExerciseById200, GetApiExerciseByIdQueryResponse, GetApiExerciseByIdQuery } from "./GetApiExerciseById.ts";
@@ -7,8 +9,11 @@ export type { GetApiExercisesFilters200, GetApiExercisesFiltersQueryResponse, Ge
 export type { GetApiRoutineByIdPathParams, GetApiRoutineById200, GetApiRoutineByIdQueryResponse, GetApiRoutineByIdQuery } from "./GetApiRoutineById.ts";
 export type { GetApiRoutines200, GetApiRoutinesQueryResponse, GetApiRoutinesQuery } from "./GetApiRoutines.ts";
 export type { GetApiRoutinesTemplates200, GetApiRoutinesTemplatesQueryResponse, GetApiRoutinesTemplatesQuery } from "./GetApiRoutinesTemplates.ts";
+export type { GetApiSessionsClientByClientIdPathParams, SessionsSourceEnumKey, GetApiSessionsClientByClientId200, GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdQuery } from "./GetApiSessionsClientByClientId.ts";
+export type { GetApiSessionsTrainerRecent200, GetApiSessionsTrainerRecentQueryResponse, GetApiSessionsTrainerRecentQuery } from "./GetApiSessionsTrainerRecent.ts";
 export type { GetApiWorkoutByIdPathParams, GetApiWorkoutById200, GetApiWorkoutByIdQueryResponse, GetApiWorkoutByIdQuery } from "./GetApiWorkoutById.ts";
 export type { GetApiWorkoutRoutineByRoutineIdPathParams, GetApiWorkoutRoutineByRoutineId200, GetApiWorkoutRoutineByRoutineIdQueryResponse, GetApiWorkoutRoutineByRoutineIdQuery } from "./GetApiWorkoutRoutineByRoutineId.ts";
+export type { PatchApiTrainerOnboardingFinishedMutationResponse, PatchApiTrainerOnboardingFinishedMutation } from "./PatchApiTrainerOnboardingFinished.ts";
 export type { PostApiClientByIdAssignRoutinePathParams, PostApiClientByIdAssignRoutine200, PostApiClientByIdAssignRoutineMutationRequest, PostApiClientByIdAssignRoutineMutationResponse, PostApiClientByIdAssignRoutineMutation } from "./PostApiClientByIdAssignRoutine.ts";
 export type { PostApiClientByIdWhatsappInvitePathParams, PostApiClientByIdWhatsappInvite200, PostApiClientByIdWhatsappInviteMutationResponse, PostApiClientByIdWhatsappInviteMutation } from "./PostApiClientByIdWhatsappInvite.ts";
 export type { PostApiClientCreate200, PostApiClientCreateMutationRequest, PostApiClientCreateMutationResponse, PostApiClientCreateMutation } from "./PostApiClientCreate.ts";
@@ -27,3 +32,6 @@ export type { PutApiWorkoutByIdPathParams, PutApiWorkoutById200, PutApiWorkoutBy
 export type { PutApiWorkoutExerciseByExerciseWorkoutIdPathParams, PutApiWorkoutExerciseByExerciseWorkoutId200, PutApiWorkoutExerciseByExerciseWorkoutIdMutationRequest, PutApiWorkoutExerciseByExerciseWorkoutIdMutationResponse, PutApiWorkoutExerciseByExerciseWorkoutIdMutation } from "./PutApiWorkoutExerciseByExerciseWorkoutId.ts";
 export type { PutApiWorkoutExerciseReorder200, PutApiWorkoutExerciseReorderMutationRequest, PutApiWorkoutExerciseReorderMutationResponse, PutApiWorkoutExerciseReorderMutation } from "./PutApiWorkoutExerciseReorder.ts";
 export type { PutApiWorkoutReorder200, PutApiWorkoutReorderMutationRequest, PutApiWorkoutReorderMutationResponse, PutApiWorkoutReorderMutation } from "./PutApiWorkoutReorder.ts";
+export { payloadDirectionEnum } from "./GetApiActivitiesClientByClientId.ts";
+export { payloadDirectionEnum2 } from "./GetApiActivitiesTrainer.ts";
+export { sessionsSourceEnum } from "./GetApiSessionsClientByClientId.ts";

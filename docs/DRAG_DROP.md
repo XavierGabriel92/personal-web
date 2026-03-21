@@ -180,12 +180,11 @@ const handleDrag = (reorderedItems: WorkoutExercise[]) => {
 
 ## Workout List Draggable
 
-Example for workout reordering:
+Example for workout reordering. Note: the card itself is **not** clickable — navigation is handled only by explicit action buttons inside the collapsible, not by clicking the card wrapper.
 
 ```typescript
 function WorkoutListDraggable({ workouts, onDrag }: Props) {
   const [items, setItems] = useState(workouts);
-  const navigate = useNavigate();
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -221,9 +220,10 @@ function WorkoutListDraggable({ workouts, onDrag }: Props) {
                     >
                       <GripVerticalIcon className="w-4 h-4" />
                     </div>
-                    <Card className="w-full cursor-pointer" onClick={() => navigate({ to: `/trainer/workouts/${item.id}` })}>
+                    {/* No onClick on the card — navigation is via explicit action buttons only */}
+                    <Card className="w-full">
                       <CardContent>
-                        <WorkoutCollapsible workout={item} />
+                        <WorkoutCollapsible workout={item} actions={<WorkoutActions workout={item} onDelete={onDelete} onCopy={onCopy} />} />
                       </CardContent>
                     </Card>
                   </div>
@@ -252,4 +252,4 @@ function WorkoutListDraggable({ workouts, onDrag }: Props) {
 - ✅ Separate drag handle from draggable content
 - ✅ Use `GripVerticalIcon` or similar for drag handle
 - ✅ Keep drag and drop logic in separate components
-
+- ✅ Do NOT attach click-navigation to the draggable card wrapper — use explicit action buttons instead

@@ -31,28 +31,21 @@ interface SetCardProps {
 
 export function SetCard({
   data = [],
+  currentValue,
 }: SetCardProps) {
-  // Default data if none provided
-  const chartData = data.length > 0 ? data : [
-    { date: format(new Date(2024, 7, 17), "d MMM", { locale: ptBR }), sets: 45 },
-    { date: format(new Date(2024, 8, 7), "d MMM", { locale: ptBR }), sets: 50 },
-    { date: format(new Date(2024, 8, 28), "d MMM", { locale: ptBR }), sets: 48 },
-    { date: format(new Date(2024, 9, 19), "d MMM", { locale: ptBR }), sets: 52 },
-    { date: format(new Date(2024, 10, 9), "d MMM", { locale: ptBR }), sets: 45 },
-  ]
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Séries</CardTitle>
         <div>
-          <TypographyH2 className="font-semibold">45 séries</TypographyH2>
+          <TypographyH2 className="font-semibold">{currentValue ?? "—"}</TypographyH2>
           <CardDescription>Essa semana</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[200px] w-full">
-          <BarChart data={chartData}>
+          <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"

@@ -31,29 +31,21 @@ interface VolumeCardProps {
 
 export function VolumeCard({
   data = [],
+  currentValue,
 }: VolumeCardProps) {
-  // Default data if none provided
-  const chartData = data.length > 0 ? data : [
-    { date: format(new Date(2024, 7, 17), "d MMM", { locale: ptBR }), volume: 909 },
-    { date: format(new Date(2024, 8, 7), "d MMM", { locale: ptBR }), volume: 1200 },
-    { date: format(new Date(2024, 8, 28), "d MMM", { locale: ptBR }), volume: 450 },
-    { date: format(new Date(2024, 9, 19), "d MMM", { locale: ptBR }), volume: 600 },
-    { date: format(new Date(2024, 10, 9), "d MMM", { locale: ptBR }), volume: 1620 },
-  ]
-
   return (
     <Card>
       <CardHeader>
         <CardTitle>Volume</CardTitle>
         <div>
-          <TypographyH2 className="font-semibold">1620kg</TypographyH2>
+          <TypographyH2 className="font-semibold">{currentValue ?? "—"}</TypographyH2>
           <CardDescription>Essa semana</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
 
         <ChartContainer config={chartConfig} className="h-[200px] w-full">
-          <BarChart data={chartData}>
+          <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"
