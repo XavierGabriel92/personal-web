@@ -317,7 +317,7 @@ The session user object includes both BetterAuth built-in fields (`id`, `name`, 
 
 ### `onboardingFinished`
 
-Set to `true` once a trainer completes all 3 onboarding steps (create a routine, invite a client, assign a session). Used by `OnboardingChecklist` to skip 3 API calls for trainers who have already finished:
+Set to `true` once a trainer completes all 3 onboarding steps (create a routine, invite a client, assign a routine to a client). Used by `OnboardingChecklist` to skip API calls for trainers who have already finished:
 
 ```typescript
 // Component returns null immediately — no API calls — for completed trainers
@@ -325,6 +325,17 @@ if (session?.user.onboardingFinished) return null;
 ```
 
 The flag is set via `PATCH /api/trainer/onboarding-finished` and the session is invalidated immediately after.
+
+### Onboarding step detection
+
+The checklist derives each step's completion from existing data — no dedicated sessions endpoint is needed:
+
+```typescript
+const hasRoutine = (routinesData?.routines?.length ?? 0) > 0;
+const hasClient  = (clientsData?.clients?.length ?? 0) > 0;
+// Step 3: a routine has been assigned when any client has an activeRoutineId
+const hasSession = (clientsData?.clients ?? []).some(c => c.activeRoutineId);
+```
 
 ## Best Practices
 
@@ -336,4 +347,3 @@ The flag is set via `PATCH /api/trainer/onboarding-finished` and the session is 
 - ✅ Redirect unauthenticated users to sign-in page
 - ✅ Use user type to determine dashboard/features
 - ✅ Handle errors gracefully with user-friendly messages
-

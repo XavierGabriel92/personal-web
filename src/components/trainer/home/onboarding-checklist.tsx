@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetApiClients } from "@/gen/hooks/useGetApiClients";
 import { useGetApiRoutines } from "@/gen/hooks/useGetApiRoutines";
-import { useGetApiSessionsTrainerRecent } from "@/gen/hooks/useGetApiSessionsTrainerRecent";
 import { usePatchApiTrainerOnboardingFinished } from "@/gen/hooks/usePatchApiTrainerOnboardingFinished";
 import { sessionQueryKey, useCachedSession } from "@/hooks/auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -51,7 +50,6 @@ export default function OnboardingChecklist() {
 function OnboardingChecklistContent() {
   const { data: routinesData } = useGetApiRoutines();
   const { data: clientsData } = useGetApiClients();
-  const { data: recentData } = useGetApiSessionsTrainerRecent();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: markFinished } = usePatchApiTrainerOnboardingFinished({
@@ -62,7 +60,7 @@ function OnboardingChecklistContent() {
 
   const hasRoutine = (routinesData?.routines?.length ?? 0) > 0;
   const hasClient = (clientsData?.clients?.length ?? 0) > 0;
-  const hasSession = (recentData?.sessions?.length ?? 0) > 0;
+  const hasSession = (clientsData?.clients ?? []).some(c => c.activeRoutineId);
   const allDone = hasRoutine && hasClient && hasSession;
 
   useEffect(() => {
