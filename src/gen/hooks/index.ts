@@ -28,6 +28,7 @@ export type { GetApiWorkoutRoutineByRoutineIdQueryKey } from "./useGetApiWorkout
 export type { GetApiWorkoutRoutineByRoutineIdSuspenseQueryKey } from "./useGetApiWorkoutRoutineByRoutineIdSuspense.ts";
 export type { PatchApiTrainerOnboardingFinishedMutationKey } from "./usePatchApiTrainerOnboardingFinished.ts";
 export type { PostApiClientByIdAssignRoutineMutationKey } from "./usePostApiClientByIdAssignRoutine.ts";
+export type { PostApiClientByIdSendInviteMutationKey } from "./usePostApiClientByIdSendInvite.ts";
 export type { PostApiClientByIdWhatsappInviteMutationKey } from "./usePostApiClientByIdWhatsappInvite.ts";
 export type { PostApiClientCreateMutationKey } from "./usePostApiClientCreate.ts";
 export type { PostApiExerciseByIdVideoMutationKey } from "./usePostApiExerciseByIdVideo.ts";
@@ -135,6 +136,9 @@ export { usePatchApiTrainerOnboardingFinished } from "./usePatchApiTrainerOnboar
 export { postApiClientByIdAssignRoutineMutationKey } from "./usePostApiClientByIdAssignRoutine.ts";
 export { postApiClientByIdAssignRoutineMutationOptions } from "./usePostApiClientByIdAssignRoutine.ts";
 export { usePostApiClientByIdAssignRoutine } from "./usePostApiClientByIdAssignRoutine.ts";
+export { postApiClientByIdSendInviteMutationKey } from "./usePostApiClientByIdSendInvite.ts";
+export { postApiClientByIdSendInviteMutationOptions } from "./usePostApiClientByIdSendInvite.ts";
+export { usePostApiClientByIdSendInvite } from "./usePostApiClientByIdSendInvite.ts";
 export { postApiClientByIdWhatsappInviteMutationKey } from "./usePostApiClientByIdWhatsappInvite.ts";
 export { postApiClientByIdWhatsappInviteMutationOptions } from "./usePostApiClientByIdWhatsappInvite.ts";
 export { usePostApiClientByIdWhatsappInvite } from "./usePostApiClientByIdWhatsappInvite.ts";

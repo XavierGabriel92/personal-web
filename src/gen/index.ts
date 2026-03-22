@@ -28,6 +28,7 @@ export type { GetApiWorkoutRoutineByRoutineIdQueryKey } from "./hooks/useGetApiW
 export type { GetApiWorkoutRoutineByRoutineIdSuspenseQueryKey } from "./hooks/useGetApiWorkoutRoutineByRoutineIdSuspense.ts";
 export type { PatchApiTrainerOnboardingFinishedMutationKey } from "./hooks/usePatchApiTrainerOnboardingFinished.ts";
 export type { PostApiClientByIdAssignRoutineMutationKey } from "./hooks/usePostApiClientByIdAssignRoutine.ts";
+export type { PostApiClientByIdSendInviteMutationKey } from "./hooks/usePostApiClientByIdSendInvite.ts";
 export type { PostApiClientByIdWhatsappInviteMutationKey } from "./hooks/usePostApiClientByIdWhatsappInvite.ts";
 export type { PostApiClientCreateMutationKey } from "./hooks/usePostApiClientCreate.ts";
 export type { PostApiExerciseByIdVideoMutationKey } from "./hooks/usePostApiExerciseByIdVideo.ts";
@@ -62,6 +63,7 @@ export type { GetApiWorkoutByIdPathParams, GetApiWorkoutById200, GetApiWorkoutBy
 export type { GetApiWorkoutRoutineByRoutineIdPathParams, GetApiWorkoutRoutineByRoutineId200, GetApiWorkoutRoutineByRoutineIdQueryResponse, GetApiWorkoutRoutineByRoutineIdQuery } from "./types/GetApiWorkoutRoutineByRoutineId.ts";
 export type { PatchApiTrainerOnboardingFinishedMutationResponse, PatchApiTrainerOnboardingFinishedMutation } from "./types/PatchApiTrainerOnboardingFinished.ts";
 export type { PostApiClientByIdAssignRoutinePathParams, PostApiClientByIdAssignRoutine200, PostApiClientByIdAssignRoutineMutationRequest, PostApiClientByIdAssignRoutineMutationResponse, PostApiClientByIdAssignRoutineMutation } from "./types/PostApiClientByIdAssignRoutine.ts";
+export type { PostApiClientByIdSendInvitePathParams, PostApiClientByIdSendInvite200, PostApiClientByIdSendInviteMutationResponse, PostApiClientByIdSendInviteMutation } from "./types/PostApiClientByIdSendInvite.ts";
 export type { PostApiClientByIdWhatsappInvitePathParams, PostApiClientByIdWhatsappInvite200, PostApiClientByIdWhatsappInviteMutationResponse, PostApiClientByIdWhatsappInviteMutation } from "./types/PostApiClientByIdWhatsappInvite.ts";
 export type { PostApiClientCreate200, PostApiClientCreateMutationRequest, PostApiClientCreateMutationResponse, PostApiClientCreateMutation } from "./types/PostApiClientCreate.ts";
 export type { PostApiExerciseByIdVideoPathParams, PostApiExerciseByIdVideo200, PostApiExerciseByIdVideoMutationRequest, PostApiExerciseByIdVideoMutationResponse, PostApiExerciseByIdVideoMutation } from "./types/PostApiExerciseByIdVideo.ts";
@@ -96,6 +98,7 @@ export { getApiWorkoutById } from "./clients/getApiWorkoutById.ts";
 export { getApiWorkoutRoutineByRoutineId } from "./clients/getApiWorkoutRoutineByRoutineId.ts";
 export { patchApiTrainerOnboardingFinished } from "./clients/patchApiTrainerOnboardingFinished.ts";
 export { postApiClientByIdAssignRoutine } from "./clients/postApiClientByIdAssignRoutine.ts";
+export { postApiClientByIdSendInvite } from "./clients/postApiClientByIdSendInvite.ts";
 export { postApiClientByIdWhatsappInvite } from "./clients/postApiClientByIdWhatsappInvite.ts";
 export { postApiClientCreate } from "./clients/postApiClientCreate.ts";
 export { postApiExerciseByIdVideo } from "./clients/postApiExerciseByIdVideo.ts";
@@ -203,6 +206,9 @@ export { usePatchApiTrainerOnboardingFinished } from "./hooks/usePatchApiTrainer
 export { postApiClientByIdAssignRoutineMutationKey } from "./hooks/usePostApiClientByIdAssignRoutine.ts";
 export { postApiClientByIdAssignRoutineMutationOptions } from "./hooks/usePostApiClientByIdAssignRoutine.ts";
 export { usePostApiClientByIdAssignRoutine } from "./hooks/usePostApiClientByIdAssignRoutine.ts";
+export { postApiClientByIdSendInviteMutationKey } from "./hooks/usePostApiClientByIdSendInvite.ts";
+export { postApiClientByIdSendInviteMutationOptions } from "./hooks/usePostApiClientByIdSendInvite.ts";
+export { usePostApiClientByIdSendInvite } from "./hooks/usePostApiClientByIdSendInvite.ts";
 export { postApiClientByIdWhatsappInviteMutationKey } from "./hooks/usePostApiClientByIdWhatsappInvite.ts";
 export { postApiClientByIdWhatsappInviteMutationOptions } from "./hooks/usePostApiClientByIdWhatsappInvite.ts";
 export { usePostApiClientByIdWhatsappInvite } from "./hooks/usePostApiClientByIdWhatsappInvite.ts";

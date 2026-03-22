@@ -71,13 +71,14 @@ export default function ClientsList() {
             <TableHead>Nome</TableHead>
             <TableHead>Telefone</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>WhatsApp</TableHead>
             <TableHead>Data de Cadastro</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredClients.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center text-muted-foreground">
+              <TableCell colSpan={5} className="text-center text-muted-foreground">
                 Nenhum aluno encontrado
               </TableCell>
             </TableRow>
@@ -91,6 +92,11 @@ export default function ClientsList() {
                 <TableCell>
                   <Badge variant={client.active ? "success" : "secondary"}>
                     {client.active ? "Ativo" : "Inativo"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={client.whatsappConnected ? "success" : "secondary"}>
+                    {client.whatsappConnected ? "Conectado" : "Pendente"}
                   </Badge>
                 </TableCell>
                 <TableCell>

@@ -15,6 +15,7 @@ export { getApiWorkoutById } from "./getApiWorkoutById.ts";
 export { getApiWorkoutRoutineByRoutineId } from "./getApiWorkoutRoutineByRoutineId.ts";
 export { patchApiTrainerOnboardingFinished } from "./patchApiTrainerOnboardingFinished.ts";
 export { postApiClientByIdAssignRoutine } from "./postApiClientByIdAssignRoutine.ts";
+export { postApiClientByIdSendInvite } from "./postApiClientByIdSendInvite.ts";
 export { postApiClientByIdWhatsappInvite } from "./postApiClientByIdWhatsappInvite.ts";
 export { postApiClientCreate } from "./postApiClientCreate.ts";
 export { postApiExerciseByIdVideo } from "./postApiExerciseByIdVideo.ts";

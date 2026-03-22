@@ -16,7 +16,7 @@ import { useGetApiClientByIdSuspense } from "@/gen/hooks/useGetApiClientByIdSusp
 import { getApiClientsSuspenseQueryKey } from "@/gen/hooks/useGetApiClientsSuspense";
 import { usePutApiClientById } from "@/gen/hooks/usePutApiClientById";
 import { queryClient } from "@/routes/__root";
-import { PencilIcon } from "lucide-react";
+import { AlertTriangle, PencilIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { ClientFormData } from "../form";
@@ -73,7 +73,13 @@ export default function EditClientSheet({ clientId }: EditClientSheetProps) {
             Preencha os dados abaixo para editar o aluno.
           </SheetDescription>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-4">
+        <div className="flex-1 overflow-y-auto px-4 space-y-4">
+          {client.whatsappConnected && (
+            <div className="flex items-start gap-2 rounded-md border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>Ao alterar o número, o WhatsApp será desconectado e o aluno precisará ativar novamente.</span>
+            </div>
+          )}
           <ClientForm
             onSubmit={handleSubmit}
             initialValues={{

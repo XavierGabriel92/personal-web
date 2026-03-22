@@ -2,42 +2,47 @@
 
 ## Overview
 
-Trainers can share a WhatsApp invite link with a client to bind the client's phone number to their account. The link opens a pre-filled WhatsApp message that the client sends to the bot.
+Trainers send a WhatsApp activation message directly to the client's phone via the bot. The client just needs to reply — no token, no link copying.
 
-There are two places where a trainer can generate this link:
-
-| Where | When |
-|-------|------|
-| `CreateClientSheet` | Right after creating a new client |
-| Client detail page (`/trainer/clients/:id`) | At any time — to re-invite or after the client changes their WhatsApp number |
-
-## Invite URL Format
+## Flow
 
 ```
-https://wa.me/<VITE_WHATSAPP_BOT_PHONE>?text=Oi!%20Meu%20código%20é%20<token>
+1. Trainer creates client (name, phone, goals)
+2. Trainer clicks "Enviar convite" on the client profile
+3. Bot sends message to client's phone:
+   "Olá {name}! Seu personal trainer {trainer} te adicionou ao Homug 💪
+    Responda esta mensagem para ativar seu acesso."
+4. Client replies with anything → phone activated
+5. Client profile shows "WhatsApp conectado"
 ```
 
-The bot phone number comes from the `VITE_WHATSAPP_BOT_PHONE` environment variable.
+## Endpoints
 
-## Client Detail Page Button
+| Endpoint | Description |
+|----------|-------------|
+| `POST /api/client/:id/send-invite` | Sends activation message via bot. Client replies to activate. |
 
-Located in `src/pages/trainer/client/layout.tsx`.
+## `whatsappConnected` field
 
-The **"Convidar via WhatsApp"** button:
+All client responses (`GET /api/clients`, `GET /api/client/:id`, `PUT /api/client/:id`) now include:
 
-1. Calls `POST /api/client/:id/whatsapp-invite` via `usePostApiClientByIdWhatsappInvite`
-2. Backend upserts a new token in `whatsapp_bindings` (creates if none exists, resets phone and token if one already exists)
-3. On success, opens the wa.me link in a new tab
+```ts
+whatsappConnected: boolean  // true when binding exists and activated = true
+```
 
-This replaces any existing binding — if the client had previously confirmed their WhatsApp, the old phone link is cleared and they must re-bind with the new token.
+## Phone number change
+
+If the trainer changes the client's phone number (`PUT /api/client/:id`), the backend automatically resets the WhatsApp binding. The client will need to be re-invited via "Enviar convite".
+
+The edit-client sheet shows a warning when editing a connected client's phone.
 
 ## Generated Hook
 
 ```typescript
-import { usePostApiClientByIdWhatsappInvite } from '@/gen/hooks/usePostApiClientByIdWhatsappInvite';
+import { usePostApiClientByIdSendInvite } from '@/gen/hooks/usePostApiClientByIdSendInvite';
 
-const { mutateAsync: generateInvite } = usePostApiClientByIdWhatsappInvite();
-const { whatsappToken } = await generateInvite({ id: clientId });
+const { mutateAsync: sendInvite } = usePostApiClientByIdSendInvite();
+await sendInvite({ id: clientId });
 ```
 
 After backend changes run:
@@ -46,6 +51,8 @@ After backend changes run:
 bun run generate
 ```
 
-## Create Client Flow
+## Client List
 
-`src/components/clients/sheet/create-client.tsx` shows the invite link immediately after a client is created. The token comes directly from the `POST /api/client/create` response (`whatsappToken` field) — no extra call needed.
+The client list shows a **WhatsApp** column with:
+- **Conectado** (green) — client has replied and activated
+- **Pendente** (gray) — invite not yet sent or client hasn't replied

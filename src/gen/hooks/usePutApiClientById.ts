@@ -25,7 +25,7 @@ export function putApiClientByIdMutationOptions(config: Partial<RequestConfig<Pu
 }
 
 /**
- * @description Update a client by ID. Only allowed if user is the owner.
+ * @description Update a client by ID. If phone changes, WhatsApp binding is reset and trainer must re-send invite.
  * @summary Update client
  * {@link /api/client/:id}
  */

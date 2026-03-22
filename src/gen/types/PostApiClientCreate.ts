@@ -37,6 +37,10 @@ export type PostApiClientCreate200 = {
     */
     active: boolean;
     /**
+     * @type boolean
+    */
+    whatsappConnected: boolean;
+    /**
      * @type string
     */
     createdAt: string;
@@ -44,10 +48,6 @@ export type PostApiClientCreate200 = {
      * @type string
     */
     updatedAt: string;
-    /**
-     * @type string
-    */
-    whatsappToken: string;
 };
 
 export type PostApiClientCreateMutationRequest = {

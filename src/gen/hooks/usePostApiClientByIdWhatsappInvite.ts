@@ -25,8 +25,8 @@ export function postApiClientByIdWhatsappInviteMutationOptions(config: Partial<R
 }
 
 /**
- * @description Generates or regenerates a WhatsApp binding token for the client. Clears any previously bound phone.
- * @summary Regenerate WhatsApp invite
+ * @description Generates a token for the old wa.me link flow. Use send-invite instead.
+ * @summary Regenerate WhatsApp invite (legacy)
  * {@link /api/client/:id/whatsapp-invite}
  */
 export function usePostApiClientByIdWhatsappInvite<TContext>(options: 

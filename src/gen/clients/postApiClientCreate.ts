@@ -13,7 +13,7 @@ function getPostApiClientCreateUrl() {
 }
 
 /**
- * @description Create a new client with Brazilian phone validation. Returns a whatsappToken to generate the onboarding invite link.
+ * @description Create a new client. Use the send-invite endpoint to send the WhatsApp activation message.
  * @summary Create client
  * {@link /api/client/create}
  */

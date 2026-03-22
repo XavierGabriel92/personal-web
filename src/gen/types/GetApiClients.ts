@@ -41,6 +41,10 @@ export type GetApiClients200 = {
         */
         active: boolean;
         /**
+         * @type boolean
+        */
+        whatsappConnected: boolean;
+        /**
          * @type string
         */
         createdAt: string;
