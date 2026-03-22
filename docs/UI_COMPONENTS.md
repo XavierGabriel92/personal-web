@@ -18,6 +18,7 @@ components/ui/
 ├── field.tsx           # Form field components
 ├── card.tsx            # Card component
 ├── dialog.tsx          # Dialog/Modal component
+├── alert-dialog.tsx    # Confirmation/alert dialog component
 ├── sheet.tsx           # Side sheet component
 ├── table.tsx           # Table component
 ├── form.tsx            # Form wrapper
@@ -165,6 +166,77 @@ function MyDialog() {
 }
 ```
 
+## AlertDialog Component
+
+Use `AlertDialog` for non-dismissable confirmations or error messages that require explicit user acknowledgement. Unlike `Dialog`, it is not closable by clicking outside.
+
+```typescript
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+function MyAlertDialog() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+```
+
+### AlertDialog for API error feedback
+
+When a mutation returns a known API error (e.g. a duplicate-record conflict), use a controlled `AlertDialog` instead of a toast so the user must explicitly acknowledge the issue:
+
+```typescript
+const [duplicatePhoneError, setDuplicatePhoneError] = useState(false);
+
+await createClient(data, {
+  onError: (error: unknown) => {
+    const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+    if (message === "Phone number already exists") {
+      setDuplicatePhoneError(true);
+    } else {
+      toast.error("Erro ao criar aluno. Tente novamente.");
+    }
+  },
+});
+
+<AlertDialog open={duplicatePhoneError} onOpenChange={setDuplicatePhoneError}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Número já cadastrado</AlertDialogTitle>
+      <AlertDialogDescription>
+        Já existe um aluno cadastrado com esse número de telefone.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogAction>Entendi</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
 ## Sheet Component
 
 Side sheet for mobile-friendly modals:
@@ -281,6 +353,7 @@ Use shadcn CLI to add components:
 ```bash
 pnpx shadcn@latest add button
 pnpx shadcn@latest add dialog
+pnpx shadcn@latest add alert-dialog
 pnpx shadcn@latest add table
 ```
 
@@ -324,10 +397,10 @@ const buttonVariants = cva(
 - ✅ Customize components in `src/components/ui/` as needed
 - ✅ Use Field components for form inputs
 - ✅ Use Dialog for desktop modals
+- ✅ Use AlertDialog for errors or confirmations requiring explicit acknowledgement
 - ✅ Use Sheet for mobile-friendly modals
-- ✅ Use Toast for notifications
+- ✅ Use Toast for transient, non-blocking notifications; use AlertDialog for errors the user must acknowledge
 - ✅ Follow component composition patterns
 - ✅ Keep components focused and reusable
 - ✅ Use TypeScript for all components
 - ✅ Export component types for consumers
-
