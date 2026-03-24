@@ -1,7 +1,6 @@
 import LastActivities from "@/components/activities/last-activities";
 import ClientNotes from "@/components/clients/notes";
 import ProgramOverview from "@/components/routine/overview";
-import ClientPerformanceCharts from "@/components/workout-history/client-performance-charts";
 
 interface TrainerClientOverviewPageProps {
   clientId: string;
@@ -17,7 +16,6 @@ export default function TrainerClientOverviewPage({ clientId }: TrainerClientOve
         </div>
         <LastActivities clientId={clientId} />
       </div>
-      <ClientPerformanceCharts clientId={clientId} />
     </div>
   );
 }

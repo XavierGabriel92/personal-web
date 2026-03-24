@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -11,8 +10,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import type { GetApiSessionsClientByClientId200 } from "@/gen/types/GetApiSessionsClientByClientId"
+import { addDays, format, isSameDay } from "date-fns"
+import { ptBR } from "date-fns/locale"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { TypographyH2 } from "../ui/typography"
+
+type Session = GetApiSessionsClientByClientId200["sessions"][number]
 
 const chartConfig = {
   duration: {
@@ -21,24 +25,43 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-interface DurationCardProps {
-  data?: Array<{ date: string; duration: number }>
-  currentValue?: string
-  timeframe?: string
+function computeDuration(session: Session): number {
+  if (!session.completedAt) return 0
+  const diff = new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()
+  return Math.max(0, Math.round(diff / 1000 / 60))
 }
 
-export function DurationCard({
-  data = [],
-  currentValue,
-}: DurationCardProps) {
+function formatDuration(minutes: number): string {
+  if (minutes === 0) return "0 min"
+  if (minutes < 60) return `${minutes} min`
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  return m === 0 ? `${h}h` : `${h}:${String(m).padStart(2, "0")}h`
+}
+
+interface DurationCardProps {
+  sessions: Session[]
+  weekStart: Date
+}
+
+export function DurationCard({ sessions, weekStart }: DurationCardProps) {
+  const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
+
+  const data = days.map((day) => {
+    const total = sessions
+      .filter((s) => isSameDay(new Date(s.startedAt), day))
+      .reduce((sum, s) => sum + computeDuration(s), 0)
+    return { date: format(day, "EEE", { locale: ptBR }), duration: total }
+  })
+
+  const total = sessions.reduce((sum, s) => sum + computeDuration(s), 0)
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Duração</CardTitle>
         <div>
-          <TypographyH2 className="font-semibold">{currentValue ?? "—"}</TypographyH2>
-          <CardDescription>Essa semana</CardDescription>
+          <TypographyH2 className="font-semibold">{formatDuration(total)}</TypographyH2>
         </div>
       </CardHeader>
       <CardContent>
@@ -70,4 +93,3 @@ export function DurationCard({
     </Card>
   )
 }
-
