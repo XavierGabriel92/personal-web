@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 const getTabFromPath = (pathname: string) => {
   const lastSegment = pathname.split('/').pop();
   switch (lastSegment) {
-    case "program":
+    case "workout-session":
       return "tab-2";
     case "measurements":
       return "tab-3";
+    case "weight-evolution":
+      return "tab-4";
     default:
       return "tab-1";
   }
@@ -40,9 +42,9 @@ export default function ClientsTab({ clientId }: { clientId: string }) {
         </TabsTrigger>
         <TabsTrigger
           value="tab-2"
-          onClick={() => onTabChange("program")}
+          onClick={() => onTabChange("workout-session")}
         >
-          Treinos
+          Treinos realizados
         </TabsTrigger>
         {/* <TabsTrigger
           value="tab-3"
@@ -50,6 +52,12 @@ export default function ClientsTab({ clientId }: { clientId: string }) {
         >
           Medidas corporais
         </TabsTrigger> */}
+        <TabsTrigger
+          value="tab-4"
+          onClick={() => onTabChange("weight-evolution")}
+        >
+          Evolução de Carga
+        </TabsTrigger>
       </TabsList>
     </Tabs>
   )

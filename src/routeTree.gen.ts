@@ -28,7 +28,8 @@ import { Route as TrainerRoutinesRoutineIdRouteImport } from './routes/trainer/r
 import { Route as TrainerClientsClientIdRouteRouteImport } from './routes/trainer/clients/$clientId/route'
 import { Route as TrainerRoutinesRoutinesLayoutIndexRouteImport } from './routes/trainer/routines/_routinesLayout.index'
 import { Route as TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport } from './routes/trainer/routines/_routinesLayout.homug-programs'
-import { Route as TrainerClientsClientIdProgramRouteImport } from './routes/trainer/clients/$clientId/program'
+import { Route as TrainerClientsClientIdWorkoutSessionRouteImport } from './routes/trainer/clients/$clientId/workout-session'
+import { Route as TrainerClientsClientIdWeightEvolutionRouteImport } from './routes/trainer/clients/$clientId/weight-evolution'
 import { Route as TrainerClientsClientIdOverviewRouteImport } from './routes/trainer/clients/$clientId/overview'
 import { Route as TrainerClientsClientIdMeasurementsRouteImport } from './routes/trainer/clients/$clientId/measurements'
 
@@ -129,10 +130,16 @@ const TrainerRoutinesRoutinesLayoutHomugProgramsRoute =
     path: '/homug-programs',
     getParentRoute: () => TrainerRoutinesRoutinesLayoutRoute,
   } as any)
-const TrainerClientsClientIdProgramRoute =
-  TrainerClientsClientIdProgramRouteImport.update({
-    id: '/program',
-    path: '/program',
+const TrainerClientsClientIdWorkoutSessionRoute =
+  TrainerClientsClientIdWorkoutSessionRouteImport.update({
+    id: '/workout-session',
+    path: '/workout-session',
+    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+  } as any)
+const TrainerClientsClientIdWeightEvolutionRoute =
+  TrainerClientsClientIdWeightEvolutionRouteImport.update({
+    id: '/weight-evolution',
+    path: '/weight-evolution',
     getParentRoute: () => TrainerClientsClientIdRouteRoute,
   } as any)
 const TrainerClientsClientIdOverviewRoute =
@@ -165,7 +172,8 @@ export interface FileRoutesByFullPath {
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
-  '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
+  '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
+  '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
   '/trainer/routines/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
 }
@@ -186,7 +194,8 @@ export interface FileRoutesByTo {
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
-  '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
+  '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
+  '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
 }
 export interface FileRoutesById {
@@ -209,7 +218,8 @@ export interface FileRoutesById {
   '/trainer/clients/': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
-  '/trainer/clients/$clientId/program': typeof TrainerClientsClientIdProgramRoute
+  '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
+  '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/_routinesLayout/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
   '/trainer/routines/_routinesLayout/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
 }
@@ -232,7 +242,8 @@ export interface FileRouteTypes {
     | '/trainer/clients'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
-    | '/trainer/clients/$clientId/program'
+    | '/trainer/clients/$clientId/weight-evolution'
+    | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
     | '/trainer/routines/'
   fileRoutesByTo: FileRoutesByTo
@@ -253,7 +264,8 @@ export interface FileRouteTypes {
     | '/trainer/clients'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
-    | '/trainer/clients/$clientId/program'
+    | '/trainer/clients/$clientId/weight-evolution'
+    | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
   id:
     | '__root__'
@@ -275,7 +287,8 @@ export interface FileRouteTypes {
     | '/trainer/clients/'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
-    | '/trainer/clients/$clientId/program'
+    | '/trainer/clients/$clientId/weight-evolution'
+    | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/_routinesLayout/homug-programs'
     | '/trainer/routines/_routinesLayout/'
   fileRoutesById: FileRoutesById
@@ -414,11 +427,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport
       parentRoute: typeof TrainerRoutinesRoutinesLayoutRoute
     }
-    '/trainer/clients/$clientId/program': {
-      id: '/trainer/clients/$clientId/program'
-      path: '/program'
-      fullPath: '/trainer/clients/$clientId/program'
-      preLoaderRoute: typeof TrainerClientsClientIdProgramRouteImport
+    '/trainer/clients/$clientId/workout-session': {
+      id: '/trainer/clients/$clientId/workout-session'
+      path: '/workout-session'
+      fullPath: '/trainer/clients/$clientId/workout-session'
+      preLoaderRoute: typeof TrainerClientsClientIdWorkoutSessionRouteImport
+      parentRoute: typeof TrainerClientsClientIdRouteRoute
+    }
+    '/trainer/clients/$clientId/weight-evolution': {
+      id: '/trainer/clients/$clientId/weight-evolution'
+      path: '/weight-evolution'
+      fullPath: '/trainer/clients/$clientId/weight-evolution'
+      preLoaderRoute: typeof TrainerClientsClientIdWeightEvolutionRouteImport
       parentRoute: typeof TrainerClientsClientIdRouteRoute
     }
     '/trainer/clients/$clientId/overview': {
@@ -459,7 +479,8 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface TrainerClientsClientIdRouteRouteChildren {
   TrainerClientsClientIdMeasurementsRoute: typeof TrainerClientsClientIdMeasurementsRoute
   TrainerClientsClientIdOverviewRoute: typeof TrainerClientsClientIdOverviewRoute
-  TrainerClientsClientIdProgramRoute: typeof TrainerClientsClientIdProgramRoute
+  TrainerClientsClientIdWeightEvolutionRoute: typeof TrainerClientsClientIdWeightEvolutionRoute
+  TrainerClientsClientIdWorkoutSessionRoute: typeof TrainerClientsClientIdWorkoutSessionRoute
 }
 
 const TrainerClientsClientIdRouteRouteChildren: TrainerClientsClientIdRouteRouteChildren =
@@ -467,7 +488,10 @@ const TrainerClientsClientIdRouteRouteChildren: TrainerClientsClientIdRouteRoute
     TrainerClientsClientIdMeasurementsRoute:
       TrainerClientsClientIdMeasurementsRoute,
     TrainerClientsClientIdOverviewRoute: TrainerClientsClientIdOverviewRoute,
-    TrainerClientsClientIdProgramRoute: TrainerClientsClientIdProgramRoute,
+    TrainerClientsClientIdWeightEvolutionRoute:
+      TrainerClientsClientIdWeightEvolutionRoute,
+    TrainerClientsClientIdWorkoutSessionRoute:
+      TrainerClientsClientIdWorkoutSessionRoute,
   }
 
 const TrainerClientsClientIdRouteRouteWithChildren =

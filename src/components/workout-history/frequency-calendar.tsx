@@ -1,7 +1,9 @@
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import SessionCard from "@/components/workout-history/session-card";
 import { getApiSessionsClientByClientIdQueryOptions } from "@/gen/hooks/useGetApiSessionsClientByClientId";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { ptBR } from "date-fns/locale";
 import { useState } from "react";
 
 interface WorkoutFrequencyCalendarProps {
@@ -53,6 +55,9 @@ export default function WorkoutFrequencyCalendar({ clientId }: WorkoutFrequencyC
 
   const workoutDays = Array.from(sessionsByDate.keys()).map((key) => new Date(`${key}T12:00:00`));
 
+  const totalSessions = data.sessions.length;
+  const monthName = displayedMonth.toLocaleString("pt-BR", { month: "long" });
+
   return (
     <div className="flex gap-6 items-start">
       <div className="flex flex-col gap-2 w-fit">
@@ -72,10 +77,27 @@ export default function WorkoutFrequencyCalendar({ clientId }: WorkoutFrequencyC
               setSelectedSession(null);
             }
           }}
+          locale={ptBR}
           className="rounded-md border shrink-0"
+          footer={
+            <div className="pt-3 mt-1 border-t flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="size-3 rounded-sm bg-primary/20 shrink-0" />
+                Clique para ver os detalhes
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs h-7 px-2"
+                onClick={() => setDisplayedMonth(new Date())}
+              >
+                Hoje
+              </Button>
+            </div>
+          }
         />
-        <p className="text-xs text-muted-foreground text-center w-0 min-w-full">
-          Clique em um dia para ver os detalhes do treino
+        <p className="text-sm font-medium">
+          {totalSessions} treino{totalSessions !== 1 ? "s" : ""} em {monthName}
         </p>
       </div>
 
