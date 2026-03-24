@@ -50,6 +50,16 @@ export type PostApiClientCreate200 = {
     updatedAt: string;
 };
 
+/**
+ * @description Response for status 409
+*/
+export type PostApiClientCreate409 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
 export type PostApiClientCreateMutationRequest = {
     /**
      * @minLength 1
@@ -80,5 +90,5 @@ export type PostApiClientCreateMutationResponse = PostApiClientCreate200;
 export type PostApiClientCreateMutation = {
     Response: PostApiClientCreate200;
     Request: PostApiClientCreateMutationRequest;
-    Errors: any;
+    Errors: PostApiClientCreate409;
 };

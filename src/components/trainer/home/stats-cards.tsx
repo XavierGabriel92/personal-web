@@ -21,17 +21,17 @@ export default function StatsCards() {
     {
       label: "Total de Alunos",
       value: total,
-      onClick: () => navigate({ to: "/trainer/clients" }),
+      onClick: () => navigate({ to: "/trainer/analytics" }),
     },
     {
       label: "Ativos nos últimos 7 dias",
       value: active,
-      onClick: () => navigate({ to: "/trainer/clients", search: { filter: "active" } }),
+      onClick: () => navigate({ to: "/trainer/analytics" }),
     },
     {
       label: "Inativos nos últimos 7 dias",
       value: inactive,
-      onClick: () => navigate({ to: "/trainer/clients", search: { filter: "inactive" } }),
+      onClick: () => navigate({ to: "/trainer/analytics" }),
     },
   ];
 

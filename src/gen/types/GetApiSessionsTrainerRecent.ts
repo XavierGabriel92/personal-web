@@ -4,6 +4,14 @@
 */
 
 
+export type GetApiSessionsTrainerRecentQueryParams = {
+    /**
+     * @default 7
+     * @type number | undefined
+    */
+    days?: number;
+};
+
 /**
  * @description Response for status 200
 */
@@ -27,5 +35,6 @@ export type GetApiSessionsTrainerRecentQueryResponse = GetApiSessionsTrainerRece
 
 export type GetApiSessionsTrainerRecentQuery = {
     Response: GetApiSessionsTrainerRecent200;
+    QueryParams: GetApiSessionsTrainerRecentQueryParams;
     Errors: any;
 };

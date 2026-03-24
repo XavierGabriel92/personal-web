@@ -16,6 +16,7 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrainerHomeRouteImport } from './routes/trainer/home'
 import { Route as TrainerExercisesRouteImport } from './routes/trainer/exercises'
+import { Route as TrainerAnalyticsRouteImport } from './routes/trainer/analytics'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
@@ -60,6 +61,11 @@ const TrainerHomeRoute = TrainerHomeRouteImport.update({
 const TrainerExercisesRoute = TrainerExercisesRouteImport.update({
   id: '/exercises',
   path: '/exercises',
+  getParentRoute: () => TrainerRouteRoute,
+} as any)
+const TrainerAnalyticsRoute = TrainerAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
+  '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
+    | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
+    | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/_auth/reset-password'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
+    | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
@@ -316,6 +328,13 @@ declare module '@tanstack/react-router' {
       path: '/exercises'
       fullPath: '/trainer/exercises'
       preLoaderRoute: typeof TrainerExercisesRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/analytics': {
+      id: '/trainer/analytics'
+      path: '/analytics'
+      fullPath: '/trainer/analytics'
+      preLoaderRoute: typeof TrainerAnalyticsRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
     '/_auth/sign-up': {
@@ -488,6 +507,7 @@ const TrainerRoutinesRouteWithChildren = TrainerRoutinesRoute._addFileChildren(
 )
 
 interface TrainerRouteRouteChildren {
+  TrainerAnalyticsRoute: typeof TrainerAnalyticsRoute
   TrainerExercisesRoute: typeof TrainerExercisesRoute
   TrainerHomeRoute: typeof TrainerHomeRoute
   TrainerClientsClientIdRouteRoute: typeof TrainerClientsClientIdRouteRouteWithChildren
@@ -498,6 +518,7 @@ interface TrainerRouteRouteChildren {
 }
 
 const TrainerRouteRouteChildren: TrainerRouteRouteChildren = {
+  TrainerAnalyticsRoute: TrainerAnalyticsRoute,
   TrainerExercisesRoute: TrainerExercisesRoute,
   TrainerHomeRoute: TrainerHomeRoute,
   TrainerClientsClientIdRouteRoute:

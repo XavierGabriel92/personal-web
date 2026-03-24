@@ -23,6 +23,7 @@ routes/
 ├── trainer/                 # Trainer layout route
 │   ├── route.tsx           # Trainer layout (requires auth)
 │   ├── home.tsx            # Trainer dashboard
+│   ├── analytics.tsx       # Analytics dashboard
 │   ├── exercises.tsx       # Exercises list
 │   ├── clients.tsx         # Clients list
 │   ├── routines/           # Routines routes
@@ -62,7 +63,7 @@ The root route provides:
 **File**: `src/routes/trainer/route.tsx`
 
 ```typescript
-export const Route = createFileRoute("/trainer")({
+export const Route = createFileRoute("/trainer")({{
   component: TrainerDashboardLayout,
   beforeLoad: async () => {
     const data = await cachedSession();
@@ -80,7 +81,7 @@ Protected routes use `beforeLoad` to check authentication before rendering.
 **File**: `src/routes/_auth/route.tsx`
 
 ```typescript
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/_auth")({{
   component: Layout,
   beforeLoad: async () => {
     const data = await cachedSession();
@@ -120,7 +121,7 @@ navigate({ to: "/trainer/exercises" });
 Data loading before route renders (using React Query Suspense):
 
 ```typescript
-export const Route = createFileRoute("/trainer/routines/$routineId")({
+export const Route = createFileRoute("/trainer/routines/$routineId")({{
   loader: ({ params }) => {
     return queryClient.ensureQueryData({
       queryKey: getApiRoutineByIdSuspenseQueryKey(params.routineId),
@@ -170,7 +171,7 @@ const router = createRouter({
 
 ```typescript
 // Route file: routes/trainer/routines/$routineId.tsx
-export const Route = createFileRoute("/trainer/routines/$routineId")({
+export const Route = createFileRoute("/trainer/routines/$routineId")({{
   component: RoutineDetail,
 });
 
@@ -267,4 +268,3 @@ Use the existing `<Spinner />` component (`@/components/ui/spinner`) as the fall
 - ✅ Use route parameters for dynamic segments
 - ✅ Use search parameters for filters/pagination
 - ✅ Keep route components focused and small
-

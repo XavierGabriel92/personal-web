@@ -112,6 +112,7 @@ User (Trainer)
 | `/trainer/routines` | Trainer's program library |
 | `/trainer/routines/:id` | Program editor: add/edit/reorder workouts and exercises |
 | `/trainer/routines/homug-programs` | Browse system template programs |
+| `/trainer/analytics` | Analytics: client activity counts, active/inactive breakdown by period |
 
 ---
 

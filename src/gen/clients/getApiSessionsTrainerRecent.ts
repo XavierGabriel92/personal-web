@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiSessionsTrainerRecentQueryResponse } from "../types/GetApiSessionsTrainerRecent.ts";
+import type { GetApiSessionsTrainerRecentQueryResponse, GetApiSessionsTrainerRecentQueryParams } from "../types/GetApiSessionsTrainerRecent.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getGetApiSessionsTrainerRecentUrl() {
@@ -13,13 +13,13 @@ function getGetApiSessionsTrainerRecentUrl() {
 }
 
 /**
- * @description Get all workout sessions from the last 7 days for all clients of the authenticated trainer.
- * @summary List recent sessions for trainer
+ * @description Get all workout sessions within the last N days for all clients of the authenticated trainer. Defaults to 7 days.
+ * @summary List sessions for trainer by period
  * {@link /api/sessions/trainer/recent}
  */
-export async function getApiSessionsTrainerRecent(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
+export async function getApiSessionsTrainerRecent(params?: GetApiSessionsTrainerRecentQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<GetApiSessionsTrainerRecentQueryResponse, ResponseErrorConfig<Error>, unknown>({ method : "GET", url : getGetApiSessionsTrainerRecentUrl().url.toString(), ... requestConfig })  
+  const res = await request<GetApiSessionsTrainerRecentQueryResponse, ResponseErrorConfig<Error>, unknown>({ method : "GET", url : getGetApiSessionsTrainerRecentUrl().url.toString(), params, ... requestConfig })  
   return res.data
 }

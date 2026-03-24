@@ -4,34 +4,34 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiSessionsTrainerRecentQueryResponse } from "../types/GetApiSessionsTrainerRecent.ts";
+import type { GetApiSessionsTrainerRecentQueryResponse, GetApiSessionsTrainerRecentQueryParams } from "../types/GetApiSessionsTrainerRecent.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 import { getApiSessionsTrainerRecent } from "../clients/getApiSessionsTrainerRecent.ts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-export const getApiSessionsTrainerRecentSuspenseQueryKey = () => [{ url: '/api/sessions/trainer/recent' }] as const
+export const getApiSessionsTrainerRecentSuspenseQueryKey = (params?: GetApiSessionsTrainerRecentQueryParams) => [{ url: '/api/sessions/trainer/recent' }, ...(params ? [params] : [])] as const
 
 export type GetApiSessionsTrainerRecentSuspenseQueryKey = ReturnType<typeof getApiSessionsTrainerRecentSuspenseQueryKey>
 
-export function getApiSessionsTrainerRecentSuspenseQueryOptions(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
-  const queryKey = getApiSessionsTrainerRecentSuspenseQueryKey()
+export function getApiSessionsTrainerRecentSuspenseQueryOptions(params?: GetApiSessionsTrainerRecentQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
+  const queryKey = getApiSessionsTrainerRecentSuspenseQueryKey(params)
   return queryOptions<GetApiSessionsTrainerRecentQueryResponse, ResponseErrorConfig<Error>, GetApiSessionsTrainerRecentQueryResponse, typeof queryKey>({
  
    queryKey,
    queryFn: async ({ signal }) => {
       config.signal = signal
-      return getApiSessionsTrainerRecent(config)
+      return getApiSessionsTrainerRecent(params, config)
    },
   })
 }
 
 /**
- * @description Get all workout sessions from the last 7 days for all clients of the authenticated trainer.
- * @summary List recent sessions for trainer
+ * @description Get all workout sessions within the last N days for all clients of the authenticated trainer. Defaults to 7 days.
+ * @summary List sessions for trainer by period
  * {@link /api/sessions/trainer/recent}
  */
-export function useGetApiSessionsTrainerRecentSuspense<TData = GetApiSessionsTrainerRecentQueryResponse, TQueryKey extends QueryKey = GetApiSessionsTrainerRecentSuspenseQueryKey>(options: 
+export function useGetApiSessionsTrainerRecentSuspense<TData = GetApiSessionsTrainerRecentQueryResponse, TQueryKey extends QueryKey = GetApiSessionsTrainerRecentSuspenseQueryKey>(params?: GetApiSessionsTrainerRecentQueryParams, options: 
 {
   query?: Partial<UseSuspenseQueryOptions<GetApiSessionsTrainerRecentQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch }
@@ -39,10 +39,10 @@ export function useGetApiSessionsTrainerRecentSuspense<TData = GetApiSessionsTra
  = {}) {
   const { query: queryConfig = {}, client: config = {} } = options ?? {}
   const { client: queryClient, ...queryOptions } = queryConfig
-  const queryKey = queryOptions?.queryKey ?? getApiSessionsTrainerRecentSuspenseQueryKey()
+  const queryKey = queryOptions?.queryKey ?? getApiSessionsTrainerRecentSuspenseQueryKey(params)
 
   const query = useSuspenseQuery({
-   ...getApiSessionsTrainerRecentSuspenseQueryOptions(config),
+   ...getApiSessionsTrainerRecentSuspenseQueryOptions(params, config),
    queryKey,
    ...queryOptions
   } as unknown as UseSuspenseQueryOptions, queryClient) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & { queryKey: TQueryKey }

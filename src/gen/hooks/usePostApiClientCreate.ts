@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PostApiClientCreateMutationRequest, PostApiClientCreateMutationResponse } from "../types/PostApiClientCreate.ts";
+import type { PostApiClientCreateMutationRequest, PostApiClientCreateMutationResponse, PostApiClientCreate409 } from "../types/PostApiClientCreate.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { UseMutationOptions, UseMutationResult, QueryClient } from "@tanstack/react-query";
 import { postApiClientCreate } from "../clients/postApiClientCreate.ts";
@@ -16,7 +16,7 @@ export type PostApiClientCreateMutationKey = ReturnType<typeof postApiClientCrea
 
 export function postApiClientCreateMutationOptions(config: Partial<RequestConfig<PostApiClientCreateMutationRequest>> & { client?: typeof fetch } = {}) {
   const mutationKey = postApiClientCreateMutationKey()
-  return mutationOptions<PostApiClientCreateMutationResponse, ResponseErrorConfig<Error>, {data: PostApiClientCreateMutationRequest}, typeof mutationKey>({
+  return mutationOptions<PostApiClientCreateMutationResponse, ResponseErrorConfig<PostApiClientCreate409>, {data: PostApiClientCreateMutationRequest}, typeof mutationKey>({
     mutationKey,
     mutationFn: async({ data }) => {
       return postApiClientCreate(data, config)
@@ -25,13 +25,13 @@ export function postApiClientCreateMutationOptions(config: Partial<RequestConfig
 }
 
 /**
- * @description Create a new client. Use the send-invite endpoint to send the WhatsApp activation message.
+ * @description Create a new client. Use the send-invite endpoint to send the WhatsApp activation message. Returns 409 if the phone number is already registered.
  * @summary Create client
  * {@link /api/client/create}
  */
 export function usePostApiClientCreate<TContext>(options: 
 {
-  mutation?: UseMutationOptions<PostApiClientCreateMutationResponse, ResponseErrorConfig<Error>, {data: PostApiClientCreateMutationRequest}, TContext> & { client?: QueryClient },
+  mutation?: UseMutationOptions<PostApiClientCreateMutationResponse, ResponseErrorConfig<PostApiClientCreate409>, {data: PostApiClientCreateMutationRequest}, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig<PostApiClientCreateMutationRequest>> & { client?: typeof fetch },
 }
  = {}) {
@@ -39,11 +39,11 @@ export function usePostApiClientCreate<TContext>(options:
   const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey = mutationOptions.mutationKey ?? postApiClientCreateMutationKey()
 
-  const baseOptions = postApiClientCreateMutationOptions(config) as UseMutationOptions<PostApiClientCreateMutationResponse, ResponseErrorConfig<Error>, {data: PostApiClientCreateMutationRequest}, TContext>
+  const baseOptions = postApiClientCreateMutationOptions(config) as UseMutationOptions<PostApiClientCreateMutationResponse, ResponseErrorConfig<PostApiClientCreate409>, {data: PostApiClientCreateMutationRequest}, TContext>
 
-  return useMutation<PostApiClientCreateMutationResponse, ResponseErrorConfig<Error>, {data: PostApiClientCreateMutationRequest}, TContext>({
+  return useMutation<PostApiClientCreateMutationResponse, ResponseErrorConfig<PostApiClientCreate409>, {data: PostApiClientCreateMutationRequest}, TContext>({
     ...baseOptions,
     mutationKey,
     ...mutationOptions,
-  }, queryClient) as UseMutationResult<PostApiClientCreateMutationResponse, ResponseErrorConfig<Error>, {data: PostApiClientCreateMutationRequest}, TContext>
+  }, queryClient) as UseMutationResult<PostApiClientCreateMutationResponse, ResponseErrorConfig<PostApiClientCreate409>, {data: PostApiClientCreateMutationRequest}, TContext>
 }
