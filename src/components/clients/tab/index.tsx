@@ -42,7 +42,7 @@ export default function ClientsTab({ clientId }: { clientId: string }) {
           value="tab-2"
           onClick={() => onTabChange("program")}
         >
-          Programa
+          Treinos
         </TabsTrigger>
         {/* <TabsTrigger
           value="tab-3"

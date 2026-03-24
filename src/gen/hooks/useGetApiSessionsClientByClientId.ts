@@ -27,8 +27,8 @@ export function getApiSessionsClientByClientIdQueryOptions(clientId: GetApiSessi
 }
 
 /**
- * @description Get workout sessions for a client. Only accessible by the trainer who owns the client.
- * @summary List sessions for a client
+ * @description Get workout sessions for a client within a date range. Only accessible by the trainer who owns the client.
+ * @summary List sessions for a client by date range
  * {@link /api/sessions/client/:clientId}
  */
 export function useGetApiSessionsClientByClientId<TData = GetApiSessionsClientByClientIdQueryResponse, TQueryData = GetApiSessionsClientByClientIdQueryResponse, TQueryKey extends QueryKey = GetApiSessionsClientByClientIdQueryKey>(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], params: GetApiSessionsClientByClientIdQueryParams, options: 

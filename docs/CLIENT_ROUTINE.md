@@ -6,14 +6,52 @@ Each client can have one **active routine** — a cloned copy of a trainer's lib
 
 See the backend doc at `personal-ai-api/docs/client-routine.md` for the data model and cloning logic.
 
+## Client Program Page
+
+`src/pages/trainer/client/program.tsx` renders the trainer's view of a client's training. It currently shows a `WorkoutFrequencyCalendar` — a month-based calendar that highlights days the client trained and shows session details on click.
+
+```tsx
+// src/pages/trainer/client/program.tsx
+export default function TrainerClientProgramsPage({ clientId }: TrainerClientProgramsPageProps) {
+  return (
+    <Suspense fallback={<Spinner className="size-6" />}>
+      <WorkoutFrequencyCalendar clientId={clientId} />
+    </Suspense>
+  );
+}
+```
+
 ## Components
+
+### `WorkoutFrequencyCalendar` (`src/components/workout-history/frequency-calendar.tsx`)
+
+Shows a shadcn `<Calendar>` with workout days highlighted. Clicking a highlighted day reveals a `SessionCard` with that session's details.
+
+- Fetches sessions for the **currently displayed month** — re-fetches whenever the trainer navigates months.
+- Uses `useSuspenseQuery` with the generated query options directly (not the `useXxxSuspense` hook shorthand):
+
+```tsx
+import { getApiSessionsClientByClientIdQueryOptions } from '@/gen/hooks/useGetApiSessionsClientByClientId';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+const { data } = useSuspenseQuery(
+  getApiSessionsClientByClientIdQueryOptions(clientId, { since, until })
+);
+```
+
+This pattern (passing query options to `useSuspenseQuery` directly) is equivalent to calling the generated `useGetApiSessionsClientByClientIdSuspense` hook and is useful when you need to construct the query options object separately before calling the hook.
+
+- `since` / `until` are computed from the first/last millisecond of the displayed month.
+- Workout days are highlighted with `modifiers={{ workout: workoutDays }}` on the Calendar component.
+- Selected session is tracked in local state (`useState<Session | null>`).
+
+### `SessionCard` (`src/components/workout-history/session-card.tsx`)
+
+Reusable card that renders a single workout session: name, relative timestamp, duration, total volume, and a collapsible exercise list with sets table. Used by both `WorkoutFrequencyCalendar` and `WorkoutHistoryList`.
 
 ### `ActiveProgram` (`src/components/routine/active-routine.tsx`)
 
-Displayed on the client program page. Shows:
-- **Loading state**: spinner while fetching routine by ID (uses non-suspense hook with `enabled` guard)
-- **Active routine**: name, workout count, duration, "Editar programa" link to `/trainer/routines/$routineId`
-- **Empty state**: "Criar programa" button that opens `SelectRoutineForClientDialog`
+Shows the client's currently assigned routine (name, workout count, duration) with an edit link, or an empty state with a "Criar programa" button. This component is no longer rendered on the default client program tab — it may be embedded in other contexts.
 
 Data flow:
 1. `useGetApiClientByIdSuspense(clientId)` → get `activeRoutineId`
@@ -51,12 +89,12 @@ This triggers a refetch of the client, which updates `activeRoutineId`, causing 
 
 ## Suspense Boundaries
 
-`ActiveProgram` uses `useGetApiClientByIdSuspense` internally, so it must be wrapped in a `<Suspense>` boundary by its parent:
+`WorkoutFrequencyCalendar` uses `useSuspenseQuery` internally, so it must be wrapped in a `<Suspense>` boundary by its parent:
 
 ```tsx
 // src/pages/trainer/client/program.tsx
 <Suspense fallback={<Spinner className="size-6" />}>
-  <ActiveProgram clientId={clientId} />
+  <WorkoutFrequencyCalendar clientId={clientId} />
 </Suspense>
 ```
 
@@ -74,3 +112,4 @@ Relevant generated hooks:
 - `usePostApiRoutineCreate` — create a new routine (accepts optional `clientId`)
 - `useGetApiRoutineById` — fetch routine by ID (used for active routine display; non-suspense with `enabled` guard)
 - `useGetApiClientByIdSuspense` — fetch client with `activeRoutineId`
+- `getApiSessionsClientByClientIdQueryOptions` — query options factory for session list (used with `useSuspenseQuery` directly for date-range filtered calendar views)

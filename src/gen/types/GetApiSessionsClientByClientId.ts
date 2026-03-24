@@ -13,15 +13,13 @@ export type GetApiSessionsClientByClientIdPathParams = {
 
 export type GetApiSessionsClientByClientIdQueryParams = {
     /**
-     * @default 10
-     * @type number
+     * @type string
     */
-    limit: number;
+    since: string;
     /**
-     * @default 0
-     * @type number
+     * @type string
     */
-    offset: number;
+    until: string;
 };
 
 export const sessionsSourceEnum = {

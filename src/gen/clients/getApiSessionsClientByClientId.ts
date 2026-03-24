@@ -13,8 +13,8 @@ function getGetApiSessionsClientByClientIdUrl(clientId: GetApiSessionsClientByCl
 }
 
 /**
- * @description Get workout sessions for a client. Only accessible by the trainer who owns the client.
- * @summary List sessions for a client
+ * @description Get workout sessions for a client within a date range. Only accessible by the trainer who owns the client.
+ * @summary List sessions for a client by date range
  * {@link /api/sessions/client/:clientId}
  */
 export async function getApiSessionsClientByClientId(clientId: GetApiSessionsClientByClientIdPathParams["clientId"], params: GetApiSessionsClientByClientIdQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {

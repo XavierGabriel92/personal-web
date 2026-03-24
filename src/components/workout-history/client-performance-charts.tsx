@@ -102,7 +102,9 @@ interface ClientPerformanceChartsProps {
 }
 
 export default function ClientPerformanceCharts({ clientId }: ClientPerformanceChartsProps) {
-  const { data } = useGetApiSessionsClientByClientId(clientId, { limit: 50, offset: 0 });
+  const until = new Date().toISOString();
+  const since = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  const { data } = useGetApiSessionsClientByClientId(clientId, { since, until });
   const sessions = data?.sessions ?? [];
 
   const { volumeData, setsData, durationData } = buildWeeklyStats(sessions);

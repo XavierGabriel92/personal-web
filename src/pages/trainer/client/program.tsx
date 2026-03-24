@@ -1,7 +1,5 @@
-import ActiveProgram from "@/components/routine/active-routine";
 import { Spinner } from "@/components/ui/spinner";
-import { TypographyH3 } from "@/components/ui/typography";
-import WorkoutHistoryList from "@/components/workout-history/list";
+import WorkoutFrequencyCalendar from "@/components/workout-history/frequency-calendar";
 import { Suspense } from "react";
 
 interface TrainerClientProgramsPageProps {
@@ -9,18 +7,9 @@ interface TrainerClientProgramsPageProps {
 }
 
 export default function TrainerClientProgramsPage({ clientId }: TrainerClientProgramsPageProps) {
-  return <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
-    <div className="space-y-4 order-2 md:order-1">
-      <TypographyH3 className="font-medium">Histórico de treinos</TypographyH3>
-      <Suspense fallback={<Spinner className="size-6" />}>
-        <WorkoutHistoryList clientId={clientId} />
-      </Suspense>
-    </div>
-    <div className="space-y-4 block md:sticky top-0 self-start order-1 md:order-2">
-      <TypographyH3 className="font-medium">Programa ativo</TypographyH3>
-      <Suspense fallback={<Spinner className="size-6" />}>
-        <ActiveProgram clientId={clientId} />
-      </Suspense>
-    </div>
-  </div>
+  return (
+    <Suspense fallback={<Spinner className="size-6" />}>
+      <WorkoutFrequencyCalendar clientId={clientId} />
+    </Suspense>
+  );
 }
