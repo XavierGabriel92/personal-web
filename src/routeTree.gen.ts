@@ -30,6 +30,7 @@ import { Route as TrainerRoutinesRoutinesLayoutIndexRouteImport } from './routes
 import { Route as TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport } from './routes/trainer/routines/_routinesLayout.homug-programs'
 import { Route as TrainerClientsClientIdWorkoutSessionRouteImport } from './routes/trainer/clients/$clientId/workout-session'
 import { Route as TrainerClientsClientIdWeightEvolutionRouteImport } from './routes/trainer/clients/$clientId/weight-evolution'
+import { Route as TrainerClientsClientIdProgramHistoryRouteImport } from './routes/trainer/clients/$clientId/program-history'
 import { Route as TrainerClientsClientIdOverviewRouteImport } from './routes/trainer/clients/$clientId/overview'
 import { Route as TrainerClientsClientIdMeasurementsRouteImport } from './routes/trainer/clients/$clientId/measurements'
 
@@ -142,6 +143,12 @@ const TrainerClientsClientIdWeightEvolutionRoute =
     path: '/weight-evolution',
     getParentRoute: () => TrainerClientsClientIdRouteRoute,
   } as any)
+const TrainerClientsClientIdProgramHistoryRoute =
+  TrainerClientsClientIdProgramHistoryRouteImport.update({
+    id: '/program-history',
+    path: '/program-history',
+    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+  } as any)
 const TrainerClientsClientIdOverviewRoute =
   TrainerClientsClientIdOverviewRouteImport.update({
     id: '/overview',
@@ -172,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
+  '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
@@ -194,6 +202,7 @@ export interface FileRoutesByTo {
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
+  '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
@@ -218,6 +227,7 @@ export interface FileRoutesById {
   '/trainer/clients/': typeof TrainerClientsIndexRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
+  '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/_routinesLayout/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/trainer/clients'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
+    | '/trainer/clients/$clientId/program-history'
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/trainer/clients'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
+    | '/trainer/clients/$clientId/program-history'
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
@@ -287,6 +299,7 @@ export interface FileRouteTypes {
     | '/trainer/clients/'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
+    | '/trainer/clients/$clientId/program-history'
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/_routinesLayout/homug-programs'
@@ -441,6 +454,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerClientsClientIdWeightEvolutionRouteImport
       parentRoute: typeof TrainerClientsClientIdRouteRoute
     }
+    '/trainer/clients/$clientId/program-history': {
+      id: '/trainer/clients/$clientId/program-history'
+      path: '/program-history'
+      fullPath: '/trainer/clients/$clientId/program-history'
+      preLoaderRoute: typeof TrainerClientsClientIdProgramHistoryRouteImport
+      parentRoute: typeof TrainerClientsClientIdRouteRoute
+    }
     '/trainer/clients/$clientId/overview': {
       id: '/trainer/clients/$clientId/overview'
       path: '/overview'
@@ -479,6 +499,7 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface TrainerClientsClientIdRouteRouteChildren {
   TrainerClientsClientIdMeasurementsRoute: typeof TrainerClientsClientIdMeasurementsRoute
   TrainerClientsClientIdOverviewRoute: typeof TrainerClientsClientIdOverviewRoute
+  TrainerClientsClientIdProgramHistoryRoute: typeof TrainerClientsClientIdProgramHistoryRoute
   TrainerClientsClientIdWeightEvolutionRoute: typeof TrainerClientsClientIdWeightEvolutionRoute
   TrainerClientsClientIdWorkoutSessionRoute: typeof TrainerClientsClientIdWorkoutSessionRoute
 }
@@ -488,6 +509,8 @@ const TrainerClientsClientIdRouteRouteChildren: TrainerClientsClientIdRouteRoute
     TrainerClientsClientIdMeasurementsRoute:
       TrainerClientsClientIdMeasurementsRoute,
     TrainerClientsClientIdOverviewRoute: TrainerClientsClientIdOverviewRoute,
+    TrainerClientsClientIdProgramHistoryRoute:
+      TrainerClientsClientIdProgramHistoryRoute,
     TrainerClientsClientIdWeightEvolutionRoute:
       TrainerClientsClientIdWeightEvolutionRoute,
     TrainerClientsClientIdWorkoutSessionRoute:

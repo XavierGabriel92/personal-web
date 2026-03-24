@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useGetApiClients } from "@/gen/hooks/useGetApiClients";
 import { useGetApiSessionsTrainerRecent } from "@/gen/hooks/useGetApiSessionsTrainerRecent";
 import { startOfDay } from "date-fns";
@@ -45,18 +46,15 @@ export default function AnalyticsDashboard() {
     <div className="space-y-6">
       <div className="flex gap-2">
         {PERIOD_OPTIONS.map((option) => (
-          <button
-            type="button"
+          <Button
             key={option.value}
+            variant={period === option.value ? "default" : "secondary"}
+            size="sm"
+            className="rounded-full"
             onClick={() => setPeriod(option.value)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              period === option.value
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
-            }`}
           >
             {option.label}
-          </button>
+          </Button>
         ))}
       </div>
 

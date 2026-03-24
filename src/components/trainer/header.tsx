@@ -1,4 +1,5 @@
 import { ModeToggle } from "@/components/theme-provider/mode-toggle";
+import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useGetApiClients } from "@/gen/hooks/useGetApiClients";
@@ -20,16 +21,16 @@ function ClientSearchList({ search }: { search: string }) {
 				<p className="p-3 text-sm text-muted-foreground">Nenhum aluno encontrado</p>
 			) : (
 				clients.slice(0, 6).map((c) => (
-					<button
-						type="button"
+					<Button
 						key={c.id}
-						className="w-full px-3 py-2 text-left text-sm hover:bg-muted"
+						variant="ghost"
+						className="w-full justify-start px-3 py-2 h-auto text-sm rounded-none"
 						onClick={() =>
 							navigate({ to: "/trainer/clients/$clientId/overview", params: { clientId: c.id } })
 						}
 					>
 						{c.name}
-					</button>
+					</Button>
 				))
 			)}
 		</div>

@@ -12,6 +12,8 @@ const getTabFromPath = (pathname: string) => {
       return "tab-3";
     case "weight-evolution":
       return "tab-4";
+    case "program-history":
+      return "tab-5";
     default:
       return "tab-1";
   }
@@ -57,6 +59,12 @@ export default function ClientsTab({ clientId }: { clientId: string }) {
           onClick={() => onTabChange("weight-evolution")}
         >
           Evolução de Carga
+        </TabsTrigger>
+        <TabsTrigger
+          value="tab-5"
+          onClick={() => onTabChange("program-history")}
+        >
+          Histórico de programas
         </TabsTrigger>
       </TabsList>
     </Tabs>

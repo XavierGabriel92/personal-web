@@ -148,21 +148,16 @@ export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
                 <ul className="flex flex-col gap-2">
                   {filteredExercises.map((ex) => (
                     <li key={ex.id}>
-                      <button
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        className={`w-full justify-start h-auto py-1.5 ${selectedExerciseId === ex.id ? "bg-primary/10 text-primary font-medium hover:bg-primary/15 hover:text-primary" : ""}`}
                         onClick={() => setSelectedExerciseId(ex.id)}
-                        className={`w-full text-left text-sm px-3 py-1.5 rounded-md transition-colors hover:bg-accent cursor-pointer ${selectedExerciseId === ex.id
-                            ? "bg-primary/10 text-primary font-medium"
-                            : "text-foreground"
-                          }`}
                       >
-                        <div className="flex items-center gap-2">
-                          {ex.thumbnailUrl && (
-                            <img src={ex.thumbnailUrl} alt={ex.name} className="size-10 rounded-full object-cover shrink-0 bg-muted" />
-                          )}
-                          <span>{ex.name}</span>
-                        </div>
-                      </button>
+                        {ex.thumbnailUrl && (
+                          <img src={ex.thumbnailUrl} alt={ex.name} className="size-10 rounded-full object-cover shrink-0 bg-muted" />
+                        )}
+                        <span>{ex.name}</span>
+                      </Button>
                     </li>
                   ))}
                 </ul>

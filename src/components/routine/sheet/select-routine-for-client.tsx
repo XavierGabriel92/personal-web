@@ -1,3 +1,13 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,15 +34,24 @@ import { toast } from "sonner";
 
 interface SelectRoutineForClientDialogProps {
   clientId: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  requireConfirmation?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export default function SelectRoutineForClientDialog({
   clientId,
   children,
+  requireConfirmation = false,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: SelectRoutineForClientDialogProps) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = controlledOnOpenChange ?? setInternalOpen;
   const [selectedRoutineId, setSelectedRoutineId] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const navigate = useNavigate();
 
   const { data } = useGetApiRoutinesSuspense();
@@ -40,6 +59,15 @@ export default function SelectRoutineForClientDialog({
   const { mutateAsync: createRoutine, isPending: isCreating } = usePostApiRoutineCreate();
 
   const isPending = isAssigning || isCreating;
+
+  const handleConfirmClick = () => {
+    if (!selectedRoutineId) return;
+    if (requireConfirmation) {
+      setConfirmOpen(true);
+    } else {
+      handleConfirm();
+    }
+  };
 
   const handleConfirm = async () => {
     if (!selectedRoutineId) return;
@@ -97,7 +125,7 @@ export default function SelectRoutineForClientDialog({
         if (!isOpen) setSelectedRoutineId(null);
       }}
     >
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Selecionar programa</DialogTitle>
@@ -119,22 +147,19 @@ export default function SelectRoutineForClientDialog({
             </Empty>
           ) : (
             data.routines.map((routine) => (
-              <button
+              <Button
                 key={routine.id}
-                type="button"
+                variant={selectedRoutineId === routine.id ? "active" : "outline"}
+                className="w-full justify-start h-auto p-3"
                 onClick={() =>
                   setSelectedRoutineId(selectedRoutineId === routine.id ? null : routine.id)
                 }
-                className={`w-full text-left rounded-lg border p-3 transition-colors ${selectedRoutineId === routine.id
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
-                  }`}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex flex-col gap-1">
-                    <TypographySpan className="font-medium">{routine.name}</TypographySpan>
+                <div className="flex items-start justify-between gap-2 w-full min-w-0">
+                  <div className="flex flex-col gap-1 min-w-0">
+                    <TypographySpan className="font-medium wrap-break-word">{routine.name}</TypographySpan>
                     {routine.description && (
-                      <TypographyP className="text-muted-foreground text-sm line-clamp-1">
+                      <TypographyP className="text-muted-foreground text-sm line-clamp-2 wrap-break-word">
                         {routine.description}
                       </TypographyP>
                     )}
@@ -157,7 +182,7 @@ export default function SelectRoutineForClientDialog({
                     </TypographySpan>
                   )}
                 </div>
-              </button>
+              </Button>
             ))
           )}
         </div>
@@ -173,7 +198,7 @@ export default function SelectRoutineForClientDialog({
             Criar programa do zero
           </Button>
           <Button
-            onClick={handleConfirm}
+            onClick={handleConfirmClick}
             disabled={!selectedRoutineId || isPending}
             className="gap-2"
           >
@@ -182,6 +207,23 @@ export default function SelectRoutineForClientDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Trocar programa?</AlertDialogTitle>
+            <AlertDialogDescription>
+              O programa atual será substituído pelo selecionado. Essa ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm} disabled={isPending}>
+              {isAssigning ? <Spinner /> : null}
+              Sim, trocar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }

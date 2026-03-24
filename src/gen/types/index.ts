@@ -8,6 +8,7 @@ export type { GetApiExerciseByIdPathParams, GetApiExerciseById200, GetApiExercis
 export type { GetApiExercisesFilters200, GetApiExercisesFiltersQueryResponse, GetApiExercisesFiltersQuery } from "./GetApiExercisesFilters.ts";
 export type { GetApiRoutineByIdPathParams, GetApiRoutineById200, GetApiRoutineByIdQueryResponse, GetApiRoutineByIdQuery } from "./GetApiRoutineById.ts";
 export type { GetApiRoutines200, GetApiRoutinesQueryResponse, GetApiRoutinesQuery } from "./GetApiRoutines.ts";
+export type { GetApiRoutinesClientByClientIdPathParams, GetApiRoutinesClientByClientId200, GetApiRoutinesClientByClientIdQueryResponse, GetApiRoutinesClientByClientIdQuery } from "./GetApiRoutinesClientByClientId.ts";
 export type { GetApiRoutinesTemplates200, GetApiRoutinesTemplatesQueryResponse, GetApiRoutinesTemplatesQuery } from "./GetApiRoutinesTemplates.ts";
 export type { GetApiSessionsClientByClientIdPathParams, GetApiSessionsClientByClientIdQueryParams, SessionsSourceEnumKey, GetApiSessionsClientByClientId200, GetApiSessionsClientByClientIdQueryResponse, GetApiSessionsClientByClientIdQuery } from "./GetApiSessionsClientByClientId.ts";
 export type { GetApiSessionsTrainerRecentQueryParams, GetApiSessionsTrainerRecent200, GetApiSessionsTrainerRecentQueryResponse, GetApiSessionsTrainerRecentQuery } from "./GetApiSessionsTrainerRecent.ts";
@@ -20,6 +21,7 @@ export type { PostApiClientCreate200, PostApiClientCreate409, PostApiClientCreat
 export type { PostApiExerciseByIdVideoPathParams, PostApiExerciseByIdVideo200, PostApiExerciseByIdVideoMutationRequest, PostApiExerciseByIdVideoMutationResponse, PostApiExerciseByIdVideoMutation } from "./PostApiExerciseByIdVideo.ts";
 export type { PostApiExerciseCreate200, PostApiExerciseCreateMutationRequest, PostApiExerciseCreateMutationResponse, PostApiExerciseCreateMutation } from "./PostApiExerciseCreate.ts";
 export type { PostApiExercisesSearch200, PostApiExercisesSearchMutationRequest, PostApiExercisesSearchMutationResponse, PostApiExercisesSearchMutation } from "./PostApiExercisesSearch.ts";
+export type { PostApiRoutineByIdCloneToLibraryPathParams, PostApiRoutineByIdCloneToLibrary200, PostApiRoutineByIdCloneToLibraryMutationResponse, PostApiRoutineByIdCloneToLibraryMutation } from "./PostApiRoutineByIdCloneToLibrary.ts";
 export type { PostApiRoutineCreate200, PostApiRoutineCreateMutationRequest, PostApiRoutineCreateMutationResponse, PostApiRoutineCreateMutation } from "./PostApiRoutineCreate.ts";
 export type { PostApiRoutinesTemplatesByIdClonePathParams, PostApiRoutinesTemplatesByIdClone200, PostApiRoutinesTemplatesByIdCloneMutationResponse, PostApiRoutinesTemplatesByIdCloneMutation } from "./PostApiRoutinesTemplatesByIdClone.ts";
 export type { PostApiWebhooksWhatsappMutationResponse, PostApiWebhooksWhatsappMutation } from "./PostApiWebhooksWhatsapp.ts";

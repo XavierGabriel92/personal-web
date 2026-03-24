@@ -1,13 +1,22 @@
 import { calculateWeeksFromDate } from "@/lib/date";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
 import { TypographySpan, TypographySpanXSmall } from "@/components/ui/typography";
 import { useGetApiClientByIdSuspense } from "@/gen/hooks/useGetApiClientByIdSuspense";
 import { useGetApiRoutineById } from "@/gen/hooks/useGetApiRoutineById";
+import { usePostApiRoutineByIdCloneToLibrary } from "@/gen/hooks/usePostApiRoutineByIdCloneToLibrary";
 import { Link } from "@tanstack/react-router";
-import { CalendarIcon, CalendarPlusIcon, PlusIcon } from "lucide-react";
+import { CalendarIcon, CalendarPlusIcon, Copy, MoreHorizontalIcon, PlusIcon, RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import SelectRoutineForClientDialog from "./sheet/select-routine-for-client";
 
 interface ProgramOverviewProps {
@@ -15,7 +24,9 @@ interface ProgramOverviewProps {
 }
 
 export default function ProgramOverview({ clientId }: ProgramOverviewProps) {
+  const [trocarOpen, setTrocarOpen] = useState(false);
   const { data: client } = useGetApiClientByIdSuspense(clientId);
+  const { mutateAsync: cloneToLibrary } = usePostApiRoutineByIdCloneToLibrary();
   const activeRoutineId = client.activeRoutineId;
 
   const { data: routine, isLoading } = useGetApiRoutineById(activeRoutineId ?? "", {
@@ -37,12 +48,38 @@ export default function ProgramOverview({ clientId }: ProgramOverviewProps) {
       <Card>
         <CardHeader className="items-center border-b">
           <CardTitle>Programa ativo</CardTitle>
-          <CardAction>
+          <CardAction className="flex items-center gap-2">
             <Button variant="link" size="sm" className="p-0">
               <Link to="/trainer/routines/$routineId" params={{ routineId: activeRoutineId }}>
                 Editar programa
               </Link>
             </Button>
+            <SelectRoutineForClientDialog
+              clientId={clientId}
+              requireConfirmation
+              open={trocarOpen}
+              onOpenChange={setTrocarOpen}
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreHorizontalIcon className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => setTrocarOpen(true)}>
+                  <RefreshCw className="h-4 w-4" />
+                  Trocar programa
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={async () => {
+                  await cloneToLibrary({ id: activeRoutineId });
+                  toast.success("Programa copiado para sua biblioteca!");
+                }}>
+                  <Copy className="h-4 w-4" />
+                  Clonar programa
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </CardAction>
         </CardHeader>
         <CardContent>
