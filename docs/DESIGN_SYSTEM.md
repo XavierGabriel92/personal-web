@@ -40,6 +40,7 @@ Never reach for a raw HTML element when a UI component already exists.
 | `sheet.tsx`            | Side panels                                            |
 | `dropdown-menu.tsx`    | Dropdown menus                                         |
 | `popover.tsx`          | Floating content anchored to a trigger                 |
+| `progress.tsx`         | Progress bar (Radix UI primitive)                      |
 | `tooltip.tsx`          | Hover tooltips                                         |
 | `tabs.tsx`             | Tab navigation                                         |
 | `table.tsx`            | Data tables                                            |
@@ -67,7 +68,7 @@ Never reach for a raw HTML element when a UI component already exists.
 **`src/components/core/`** — shared product-level primitives:
 
 | Component file  | What it covers              |
-|----------------|-----------------------------|
+|----------------|--------------------------|
 | `page-title.tsx`| Page-level heading          |
 
 ### Common mistakes
@@ -112,6 +113,17 @@ Never reach for a raw HTML element when a UI component already exists.
 
 // ✅ Empty component
 <Empty message="No items found" />
+```
+
+```tsx
+// ❌ Rolling a custom progress bar
+<div className="h-2 bg-muted rounded-full">
+  <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
+</div>
+
+// ✅ Progress component
+import { Progress } from "@/components/ui/progress";
+<Progress value={pct} className="h-1.5" />
 ```
 
 ### Installing a new shadcn component

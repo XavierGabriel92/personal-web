@@ -1,4 +1,5 @@
 import SelectAnamnesisForClientDialog from "@/components/anamnesis/dialog/select-anamnesis-for-client";
+import UpgradePlanDialog from "@/components/billing/upgrade-plan-dialog";
 import ClientForm, { CreateClientButton } from "@/components/clients/form";
 import {
 	AlertDialog,
@@ -18,16 +19,17 @@ import {
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
-	SheetTrigger,
 } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
+import { getApiBillingPlanSuspenseQueryKey } from "@/gen/hooks/useGetApiBillingPlanSuspense";
 import { getApiClientsSuspenseQueryKey } from "@/gen/hooks/useGetApiClientsSuspense";
 import { usePostApiClientCreate } from "@/gen/hooks/usePostApiClientCreate";
 import { queryClient } from "@/routes/__root";
 import { useNavigate } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { cloneElement, isValidElement, useState } from "react";
 import { toast } from "sonner";
+import type { GetApiBillingPlanQueryResponse } from "@/gen/types/GetApiBillingPlan";
 import type { ClientFormData } from "../form";
 
 type CreateClientSheetProps = {
@@ -44,6 +46,7 @@ export default function CreateClientSheet({
 }: CreateClientSheetProps) {
 	const [open, setOpen] = useState(false);
 	const [duplicatePhoneError, setDuplicatePhoneError] = useState(false);
+	const [upgradePlanOpen, setUpgradePlanOpen] = useState(false);
 	const [createdClient, setCreatedClient] = useState<{
 		id: string;
 		name: string;
@@ -52,6 +55,28 @@ export default function CreateClientSheet({
 	const navigate = useNavigate();
 
 	const { mutateAsync: createClient, isPending } = usePostApiClientCreate();
+
+	const handleTriggerClick = () => {
+		const plan = queryClient.getQueryData<GetApiBillingPlanQueryResponse>(
+			getApiBillingPlanSuspenseQueryKey(),
+		);
+		const atLimit =
+			plan?.remainingClients !== null &&
+			plan?.remainingClients !== undefined &&
+			plan.remainingClients <= 0;
+
+		if (atLimit) {
+			setUpgradePlanOpen(true);
+		} else {
+			setOpen(true);
+		}
+	};
+
+	const triggerWithHandler = isValidElement(Trigger)
+		? cloneElement(Trigger as React.ReactElement<{ onClick?: () => void }>, {
+				onClick: handleTriggerClick,
+		  })
+		: Trigger;
 
 	const handleSubmit = async (data: ClientFormData) => {
 		await createClient(
@@ -65,9 +90,14 @@ export default function CreateClientSheet({
 			},
 			{
 				onSuccess: async (res) => {
-					await queryClient.invalidateQueries({
-						queryKey: getApiClientsSuspenseQueryKey(),
-					});
+					await Promise.all([
+						queryClient.invalidateQueries({
+							queryKey: getApiClientsSuspenseQueryKey(),
+						}),
+						queryClient.invalidateQueries({
+							queryKey: getApiBillingPlanSuspenseQueryKey(),
+						}),
+					]);
 					setOpen(false);
 					setCreatedClient({ id: res.id, name: res.name });
 					setSelectAnamnesisOpen(true);
@@ -78,6 +108,9 @@ export default function CreateClientSheet({
 					)?.response?.data?.message;
 					if (message === "Phone number already exists") {
 						setDuplicatePhoneError(true);
+					} else if (message === "plan_limit_reached") {
+						setOpen(false);
+						setUpgradePlanOpen(true);
 					} else {
 						toast.error("Erro ao criar aluno. Tente novamente.");
 					}
@@ -88,6 +121,10 @@ export default function CreateClientSheet({
 
 	return (
 		<>
+			<UpgradePlanDialog
+				open={upgradePlanOpen}
+				onOpenChange={setUpgradePlanOpen}
+			/>
 			{createdClient && (
 				<SelectAnamnesisForClientDialog
 					clientId={createdClient.id}
@@ -123,8 +160,8 @@ export default function CreateClientSheet({
 				</AlertDialogContent>
 			</AlertDialog>
 
+			{triggerWithHandler}
 			<Sheet open={open} onOpenChange={setOpen}>
-				<SheetTrigger asChild>{Trigger}</SheetTrigger>
 				<SheetContent side="right" className="flex flex-col">
 					<SheetHeader>
 						<SheetTitle>Criar novo aluno</SheetTitle>

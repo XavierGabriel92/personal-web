@@ -176,6 +176,12 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
+  const hasDocChanges = allStaged.some((f) => f.startsWith("docs/"));
+  if (hasDocChanges) {
+    console.log("[doc-check] Docs already updated in this commit — skipping.");
+    process.exit(0);
+  }
+
   console.log(`[doc-check] Checking docs for ${relevant.length} changed file(s)...`);
 
   // 2. Get diff

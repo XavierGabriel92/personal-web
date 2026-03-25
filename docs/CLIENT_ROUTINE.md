@@ -160,7 +160,22 @@ Shows a month-based exercise selector and a recharts `LineChart` of max weight p
 
 **Layout**: exercise list panel (left) + chart panel (right), same side-by-side pattern as `WorkoutFrequencyCalendar`.
 
-**Month navigation**: prev/next chevron buttons + "Hoje" button. Changing month resets the selected exercise.
+**Month navigation**: a button showing the current month label (e.g. "Março 2026") opens a `<Popover>` with a year selector (prev/next year chevrons) and a 3×4 grid of abbreviated month buttons. Selecting a month closes the popover, updates `displayedMonth`, and resets the selected exercise.
+
+```tsx
+// Month picker opens a Popover — no prev/next/today buttons
+<Popover open={monthPickerOpen} onOpenChange={setMonthPickerOpen}>
+  <PopoverTrigger asChild>
+    <Button variant="ghost" className="capitalize font-semibold text-base px-2 gap-1">
+      {monthLabelCapitalized}
+      <ChevronDownIcon className="size-4" />
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent align="start" className="w-60 p-3">
+    {/* year nav + 3×4 month grid */}
+  </PopoverContent>
+</Popover>
+```
 
 **Exercise list**: filtered by a search `<Input>`. Exercises are extracted from session data, so only exercises actually performed in the displayed month are shown.
 
@@ -398,3 +413,5 @@ Relevant generated hooks:
 - `useDeleteApiClientByIdAnamnesisByClientAnamnesisIdQuestionsByQuestionId` — remove a question from a client anamnesis
 - `usePutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder` — reorder questions on a client anamnesis
 - `usePostApiClientByIdAnamnesisByClientAnamnesisIdSend` — send/submit a client anamnesis
+- `useGetApiBillingPlanSuspense` — fetch the trainer's current billing plan (used by sidebar `NavPlan` and account dialog)
+- `usePostApiBillingUpgrade` — upgrade the trainer's billing plan

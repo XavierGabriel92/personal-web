@@ -12,13 +12,19 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getApiSessionsClientByClientIdQueryOptions } from "@/gen/hooks/useGetApiSessionsClientByClientId";
 import type { GetApiSessionsClientByClientId200 } from "@/gen/types/GetApiSessionsClientByClientId";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { addMonths, format, subMonths } from "date-fns";
+import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
+
+const MONTHS_PT = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+  "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+];
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 type Session = GetApiSessionsClientByClientId200["sessions"][number];
@@ -80,9 +86,12 @@ interface WeightEvolutionProps {
 }
 
 export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
+  const today = new Date();
   const [displayedMonth, setDisplayedMonth] = useState(() => new Date());
   const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [monthPickerOpen, setMonthPickerOpen] = useState(false);
+  const [pickerYear, setPickerYear] = useState(() => today.getFullYear());
 
   const { since, until } = getMonthRange(displayedMonth);
   const { data } = useSuspenseQuery(
@@ -97,20 +106,11 @@ export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
   const chartData = selectedExerciseId ? buildWeightEvolution(sessions, selectedExerciseId) : [];
   const selectedExercise = exercises.find((e) => e.id === selectedExerciseId);
 
-  const goToPrevMonth = () => {
-    setDisplayedMonth((m) => subMonths(m, 1));
+  function selectMonth(monthIndex: number) {
+    setDisplayedMonth(new Date(pickerYear, monthIndex, 1));
     setSelectedExerciseId(null);
-  };
-
-  const goToNextMonth = () => {
-    setDisplayedMonth((m) => addMonths(m, 1));
-    setSelectedExerciseId(null);
-  };
-
-  const goToToday = () => {
-    setDisplayedMonth(new Date());
-    setSelectedExerciseId(null);
-  };
+    setMonthPickerOpen(false);
+  }
 
   const monthLabel = format(displayedMonth, "MMMM yyyy", { locale: ptBR });
   const monthLabelCapitalized = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
@@ -118,18 +118,46 @@ export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
   return (
     <div className="flex gap-6 items-start">
       <div className="flex flex-col gap-3 w-fit min-w-[200px]">
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={goToPrevMonth}>
-            <ChevronLeft className="size-4" />
-          </Button>
-          <span className="text-sm font-medium flex-1 text-center">{monthLabelCapitalized}</span>
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={goToNextMonth}>
-            <ChevronRight className="size-4" />
-          </Button>
-          <Button variant="ghost" size="sm" className="text-xs h-7 px-2" onClick={goToToday}>
-            Hoje
-          </Button>
-        </div>
+        <Popover open={monthPickerOpen} onOpenChange={setMonthPickerOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" className="capitalize font-semibold text-base px-2 gap-1">
+              {monthLabelCapitalized}
+              <ChevronDownIcon className="size-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="start" className="w-60 p-3">
+            <div className="flex items-center justify-between mb-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setPickerYear((y) => y - 1)}
+              >
+                <ChevronLeftIcon className="size-4" />
+              </Button>
+              <span className="text-sm font-medium">{pickerYear}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setPickerYear((y) => y + 1)}
+              >
+                <ChevronRightIcon className="size-4" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-1">
+              {MONTHS_PT.map((month, i) => (
+                <Button
+                  key={month}
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => selectMonth(i)}
+                >
+                  {month}
+                </Button>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
 
         {exercises.length === 0 ? (
           <p className="text-sm text-muted-foreground">Nenhum exercício neste mês.</p>

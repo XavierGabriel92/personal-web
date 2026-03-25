@@ -55,6 +55,9 @@ export default function ClientsTab({ clientId }: { clientId: string }) {
         >
           Medidas corporais
         </TabsTrigger> */}
+				<TabsTrigger value="tab-6" onClick={() => onTabChange("anamnesis")}>
+					Anamnese
+				</TabsTrigger>
 				<TabsTrigger
 					value="tab-4"
 					onClick={() => onTabChange("weight-evolution")}
@@ -66,9 +69,6 @@ export default function ClientsTab({ clientId }: { clientId: string }) {
 					onClick={() => onTabChange("program-history")}
 				>
 					Histórico de programas
-				</TabsTrigger>
-				<TabsTrigger value="tab-6" onClick={() => onTabChange("anamnesis")}>
-					Anamnese
 				</TabsTrigger>
 			</TabsList>
 		</Tabs>

@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrainerHomeRouteImport } from './routes/trainer/home'
 import { Route as TrainerExercisesRouteImport } from './routes/trainer/exercises'
 import { Route as TrainerAnalyticsRouteImport } from './routes/trainer/analytics'
+import { Route as TrainerAccountRouteImport } from './routes/trainer/account'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
@@ -79,6 +80,11 @@ const TrainerExercisesRoute = TrainerExercisesRouteImport.update({
 const TrainerAnalyticsRoute = TrainerAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
+  getParentRoute: () => TrainerRouteRoute,
+} as any)
+const TrainerAccountRoute = TrainerAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/account': typeof TrainerAccountRoute
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/trainer/account': typeof TrainerAccountRoute
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
+  '/trainer/account': typeof TrainerAccountRoute
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
+    | '/trainer/account'
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
+    | '/trainer/account'
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
@@ -352,6 +363,7 @@ export interface FileRouteTypes {
     | '/_auth/reset-password'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
+    | '/trainer/account'
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
@@ -438,6 +450,13 @@ declare module '@tanstack/react-router' {
       path: '/analytics'
       fullPath: '/trainer/analytics'
       preLoaderRoute: typeof TrainerAnalyticsRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/account': {
+      id: '/trainer/account'
+      path: '/account'
+      fullPath: '/trainer/account'
+      preLoaderRoute: typeof TrainerAccountRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
     '/_auth/sign-up': {
@@ -698,6 +717,7 @@ const TrainerRoutinesRouteWithChildren = TrainerRoutinesRoute._addFileChildren(
 )
 
 interface TrainerRouteRouteChildren {
+  TrainerAccountRoute: typeof TrainerAccountRoute
   TrainerAnalyticsRoute: typeof TrainerAnalyticsRoute
   TrainerExercisesRoute: typeof TrainerExercisesRoute
   TrainerHomeRoute: typeof TrainerHomeRoute
@@ -711,6 +731,7 @@ interface TrainerRouteRouteChildren {
 }
 
 const TrainerRouteRouteChildren: TrainerRouteRouteChildren = {
+  TrainerAccountRoute: TrainerAccountRoute,
   TrainerAnalyticsRoute: TrainerAnalyticsRoute,
   TrainerExercisesRoute: TrainerExercisesRoute,
   TrainerHomeRoute: TrainerHomeRoute,

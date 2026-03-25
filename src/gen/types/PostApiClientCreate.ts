@@ -126,6 +126,16 @@ export type PostApiClientCreate200 = {
 };
 
 /**
+ * @description Response for status 403
+*/
+export type PostApiClientCreate403 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
+/**
  * @description Response for status 409
 */
 export type PostApiClientCreate409 = {
@@ -165,5 +175,5 @@ export type PostApiClientCreateMutationResponse = PostApiClientCreate200;
 export type PostApiClientCreateMutation = {
     Response: PostApiClientCreate200;
     Request: PostApiClientCreateMutationRequest;
-    Errors: PostApiClientCreate409;
+    Errors: PostApiClientCreate403 | PostApiClientCreate409;
 };

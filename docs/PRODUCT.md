@@ -77,6 +77,30 @@ A person training under a trainer. Stored with:
 - Active/inactive status
 - Assigned routines
 
+### Billing Plan
+Each trainer account is on a billing plan that determines how many clients they can have active at once.
+
+**Plan tiers** (exposed via `GET /api/billing/plan`):
+
+| Plan | Client limit |
+|------|--------------|
+| `free` | Small limit (trial) |
+| `starter` | 1–25 clients |
+| `pro` | 25–50 clients |
+| `elite` | Unlimited |
+
+Key fields returned by the billing endpoint:
+```ts
+{
+  plan: "free" | "starter" | "pro" | "elite";
+  clientCount: number;      // how many clients the trainer currently has
+  clientLimit: number | null; // null for elite (unlimited)
+  remainingClients: number | null; // null for elite
+}
+```
+
+The billing plan gates **client creation**: when `remainingClients <= 0`, the "Criar aluno" trigger opens `UpgradePlanDialog` instead of the creation sheet. The same dialog is shown if the API returns `plan_limit_reached` on a create attempt. The sidebar `NavPlan` widget surfaces this usage with a progress bar and an upgrade button.
+
 ### Activity Feed
 Rich, typed event records that capture significant client events (workout completed, weight logged, personal record, streak milestone, routine assigned). Used to display a timeline of client progress on the trainer dashboard.
 
@@ -114,6 +138,9 @@ From the client profile (or after client creation), the trainer opens `SelectAna
 2. Trainer selects one and clicks "Confirmar" → a client anamnesis record is created with `status: PENDING`
 3. While the client anamnesis is `PENDING`, the trainer can adjust its questions from the client's anamnesis tab (`/trainer/clients/:id/anamnesis`)
 
+### Upgrading a plan
+When a trainer hits their client limit, `UpgradePlanDialog` opens (either from the sidebar widget, the account page, or automatically when attempting to create a client past the limit). The trainer selects a plan tier and confirms; access is granted immediately and payment is confirmed separately.
+
 ---
 
 ## Domain Model (simplified)
@@ -128,6 +155,8 @@ User (Trainer)
   ├── owns → Anamnesis[] (trainer questionnaires)
   │           └── has → AnamnesisQuestion[] (ordered)
   │           └── (isTemplate=true, ownerId=null) = system templates
+  │
+  ├── has → BillingPlan (plan tier + client count/limit)
   │
   └── manages → Client[]
                   ├── assigned → Routine (client copy, clientId set)
@@ -154,6 +183,7 @@ User (Trainer)
 | `/trainer/anamnesis` | Trainer's anamnesis library (tab: "Minhas anamneses") |
 | `/trainer/anamnesis/templates` | Browse system anamnesis templates (tab: "Anamneses prontas") |
 | `/trainer/anamnesis/:anamnesisId` | Anamnesis detail: edit name/description, manage questions |
+| `/trainer/account` | Account settings modal: edit display name, view billing plan, trigger upgrade |
 
 ---
 
@@ -166,5 +196,7 @@ User (Trainer)
 **Client routine isolation**: When a trainer assigns a program to a client, a deep clone is made. This decouples the client's running program from the trainer's master template, allowing the trainer to evolve their templates without accidentally changing what a client is currently following.
 
 **Client anamnesis isolation**: When a trainer assigns an anamnesis to a client, a client anamnesis record is created (not a pointer to the library item). The trainer can then add, reorder, and delete questions on that client's copy independently of the library anamnesis.
+
+**Billing plan gates client creation**: Before opening the create-client sheet, the frontend reads the cached billing plan from TanStack Query (`queryClient.getQueryData`) to avoid an extra network call. If `remainingClients <= 0`, the upgrade dialog opens immediately without ever showing the create form.
 
 **Kubb codegen**: The frontend never writes API call code by hand. All API clients and React Query hooks are generated from the backend's OpenAPI spec via `bun run generate`. This keeps the frontend/backend contract always in sync.

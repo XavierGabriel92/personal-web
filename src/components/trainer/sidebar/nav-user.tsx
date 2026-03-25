@@ -84,7 +84,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ to: '/trainer/account' })}>
                 <BadgeCheck />
                 Conta
               </DropdownMenuItem>
