@@ -1,4 +1,3 @@
-import CreateAnamnesisDialog from "@/components/anamnesis/dialog/create-anamnesis-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +21,7 @@ import { useGetApiAnamnesisSuspense } from "@/gen/hooks/useGetApiAnamnesisSuspen
 import { getApiClientByIdAnamnesisSuspenseQueryKey } from "@/gen/hooks/useGetApiClientByIdAnamnesisSuspense";
 import { usePostApiClientByIdAnamnesis } from "@/gen/hooks/usePostApiClientByIdAnamnesis";
 import { queryClient } from "@/routes/__root";
-import { ClipboardList, PlusIcon } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 
@@ -44,11 +43,10 @@ export default function SelectAnamnesisForClientDialog({
 	const [selectedAnamnesisId, setSelectedAnamnesisId] = useState<string | null>(
 		null,
 	);
-	const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
 	const handleOpenChange = (isOpen: boolean) => {
 		onOpenChange(isOpen);
-		if (!isOpen && !createDialogOpen) setSelectedAnamnesisId(null);
+		if (!isOpen) setSelectedAnamnesisId(null);
 	};
 
 	const handleSkip = () => {
@@ -56,53 +54,29 @@ export default function SelectAnamnesisForClientDialog({
 		onDone();
 	};
 
-	const handleOpenCreateDialog = () => {
-		onOpenChange(false);
-		setCreateDialogOpen(true);
-	};
-
 	return (
-		<>
-			<Dialog open={open} onOpenChange={handleOpenChange}>
-				<DialogContent className="max-w-4xl">
-					<DialogHeader className="max-w-2xl">
-						<DialogTitle>
-							Qual anamnese você gostaria de enviar para {clientName}?
-						</DialogTitle>
-						<DialogDescription>
-							Escolha uma anamnese da sua biblioteca para enviar ao aluno, ou
-							crie uma nova.
-						</DialogDescription>
-					</DialogHeader>
-					<Suspense fallback={<Spinner className="mx-auto my-4" />}>
-						<AnamnesisPickerList
-							clientId={clientId}
-							selectedId={selectedAnamnesisId}
-							onSelect={setSelectedAnamnesisId}
-							onCreateNew={handleOpenCreateDialog}
-							onDone={onDone}
-							onClose={() => handleOpenChange(false)}
-							onSkip={handleSkip}
-						/>
-					</Suspense>
-				</DialogContent>
-			</Dialog>
-
-			<CreateAnamnesisDialog
-				open={createDialogOpen}
-				onOpenChange={(isOpen) => {
-					setCreateDialogOpen(isOpen);
-					if (!isOpen) {
-						onOpenChange(true);
-					}
-				}}
-				onCreated={(anamnesisId) => {
-					setSelectedAnamnesisId(anamnesisId);
-					setCreateDialogOpen(false);
-					onOpenChange(true);
-				}}
-			/>
-		</>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
+			<DialogContent className="md:min-w-xl">
+				<DialogHeader >
+					<DialogTitle>
+						Qual anamnese você gostaria de enviar para {clientName}?
+					</DialogTitle>
+					<DialogDescription>
+						Escolha uma anamnese da sua biblioteca para enviar ao aluno.
+					</DialogDescription>
+				</DialogHeader>
+				<Suspense fallback={<Spinner className="mx-auto my-4" />}>
+					<AnamnesisPickerList
+						clientId={clientId}
+						selectedId={selectedAnamnesisId}
+						onSelect={setSelectedAnamnesisId}
+						onDone={onDone}
+						onClose={() => handleOpenChange(false)}
+						onSkip={handleSkip}
+					/>
+				</Suspense>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
@@ -110,7 +84,6 @@ function AnamnesisPickerList({
 	clientId,
 	selectedId,
 	onSelect,
-	onCreateNew,
 	onDone,
 	onClose,
 	onSkip,
@@ -118,7 +91,6 @@ function AnamnesisPickerList({
 	clientId: string;
 	selectedId: string | null;
 	onSelect: (id: string | null) => void;
-	onCreateNew: () => void;
 	onDone: () => void;
 	onClose: () => void;
 	onSkip: () => void;
@@ -149,7 +121,7 @@ function AnamnesisPickerList({
 
 	return (
 		<>
-			<div className="grid max-h-[30rem] gap-3 overflow-y-auto py-2 md:grid-cols-2">
+			<div className="flex max-h-120 min-h-32 gap-2 overflow-y-auto flex-col">
 				{data.anamnesis.length === 0 ? (
 					<Empty className="md:col-span-2">
 						<EmptyHeader>
@@ -189,11 +161,7 @@ function AnamnesisPickerList({
 				)}
 			</div>
 
-			<DialogFooter className="flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
-				<Button variant="outline" className="gap-2" onClick={onCreateNew}>
-					<PlusIcon className="h-4 w-4" />
-					Criar nova anamnese
-				</Button>
+			<DialogFooter className="border-t pt-4">
 				<Button variant="ghost" onClick={onSkip}>
 					Pular por agora
 				</Button>

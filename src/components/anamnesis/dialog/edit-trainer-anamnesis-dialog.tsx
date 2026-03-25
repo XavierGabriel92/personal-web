@@ -1,11 +1,9 @@
 import QuestionList from "@/components/anamnesis/questions/question-list";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
@@ -89,56 +87,10 @@ export default function EditTrainerAnamnesisDialog({
 		}, DEBOUNCE_MS);
 	};
 
-	const flushSaveAndClose = async () => {
-		if (!anamnesisId || !data) return;
-
-		if (debounceRef.current) clearTimeout(debounceRef.current);
-		debounceRef.current = null;
-
-		const trimmedName = name.trim();
-		if (!trimmedName) return;
-
-		const nextDescription = description.trim();
-		const isUnchanged =
-			trimmedName === data.name &&
-			(nextDescription || undefined) === (data.description ?? undefined);
-		if (isUnchanged) {
-			onOpenChange(false);
-			return;
-		}
-
-		await updateAnamnesis(
-			{
-				id: anamnesisId,
-				data: {
-					name: trimmedName,
-					description: nextDescription || undefined,
-				},
-			},
-			{
-				onSuccess: (updated) => {
-					queryClient.setQueryData(
-						getApiAnamnesisByIdSuspenseQueryKey(anamnesisId),
-						updated,
-					);
-					toast.success("Anamnese atualizada!");
-				},
-				onError: () => {
-					toast.error("Erro ao salvar alterações.");
-				},
-			},
-		);
-
-		onOpenChange(false);
-	};
-
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
-				className="sm:max-w-3xl md:min-w-3xl
-				inset-0 top-0 left-0 translate-x-0 translate-y-0
-				max-w-none rounded-none p-4
-				sm:inset-auto sm:top-[50%] sm:left-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:p-6 sm:rounded-lg"
+				className="md:min-w-xl"
 			>
 				{isLoading || !data || !anamnesisId ? (
 					<div className="flex items-center justify-center py-12">

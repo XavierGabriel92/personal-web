@@ -112,8 +112,7 @@ Trainers create and edit questionnaires at `/trainer/anamnesis`. They can:
 From the client profile (or after client creation), the trainer opens `SelectAnamnesisForClientDialog`:
 1. Lists all anamneses from the trainer's library
 2. Trainer selects one and clicks "Confirmar" → a client anamnesis record is created with `status: PENDING`
-3. Alternatively, the trainer can click "Criar nova anamnese" to open `CreateAnamnesisDialog` inline — after creation the new anamnesis is pre-selected
-4. While the client anamnesis is `PENDING`, the trainer can adjust its questions from the client's anamnesis tab (`/trainer/clients/:id/anamnesis`)
+3. While the client anamnesis is `PENDING`, the trainer can adjust its questions from the client's anamnesis tab (`/trainer/clients/:id/anamnesis`)
 
 ---
 

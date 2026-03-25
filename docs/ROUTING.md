@@ -314,6 +314,78 @@ function RouteComponent() {
 
 Use the existing `<Spinner />` component (`@/components/ui/spinner`) as the fallback.
 
+## Modal Routes
+
+A **modal route** is a route whose sole job is to render a dialog. The dialog is driven by a URL, which means:
+
+- The modal can be opened by navigating to the route (e.g. from a list item click).
+- The same dialog component is reusable elsewhere without re-importing it inside every parent page.
+- The browser Back button (or `router.history.back()`) closes the modal naturally.
+
+### Pattern
+
+```
+routes/trainer/anamnesis/
+├── _anamnesisLayout.index.tsx   → /trainer/anamnesis  (list page)
+└── $anamnesisId.tsx             → /trainer/anamnesis/:id  (modal route)
+```
+
+```tsx
+// src/routes/trainer/anamnesis/$anamnesisId.tsx
+export const Route = createFileRoute('/trainer/anamnesis/$anamnesisId')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  const { anamnesisId } = Route.useParams()
+  const router = useRouter()
+  const [open, setOpen] = useState(true)
+
+  return (
+    <Suspense fallback={<Spinner className="size-8" />}>
+      <EditTrainerAnamnesisDialog
+        anamnesisId={anamnesisId}
+        open={open}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen)
+          if (!isOpen) router.history.back()
+        }}
+      />
+    </Suspense>
+  )
+}
+```
+
+### Key points
+
+- **`open` starts as `true`**: the dialog opens immediately when the route mounts.
+- **`onOpenChange` calls `router.history.back()`**: closing the dialog navigates back, keeping the URL in sync.
+- **The dialog component stays decoupled**: it only needs `open` / `onOpenChange` props — it has no awareness of routing.
+- **Wrap in `<Suspense>`** if the dialog fetches data with a suspense hook (see [Suspense Boundaries in Route Components](#suspense-boundaries-in-route-components)).
+
+### Opening the modal
+
+Navigate to the route from anywhere — a list item, a button, a link:
+
+```tsx
+// From a list item
+<Link to="/trainer/anamnesis/$anamnesisId" params={{ anamnesisId: item.id }}>
+  Edit
+</Link>
+
+// Programmatically
+navigate({ to: '/trainer/anamnesis/$anamnesisId', params: { anamnesisId: id } })
+```
+
+### When to use
+
+Use this pattern when:
+- A dialog needs to be accessible from multiple entry points without duplicating state management.
+- The resource has its own identity (an ID in the URL makes sense).
+- You want deep-linking or the ability to share/bookmark the open-modal state.
+
+Do **not** use it for ephemeral dialogs (e.g. a confirmation prompt) or dialogs that depend heavily on local parent state that isn't expressible as a URL param.
+
 ## Best Practices
 
 - ✅ Use file-based routing structure
@@ -326,3 +398,4 @@ Use the existing `<Spinner />` component (`@/components/ui/spinner`) as the fall
 - ✅ Use pathless layout routes (`_layoutName`) to share headers/tabs across sibling routes without adding a URL segment
 - ✅ Keep detail pages as siblings of the layout file (not children) when they should not inherit the shared layout
 - ✅ Keep route components focused and small
+- ✅ Use modal routes (`$id.tsx` renders a dialog) for reusable dialogs that need deep-linking or multiple entry points

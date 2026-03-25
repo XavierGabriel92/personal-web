@@ -28,7 +28,7 @@ Clicking a tab navigates to the corresponding sub-route under `/trainer/clients/
 - Edit questions (add, reorder via drag-and-drop, delete) while the anamnesis is `PENDING`
 - Open `EditClientAnamnesisDialog` to manage a specific client anamnesis
 
-Assigning a new anamnesis to the client is done via `SelectAnamnesisForClientDialog`, which opens the trainer's library for selection or inline creation.
+Assigning a new anamnesis to the client is done via `SelectAnamnesisForClientDialog`, which opens the trainer's library for selection.
 
 After assignment or question changes, the hook key `getApiClientByIdAnamnesisSuspenseQueryKey(clientId)` is invalidated to keep the tab in sync.
 
@@ -253,17 +253,12 @@ Dialog for assigning a routine to a client. Two flows:
 
 ### `SelectAnamnesisForClientDialog` (`src/components/anamnesis/dialog/select-anamnesis-for-client.tsx`)
 
-Dialog for assigning an anamnesis from the trainer's library to a client. Two flows:
+Dialog for assigning an anamnesis from the trainer's library to a client.
 
-**Assign from library:**
 1. Lists all trainer anamneses via `useGetApiAnamnesisSuspense()`
 2. Trainer selects one and clicks "Confirmar"
 3. Calls `usePostApiClientByIdAnamnesis` → creates a client anamnesis record with `status: PENDING`
 4. Invalidates `getApiClientByIdAnamnesisSuspenseQueryKey(clientId)`
-
-**Create inline:**
-1. Trainer clicks "Criar nova anamnese" → current dialog closes, `CreateAnamnesisDialog` opens
-2. After creation, the new anamnesis ID is pre-selected and the selection dialog reopens
 
 ### `EditClientAnamnesisDialog` (`src/components/anamnesis/dialog/edit-client-anamnesis-dialog.tsx`)
 
