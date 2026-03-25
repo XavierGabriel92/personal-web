@@ -36,6 +36,7 @@ import { Route as TrainerClientsClientIdWeightEvolutionRouteImport } from './rou
 import { Route as TrainerClientsClientIdProgramHistoryRouteImport } from './routes/trainer/clients/$clientId/program-history'
 import { Route as TrainerClientsClientIdOverviewRouteImport } from './routes/trainer/clients/$clientId/overview'
 import { Route as TrainerClientsClientIdMeasurementsRouteImport } from './routes/trainer/clients/$clientId/measurements'
+import { Route as TrainerClientsClientIdAnamnesisRouteImport } from './routes/trainer/clients/$clientId/anamnesis'
 import { Route as TrainerAnamnesisAnamnesisLayoutTemplatesRouteImport } from './routes/trainer/anamnesis/_anamnesisLayout.templates'
 
 const TrainerRoutinesRouteImport = createFileRoute('/trainer/routines')()
@@ -188,6 +189,12 @@ const TrainerClientsClientIdMeasurementsRoute =
     path: '/measurements',
     getParentRoute: () => TrainerClientsClientIdRouteRoute,
   } as any)
+const TrainerClientsClientIdAnamnesisRoute =
+  TrainerClientsClientIdAnamnesisRouteImport.update({
+    id: '/anamnesis',
+    path: '/anamnesis',
+    getParentRoute: () => TrainerClientsClientIdRouteRoute,
+  } as any)
 const TrainerAnamnesisAnamnesisLayoutTemplatesRoute =
   TrainerAnamnesisAnamnesisLayoutTemplatesRouteImport.update({
     id: '/templates',
@@ -213,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/anamnesis/templates': typeof TrainerAnamnesisAnamnesisLayoutTemplatesRoute
+  '/trainer/clients/$clientId/anamnesis': typeof TrainerClientsClientIdAnamnesisRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
@@ -240,6 +248,7 @@ export interface FileRoutesByTo {
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients': typeof TrainerClientsIndexRoute
   '/trainer/anamnesis/templates': typeof TrainerAnamnesisAnamnesisLayoutTemplatesRoute
+  '/trainer/clients/$clientId/anamnesis': typeof TrainerClientsClientIdAnamnesisRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
@@ -269,6 +278,7 @@ export interface FileRoutesById {
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients/': typeof TrainerClientsIndexRoute
   '/trainer/anamnesis/_anamnesisLayout/templates': typeof TrainerAnamnesisAnamnesisLayoutTemplatesRoute
+  '/trainer/clients/$clientId/anamnesis': typeof TrainerClientsClientIdAnamnesisRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/trainer/workouts/$workoutId'
     | '/trainer/clients'
     | '/trainer/anamnesis/templates'
+    | '/trainer/clients/$clientId/anamnesis'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program-history'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/trainer/workouts/$workoutId'
     | '/trainer/clients'
     | '/trainer/anamnesis/templates'
+    | '/trainer/clients/$clientId/anamnesis'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program-history'
@@ -353,6 +365,7 @@ export interface FileRouteTypes {
     | '/trainer/workouts/$workoutId'
     | '/trainer/clients/'
     | '/trainer/anamnesis/_anamnesisLayout/templates'
+    | '/trainer/clients/$clientId/anamnesis'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program-history'
@@ -560,6 +573,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerClientsClientIdMeasurementsRouteImport
       parentRoute: typeof TrainerClientsClientIdRouteRoute
     }
+    '/trainer/clients/$clientId/anamnesis': {
+      id: '/trainer/clients/$clientId/anamnesis'
+      path: '/anamnesis'
+      fullPath: '/trainer/clients/$clientId/anamnesis'
+      preLoaderRoute: typeof TrainerClientsClientIdAnamnesisRouteImport
+      parentRoute: typeof TrainerClientsClientIdRouteRoute
+    }
     '/trainer/anamnesis/_anamnesisLayout/templates': {
       id: '/trainer/anamnesis/_anamnesisLayout/templates'
       path: '/templates'
@@ -589,6 +609,7 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface TrainerClientsClientIdRouteRouteChildren {
+  TrainerClientsClientIdAnamnesisRoute: typeof TrainerClientsClientIdAnamnesisRoute
   TrainerClientsClientIdMeasurementsRoute: typeof TrainerClientsClientIdMeasurementsRoute
   TrainerClientsClientIdOverviewRoute: typeof TrainerClientsClientIdOverviewRoute
   TrainerClientsClientIdProgramHistoryRoute: typeof TrainerClientsClientIdProgramHistoryRoute
@@ -598,6 +619,7 @@ interface TrainerClientsClientIdRouteRouteChildren {
 
 const TrainerClientsClientIdRouteRouteChildren: TrainerClientsClientIdRouteRouteChildren =
   {
+    TrainerClientsClientIdAnamnesisRoute: TrainerClientsClientIdAnamnesisRoute,
     TrainerClientsClientIdMeasurementsRoute:
       TrainerClientsClientIdMeasurementsRoute,
     TrainerClientsClientIdOverviewRoute: TrainerClientsClientIdOverviewRoute,

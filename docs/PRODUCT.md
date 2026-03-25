@@ -60,6 +60,14 @@ Key properties:
 - `id`, `name`, `description?`, `ownerId?`, `isTemplate?`, `category?`
 - `questions: AnamnesisQuestion[]` — ordered list of questions, each with `id`, `text`, `order`
 
+### Client Anamnesis
+When a trainer assigns an anamnesis from their library to a client, a **client anamnesis** record is created. This is a copy of the library anamnesis scoped to that client.
+
+Key properties:
+- `id`, `name`, `description?`, `status: "PENDING" | "COMPLETED"`, `questions[]`
+- While `PENDING`, the trainer can add, reorder (drag-and-drop), and delete questions from the client's copy via the client anamnesis tab
+- Managed via `/api/client/:id/anamnesis` and related endpoints
+
 ### Workout Session
 A logged instance of a client completing a workout. Captures actual performance data (sets done, reps, weight, duration) against the prescribed exercises.
 
@@ -96,9 +104,16 @@ From the routine detail page or client profile, the trainer assigns a routine to
 
 ### Managing anamneses
 Trainers create and edit questionnaires at `/trainer/anamnesis`. They can:
-- Create a blank anamnesis via a side sheet
+- Create a blank anamnesis via a dialog (`CreateAnamnesisDialog`)
 - Add, reorder (drag-and-drop), and delete questions on the detail page
 - Browse system templates at `/trainer/anamnesis/templates` and clone them into their library
+
+### Assigning an anamnesis to a client
+From the client profile (or after client creation), the trainer opens `SelectAnamnesisForClientDialog`:
+1. Lists all anamneses from the trainer's library
+2. Trainer selects one and clicks "Confirmar" → a client anamnesis record is created with `status: PENDING`
+3. Alternatively, the trainer can click "Criar nova anamnese" to open `CreateAnamnesisDialog` inline — after creation the new anamnesis is pre-selected
+4. While the client anamnesis is `PENDING`, the trainer can adjust its questions from the client's anamnesis tab (`/trainer/clients/:id/anamnesis`)
 
 ---
 
@@ -116,9 +131,11 @@ User (Trainer)
   │           └── (isTemplate=true, ownerId=null) = system templates
   │
   └── manages → Client[]
-                  └── assigned → Routine (client copy, clientId set)
-                                  └── logs → WorkoutSession[]
-                                               └── Activity events
+                  ├── assigned → Routine (client copy, clientId set)
+                  │               └── logs → WorkoutSession[]
+                  │                            └── Activity events
+                  └── assigned → ClientAnamnesis[] (status: PENDING | COMPLETED)
+                                  └── has → AnamnesisQuestion[] (ordered, editable while PENDING)
 ```
 
 ---
@@ -130,6 +147,7 @@ User (Trainer)
 | `/trainer/home` | Dashboard: stats, latest activity, weekly chart |
 | `/trainer/clients` | Client list with search and filters |
 | `/trainer/clients/:id` | Client detail: program, progress charts, sessions |
+| `/trainer/clients/:id/anamnesis` | Client's assigned anamneses; edit questions while PENDING |
 | `/trainer/routines` | Trainer's program library |
 | `/trainer/routines/:id` | Program editor: add/edit/reorder workouts and exercises |
 | `/trainer/routines/homug-programs` | Browse system template programs |
@@ -147,5 +165,7 @@ User (Trainer)
 **Template vs. owned routine distinction**: System templates use `ownerId = null` + `isTemplate = true`. This means they're naturally invisible to trainer program lists (which filter by `ownerId = trainer.id`), and the FK `ON DELETE SET NULL` ensures templates survive if an owner user were ever deleted. The same convention applies to Anamnesis templates.
 
 **Client routine isolation**: When a trainer assigns a program to a client, a deep clone is made. This decouples the client's running program from the trainer's master template, allowing the trainer to evolve their templates without accidentally changing what a client is currently following.
+
+**Client anamnesis isolation**: When a trainer assigns an anamnesis to a client, a client anamnesis record is created (not a pointer to the library item). The trainer can then add, reorder, and delete questions on that client's copy independently of the library anamnesis.
 
 **Kubb codegen**: The frontend never writes API call code by hand. All API clients and React Query hooks are generated from the backend's OpenAPI spec via `bun run generate`. This keeps the frontend/backend contract always in sync.

@@ -1,5 +1,6 @@
 export type { DeleteApiAnamnesisByIdPathParams, DeleteApiAnamnesisByIdMutationResponse, DeleteApiAnamnesisByIdMutation } from "./DeleteApiAnamnesisById.ts";
 export type { DeleteApiAnamnesisByIdQuestionsByQuestionIdPathParams, DeleteApiAnamnesisByIdQuestionsByQuestionIdMutationResponse, DeleteApiAnamnesisByIdQuestionsByQuestionIdMutation } from "./DeleteApiAnamnesisByIdQuestionsByQuestionId.ts";
+export type { DeleteApiClientByIdAnamnesisByClientAnamnesisIdQuestionsByQuestionIdPathParams, DeleteApiClientByIdAnamnesisByClientAnamnesisIdQuestionsByQuestionIdMutationResponse, DeleteApiClientByIdAnamnesisByClientAnamnesisIdQuestionsByQuestionIdMutation } from "./DeleteApiClientByIdAnamnesisByClientAnamnesisIdQuestionsByQuestionId.ts";
 export type { DeleteApiWorkoutByIdPathParams, DeleteApiWorkoutById200, DeleteApiWorkoutByIdMutationResponse, DeleteApiWorkoutByIdMutation } from "./DeleteApiWorkoutById.ts";
 export type { DeleteApiWorkoutExerciseByExerciseWorkoutIdPathParams, DeleteApiWorkoutExerciseByExerciseWorkoutId200, DeleteApiWorkoutExerciseByExerciseWorkoutIdMutationResponse, DeleteApiWorkoutExerciseByExerciseWorkoutIdMutation } from "./DeleteApiWorkoutExerciseByExerciseWorkoutId.ts";
 export type { GetApiActivitiesClientByClientIdPathParams, GetApiActivitiesClientByClientIdQueryParams, PayloadDirectionEnumKey, GetApiActivitiesClientByClientId200, GetApiActivitiesClientByClientIdQueryResponse, GetApiActivitiesClientByClientIdQuery } from "./GetApiActivitiesClientByClientId.ts";
@@ -8,6 +9,7 @@ export type { GetApiAnamnesis200, GetApiAnamnesisQueryResponse, GetApiAnamnesisQ
 export type { GetApiAnamnesisByIdPathParams, GetApiAnamnesisById200, GetApiAnamnesisByIdQueryResponse, GetApiAnamnesisByIdQuery } from "./GetApiAnamnesisById.ts";
 export type { GetApiAnamnesisTemplates200, GetApiAnamnesisTemplatesQueryResponse, GetApiAnamnesisTemplatesQuery } from "./GetApiAnamnesisTemplates.ts";
 export type { GetApiClientByIdPathParams, GetApiClientById200, GetApiClientByIdQueryResponse, GetApiClientByIdQuery } from "./GetApiClientById.ts";
+export type { GetApiClientByIdAnamnesisPathParams, AnamnesisStatusEnumKey, GetApiClientByIdAnamnesis200, GetApiClientByIdAnamnesisQueryResponse, GetApiClientByIdAnamnesisQuery } from "./GetApiClientByIdAnamnesis.ts";
 export type { GetApiClients200, GetApiClientsQueryResponse, GetApiClientsQuery } from "./GetApiClients.ts";
 export type { GetApiExerciseByIdPathParams, GetApiExerciseById200, GetApiExerciseByIdQueryResponse, GetApiExerciseByIdQuery } from "./GetApiExerciseById.ts";
 export type { GetApiExercisesFilters200, GetApiExercisesFiltersQueryResponse, GetApiExercisesFiltersQuery } from "./GetApiExercisesFilters.ts";
@@ -23,6 +25,9 @@ export type { PatchApiTrainerOnboardingFinishedMutationResponse, PatchApiTrainer
 export type { PostApiAnamnesisByIdQuestionsPathParams, PostApiAnamnesisByIdQuestions200, PostApiAnamnesisByIdQuestionsMutationRequest, PostApiAnamnesisByIdQuestionsMutationResponse, PostApiAnamnesisByIdQuestionsMutation } from "./PostApiAnamnesisByIdQuestions.ts";
 export type { PostApiAnamnesisCreate200, PostApiAnamnesisCreateMutationRequest, PostApiAnamnesisCreateMutationResponse, PostApiAnamnesisCreateMutation } from "./PostApiAnamnesisCreate.ts";
 export type { PostApiAnamnesisTemplatesByIdClonePathParams, PostApiAnamnesisTemplatesByIdClone200, PostApiAnamnesisTemplatesByIdCloneMutationResponse, PostApiAnamnesisTemplatesByIdCloneMutation } from "./PostApiAnamnesisTemplatesByIdClone.ts";
+export type { PostApiClientByIdAnamnesisPathParams, PostApiClientByIdAnamnesis200StatusEnumKey, PostApiClientByIdAnamnesis200, PostApiClientByIdAnamnesisMutationRequest, PostApiClientByIdAnamnesisMutationResponse, PostApiClientByIdAnamnesisMutation } from "./PostApiClientByIdAnamnesis.ts";
+export type { PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsPathParams, PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsMutationRequest, PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsMutationResponse, PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsMutation } from "./PostApiClientByIdAnamnesisByClientAnamnesisIdQuestions.ts";
+export type { PostApiClientByIdAnamnesisByClientAnamnesisIdSendPathParams, PostApiClientByIdAnamnesisByClientAnamnesisIdSend200, PostApiClientByIdAnamnesisByClientAnamnesisIdSend429, PostApiClientByIdAnamnesisByClientAnamnesisIdSendMutationResponse, PostApiClientByIdAnamnesisByClientAnamnesisIdSendMutation } from "./PostApiClientByIdAnamnesisByClientAnamnesisIdSend.ts";
 export type { PostApiClientByIdAssignRoutinePathParams, PostApiClientByIdAssignRoutine200, PostApiClientByIdAssignRoutineMutationRequest, PostApiClientByIdAssignRoutineMutationResponse, PostApiClientByIdAssignRoutineMutation } from "./PostApiClientByIdAssignRoutine.ts";
 export type { PostApiClientByIdSendInvitePathParams, PostApiClientByIdSendInvite200, PostApiClientByIdSendInviteMutationResponse, PostApiClientByIdSendInviteMutation } from "./PostApiClientByIdSendInvite.ts";
 export type { PostApiClientCreate200, PostApiClientCreate409, PostApiClientCreateMutationRequest, PostApiClientCreateMutationResponse, PostApiClientCreateMutation } from "./PostApiClientCreate.ts";
@@ -38,6 +43,7 @@ export type { PostApiWorkoutCreate200, PostApiWorkoutCreateMutationRequest, Post
 export type { PutApiAnamnesisByIdPathParams, PutApiAnamnesisById200, PutApiAnamnesisByIdMutationRequest, PutApiAnamnesisByIdMutationResponse, PutApiAnamnesisByIdMutation } from "./PutApiAnamnesisById.ts";
 export type { PutApiAnamnesisByIdQuestionsReorderPathParams, PutApiAnamnesisByIdQuestionsReorder200, PutApiAnamnesisByIdQuestionsReorderMutationRequest, PutApiAnamnesisByIdQuestionsReorderMutationResponse, PutApiAnamnesisByIdQuestionsReorderMutation } from "./PutApiAnamnesisByIdQuestionsReorder.ts";
 export type { PutApiClientByIdPathParams, PutApiClientById200, PutApiClientByIdMutationRequest, PutApiClientByIdMutationResponse, PutApiClientByIdMutation } from "./PutApiClientById.ts";
+export type { PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorderPathParams, PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder200StatusEnumKey, PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder200, PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder400, PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorderMutationRequest, PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorderMutationResponse, PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorderMutation } from "./PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder.ts";
 export type { PutApiExerciseByIdPathParams, PutApiExerciseById200, PutApiExerciseByIdMutationRequest, PutApiExerciseByIdMutationResponse, PutApiExerciseByIdMutation } from "./PutApiExerciseById.ts";
 export type { PutApiRoutineByIdPathParams, PutApiRoutineById200, PutApiRoutineByIdMutationRequest, PutApiRoutineByIdMutationResponse, PutApiRoutineByIdMutation } from "./PutApiRoutineById.ts";
 export type { PutApiWorkoutByIdPathParams, PutApiWorkoutById200, PutApiWorkoutByIdMutationRequest, PutApiWorkoutByIdMutationResponse, PutApiWorkoutByIdMutation } from "./PutApiWorkoutById.ts";
@@ -46,4 +52,7 @@ export type { PutApiWorkoutExerciseReorder200, PutApiWorkoutExerciseReorderMutat
 export type { PutApiWorkoutReorder200, PutApiWorkoutReorderMutationRequest, PutApiWorkoutReorderMutationResponse, PutApiWorkoutReorderMutation } from "./PutApiWorkoutReorder.ts";
 export { payloadDirectionEnum } from "./GetApiActivitiesClientByClientId.ts";
 export { payloadDirectionEnum2 } from "./GetApiActivitiesTrainer.ts";
+export { anamnesisStatusEnum } from "./GetApiClientByIdAnamnesis.ts";
 export { sessionsSourceEnum } from "./GetApiSessionsClientByClientId.ts";
+export { postApiClientByIdAnamnesis200StatusEnum } from "./PostApiClientByIdAnamnesis.ts";
+export { putApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder200StatusEnum } from "./PutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder.ts";

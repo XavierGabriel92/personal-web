@@ -13,5 +13,5 @@ export default function TrainerClientsPage() {
     <Suspense fallback={<Spinner className="size-8" />}>
       <ClientsList />
     </Suspense>
-  </div>
+  </div >
 }

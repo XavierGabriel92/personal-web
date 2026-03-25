@@ -17,8 +17,20 @@ The trainer's client detail view has tabs driven by `src/components/clients/tab/
 | `workout-session` | tab-2 | Treinos realizados |
 | `weight-evolution` | tab-4 | Evolução de Carga |
 | `program-history` | tab-5 | Histórico de programas |
+| `anamnesis` | tab-6 | Anamneses |
 
 Clicking a tab navigates to the corresponding sub-route under `/trainer/clients/$clientId/`.
+
+## Client Anamnesis Tab
+
+`src/routes/trainer/clients/$clientId/anamnesis.tsx` renders the trainer's view of anamneses assigned to a specific client. It displays all client anamnesis records and allows the trainer to:
+- View each anamnesis's name, description, and status (`PENDING` / `COMPLETED`)
+- Edit questions (add, reorder via drag-and-drop, delete) while the anamnesis is `PENDING`
+- Open `EditClientAnamnesisDialog` to manage a specific client anamnesis
+
+Assigning a new anamnesis to the client is done via `SelectAnamnesisForClientDialog`, which opens the trainer's library for selection or inline creation.
+
+After assignment or question changes, the hook key `getApiClientByIdAnamnesisSuspenseQueryKey(clientId)` is invalidated to keep the tab in sync.
 
 ## Last Workout Session
 
@@ -239,6 +251,54 @@ Dialog for assigning a routine to a client. Two flows:
 3. Backend creates an empty routine with `clientId` set (not a library routine)
 4. Navigates trainer to `/trainer/routines/$newRoutineId` to fill in workouts
 
+### `SelectAnamnesisForClientDialog` (`src/components/anamnesis/dialog/select-anamnesis-for-client.tsx`)
+
+Dialog for assigning an anamnesis from the trainer's library to a client. Two flows:
+
+**Assign from library:**
+1. Lists all trainer anamneses via `useGetApiAnamnesisSuspense()`
+2. Trainer selects one and clicks "Confirmar"
+3. Calls `usePostApiClientByIdAnamnesis` → creates a client anamnesis record with `status: PENDING`
+4. Invalidates `getApiClientByIdAnamnesisSuspenseQueryKey(clientId)`
+
+**Create inline:**
+1. Trainer clicks "Criar nova anamnese" → current dialog closes, `CreateAnamnesisDialog` opens
+2. After creation, the new anamnesis ID is pre-selected and the selection dialog reopens
+
+### `EditClientAnamnesisDialog` (`src/components/anamnesis/dialog/edit-client-anamnesis-dialog.tsx`)
+
+Dialog for viewing and editing a client anamnesis. Shows the anamnesis name, description (read-only), and its question list. When `status === "PENDING"`, renders `ClientAnamnesisQuestionList` so the trainer can add, reorder, and delete questions.
+
+### `ClientAnamnesisQuestionList` (`src/components/anamnesis/questions/client-anamnesis-question-list.tsx`)
+
+Wires `QuestionListBase` to the client anamnesis API endpoints:
+- `usePostApiClientByIdAnamnesisByClientAnamnesisIdQuestions` — add question
+- `useDeleteApiClientByIdAnamnesisByClientAnamnesisIdQuestionsByQuestionId` — remove question
+- `usePutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder` — reorder questions
+
+All mutations invalidate `getApiClientByIdAnamnesisSuspenseQueryKey(clientId)` on success.
+
+### `QuestionListBase` (`src/components/anamnesis/questions/question-list-base.tsx`)
+
+Generic drag-and-drop question list used by both `QuestionList` (trainer anamnesis) and `ClientAnamnesisQuestionList` (client anamnesis). Accepts callbacks for add, delete, and reorder so the API wiring is kept in the caller.
+
+```tsx
+<QuestionListBase
+  questions={questions}
+  onAddQuestion={async (text) => { /* call API */ }}
+  onDeleteQuestion={async (question) => { /* call API */ }}
+  onReorderQuestions={async (orderedList, nextItems) => { /* call API */ }}
+  addButtonLabel="Adicionar pergunta"
+  emptyMessage="Nenhuma pergunta adicionada ainda"
+/>
+```
+
+Key behaviours:
+- Optimistic local reorder: updates `items` state immediately, rolls back on API error
+- Inline add: shows an input row on "Adicionar pergunta" click; Enter to save, Escape to cancel
+- Delete confirmation: `AlertDialog` before removing a question
+- Hover-reveal delete button: trash icon only visible on row hover
+
 ## Client Overview Page
 
 `src/pages/trainer/client/overview.tsx` renders two columns:
@@ -283,6 +343,14 @@ await queryClient.invalidateQueries({
 ```
 
 This triggers a refetch of the client, which updates `activeRoutineId`, causing `ActiveProgram` to switch from empty state to the active routine card.
+
+After assigning or editing a client anamnesis, invalidate:
+
+```ts
+await queryClient.invalidateQueries({
+  queryKey: getApiClientByIdAnamnesisSuspenseQueryKey(clientId),
+});
+```
 
 ## Suspense Boundaries
 
@@ -329,3 +397,9 @@ Relevant generated hooks:
 - `getApiSessionsClientByClientIdQueryOptions` — query options factory for session list (used with `useSuspenseQuery` directly for date-range filtered calendar and weight-evolution views)
 - `useGetApiRoutinesClientByClientIdSuspense` — fetch all programs for a client (program history list)
 - `usePostApiRoutineByIdCloneToLibrary` — clone a client routine to the trainer's library; takes `{ id: string }` as mutation variables
+- `useGetApiClientByIdAnamnesisSuspense` — fetch all anamneses assigned to a client
+- `usePostApiClientByIdAnamnesis` — assign a library anamnesis to a client (creates client anamnesis record)
+- `usePostApiClientByIdAnamnesisByClientAnamnesisIdQuestions` — add a question to a client anamnesis
+- `useDeleteApiClientByIdAnamnesisByClientAnamnesisIdQuestionsByQuestionId` — remove a question from a client anamnesis
+- `usePutApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder` — reorder questions on a client anamnesis
+- `usePostApiClientByIdAnamnesisByClientAnamnesisIdSend` — send/submit a client anamnesis
