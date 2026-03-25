@@ -252,6 +252,59 @@ For more precise updates (avoiding a full refetch), use `setQueryData` with the 
 queryClient.setQueryData(getApiRoutineByIdSuspenseQueryKey(routineId), updatedRoutine);
 ```
 
+### Debounced auto-save
+
+For forms where changes should save automatically as the user types (without a submit button), use a `useRef` timeout to debounce the mutation. This avoids React Hook Form overhead for simple fields and keeps the save logic close to the change handlers.
+
+```tsx
+const DEBOUNCE_MS = 700;
+
+function EditAnamnesisPage({ anamnesisId }: { anamnesisId: string }) {
+  const { data } = useGetApiAnamnesisByIdSuspense(anamnesisId);
+  const { mutateAsync: update, isPending } = usePutApiAnamnesisById();
+
+  const [name, setName] = useState(data.name);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep local state in sync when server data changes
+  useEffect(() => { setName(data.name); }, [data.name]);
+
+  const save = (newName: string) => {
+    if (!newName.trim()) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      await update(
+        { id: anamnesisId, data: { name: newName.trim() } },
+        {
+          onSuccess: (updated) => {
+            // Update cache directly to avoid a full refetch
+            queryClient.setQueryData(
+              getApiAnamnesisByIdSuspenseQueryKey(anamnesisId),
+              updated
+            );
+            toast.success("Salvo!");
+          },
+          onError: () => toast.error("Erro ao salvar."),
+        }
+      );
+    }, DEBOUNCE_MS);
+  };
+
+  return (
+    <Input
+      value={name}
+      onChange={(e) => { setName(e.target.value); save(e.target.value); }}
+    />
+  );
+}
+```
+
+Key points:
+- `debounceRef.current` holds the pending timeout — cleared on every keystroke so only the last value is sent.
+- Use `queryClient.setQueryData` (not `invalidateQueries`) on success to update the cache instantly without a round-trip.
+- Show `isPending` in the page title or a status indicator so the user knows a save is in flight.
+- The `useEffect` sync keeps local state consistent if the parent invalidates and re-fetches the query.
+
 ---
 
 ## Optimistic Updates
@@ -326,6 +379,7 @@ On first page load this hits the network; on subsequent navigations within 5 min
 - ✅ Gate sheet/overlay content on `open` state to defer suspense queries until needed
 - ✅ Always disable mutation triggers and show `<Spinner>` while `isPending`
 - ✅ Always handle `onSuccess` (invalidate/update cache + toast) and `onError` (toast) on mutations
+- ✅ Use debounced auto-save (raw `useRef` timeout + `mutateAsync`) for fields that save on every keystroke
 - ✅ Use optimistic updates for instant-feedback interactions (drag, toggles)
 - ✅ Rollback optimistic updates on error
 - ✅ Use generated query keys from Kubb — never hardcode them

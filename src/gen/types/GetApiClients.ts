@@ -13,6 +13,38 @@ export type GetApiClients200 = {
     */
     clients: {
         /**
+         * @type string
+        */
+        id: string;
+        /**
+         * @type string
+        */
+        name: string;
+        /**
+         * @type string
+        */
+        phone: string;
+        /**
+         * @type string
+        */
+        ownerId: string;
+        /**
+         * @type string | undefined
+        */
+        activeRoutineId?: string;
+        /**
+         * @type string | undefined
+        */
+        goals?: string;
+        /**
+         * @type boolean
+        */
+        active: boolean;
+        /**
+         * @type boolean
+        */
+        whatsappConnected: boolean;
+        /**
          * @type object | undefined
         */
         lastWorkoutSession?: {
@@ -21,9 +53,13 @@ export type GetApiClients200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string | undefined
             */
-            workoutName: string;
+            workoutId?: string;
+            /**
+             * @type string | undefined
+            */
+            workoutName?: string;
             /**
              * @type string
             */
@@ -83,38 +119,6 @@ export type GetApiClients200 = {
                 notes?: string;
             }[];
         };
-        /**
-         * @type string
-        */
-        id: string;
-        /**
-         * @type string
-        */
-        name: string;
-        /**
-         * @type string
-        */
-        phone: string;
-        /**
-         * @type string
-        */
-        ownerId: string;
-        /**
-         * @type string | undefined
-        */
-        activeRoutineId?: string;
-        /**
-         * @type string | undefined
-        */
-        goals?: string;
-        /**
-         * @type boolean
-        */
-        active: boolean;
-        /**
-         * @type boolean
-        */
-        whatsappConnected: boolean;
         /**
          * @type string
         */

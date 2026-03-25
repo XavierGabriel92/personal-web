@@ -48,6 +48,81 @@ export type PostApiClientByIdAssignRoutine200 = {
     */
     whatsappConnected: boolean;
     /**
+     * @type object | undefined
+    */
+    lastWorkoutSession?: {
+        /**
+         * @type string
+        */
+        id: string;
+        /**
+         * @type string | undefined
+        */
+        workoutId?: string;
+        /**
+         * @type string | undefined
+        */
+        workoutName?: string;
+        /**
+         * @type string
+        */
+        startedAt: string;
+        /**
+         * @type string | undefined
+        */
+        completedAt?: string;
+        /**
+         * @type number
+        */
+        duration: number;
+        /**
+         * @type number
+        */
+        series: number;
+        /**
+         * @type number
+        */
+        weight: number;
+        /**
+         * @type string
+        */
+        createdAt: string;
+        /**
+         * @type array | undefined
+        */
+        exercises?: {
+            /**
+             * @type string
+            */
+            exerciseId: string;
+            /**
+             * @type string
+            */
+            exerciseName: string;
+            /**
+             * @type string | undefined
+            */
+            thumbnailUrl?: string;
+            /**
+             * @type array
+            */
+            sets: {
+                /**
+                 * @type number
+                */
+                reps: number;
+                /**
+                 * @type number
+                */
+                weight_kg: number;
+            }[];
+            /**
+             * @type string | undefined
+            */
+            notes?: string;
+        }[];
+    };
+    /**
      * @type string
     */
     createdAt: string;

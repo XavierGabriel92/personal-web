@@ -20,7 +20,7 @@ function TrainerDashboardLayout() {
 		<SidebarProvider className="h-svh overflow-hidden">
 			<AppSidebar />
 			<SidebarInset className="overflow-hidden">
-				<TrainerHeader />
+				{/* <TrainerHeader /> */}
 				<div className="flex flex-1 flex-col gap-4 px-5 md:px-10 py-6 text-sm overflow-y-auto overflow-x-hidden">
 					<Outlet />
 				</div>

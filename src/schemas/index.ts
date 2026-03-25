@@ -65,3 +65,24 @@ export interface Routine {
 	updatedAt: string;
 	workouts: Workout[];
 }
+
+export interface AnamnesisQuestion {
+	id: string;
+	anamnesisId: string;
+	text: string;
+	order: number;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface Anamnesis {
+	id: string;
+	name: string;
+	description?: string;
+	ownerId?: string | null;
+	isTemplate?: boolean;
+	category?: string | null;
+	questions: AnamnesisQuestion[];
+	createdAt: string;
+	updatedAt: string;
+}

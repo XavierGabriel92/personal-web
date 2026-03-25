@@ -9,6 +9,7 @@ import { useCachedSession } from "@/hooks/auth";
 import {
 	BarChart2,
 	BookA,
+	ClipboardList,
 	Dumbbell,
 	Home,
 	Users,
@@ -33,6 +34,11 @@ const navMain = [
 		title: "Programas",
 		url: "/trainer/routines",
 		icon: BookA,
+	},
+	{
+		title: "Anamneses",
+		url: "/trainer/anamnesis",
+		icon: ClipboardList,
 	},
 	{
 		title: "Exercícios",

@@ -49,6 +49,17 @@ Examples: "PPL Beginner 12 weeks", "Hypertrophy Block", "5/3/1 Strength"
 - **Client routines**: A copy of a trainer routine assigned to a specific client (`clientId` set) — these are the "live" programs a client follows
 - **System templates**: Pre-built programs (`isTemplate = true`, `ownerId = null`) provided by the platform that trainers can browse and clone into their library
 
+### Anamnesis
+A health-intake questionnaire that a trainer creates and can assign to clients. Each anamnesis has a name, optional description, and an ordered list of free-text questions.
+
+**Types:**
+- **Trainer anamneses**: Created by a trainer (`ownerId = trainer.id`), managed in the trainer's library
+- **System templates**: Pre-built questionnaires (`isTemplate = true`, `category` set) provided by the platform; trainers clone them into their own library via "Adicionar à minha biblioteca"
+
+Key properties:
+- `id`, `name`, `description?`, `ownerId?`, `isTemplate?`, `category?`
+- `questions: AnamnesisQuestion[]` — ordered list of questions, each with `id`, `text`, `order`
+
 ### Workout Session
 A logged instance of a client completing a workout. Captures actual performance data (sets done, reps, weight, duration) against the prescribed exercises.
 
@@ -83,6 +94,12 @@ Trainers can browse a library of curated system programs at `/trainer/routines/h
 ### Assigning a program to a client
 From the routine detail page or client profile, the trainer assigns a routine to a client. This clones the routine into a client-specific copy (`clientId` set), so changes to the original don't affect the client's running program.
 
+### Managing anamneses
+Trainers create and edit questionnaires at `/trainer/anamnesis`. They can:
+- Create a blank anamnesis via a side sheet
+- Add, reorder (drag-and-drop), and delete questions on the detail page
+- Browse system templates at `/trainer/anamnesis/templates` and clone them into their library
+
 ---
 
 ## Domain Model (simplified)
@@ -92,6 +109,10 @@ User (Trainer)
   ├── owns → Routine[] (trainer programs)
   │           ├── contains → Workout[]
   │           │               └── has → ExerciseWorkout[] → Exercise
+  │           └── (isTemplate=true, ownerId=null) = system templates
+  │
+  ├── owns → Anamnesis[] (trainer questionnaires)
+  │           └── has → AnamnesisQuestion[] (ordered)
   │           └── (isTemplate=true, ownerId=null) = system templates
   │
   └── manages → Client[]
@@ -113,6 +134,9 @@ User (Trainer)
 | `/trainer/routines/:id` | Program editor: add/edit/reorder workouts and exercises |
 | `/trainer/routines/homug-programs` | Browse system template programs |
 | `/trainer/analytics` | Analytics: client activity counts, active/inactive breakdown by period |
+| `/trainer/anamnesis` | Trainer's anamnesis library (tab: "Minhas anamneses") |
+| `/trainer/anamnesis/templates` | Browse system anamnesis templates (tab: "Anamneses prontas") |
+| `/trainer/anamnesis/:anamnesisId` | Anamnesis detail: edit name/description, manage questions |
 
 ---
 
@@ -120,7 +144,7 @@ User (Trainer)
 
 **WhatsApp as primary client channel**: Clients don't need an account. The platform generates shareable workout plan links delivered via WhatsApp. This lowers the barrier for client adoption.
 
-**Template vs. owned routine distinction**: System templates use `ownerId = null` + `isTemplate = true`. This means they're naturally invisible to trainer program lists (which filter by `ownerId = trainer.id`), and the FK `ON DELETE SET NULL` ensures templates survive if an owner user were ever deleted.
+**Template vs. owned routine distinction**: System templates use `ownerId = null` + `isTemplate = true`. This means they're naturally invisible to trainer program lists (which filter by `ownerId = trainer.id`), and the FK `ON DELETE SET NULL` ensures templates survive if an owner user were ever deleted. The same convention applies to Anamnesis templates.
 
 **Client routine isolation**: When a trainer assigns a program to a client, a deep clone is made. This decouples the client's running program from the trainer's master template, allowing the trainer to evolve their templates without accidentally changing what a client is currently following.
 

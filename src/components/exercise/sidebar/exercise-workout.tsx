@@ -56,7 +56,7 @@ function ExerciseSidebarContent({
   onExerciseSelect,
   searchKey: _searchKey,
 }: ExerciseSidebarProps) {
-  const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
+  const [selectedEquipment, _] = useState<string>("all");
   const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -167,8 +167,8 @@ function ExerciseSidebarContent({
     <>
       <SidebarHeader className="border-b pb-4 flex flex-col gap-3 shrink-0 sticky top-0 bg-sidebar z-10">
         <CreateExerciseSheet onSuccess={refreshExerciseList} />
-        <div className="grid grid-cols-2 gap-2">
-          <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
+        <div className="grid grid-cols-1 gap-2">
+          {/* <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Equipamentos" />
             </SelectTrigger>
@@ -180,7 +180,7 @@ function ExerciseSidebarContent({
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
           <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Músculos" />
@@ -273,7 +273,7 @@ export default function ExerciseWorkoutSidebar({
   return (
     <Sidebar
       side="right"
-      avoidFullHeight={true}
+      // avoidFullHeight={true}
       noOverlay={true}
     >
       <ExerciseSidebarContent onExerciseSelect={onExerciseSelect} searchKey={searchKey} />

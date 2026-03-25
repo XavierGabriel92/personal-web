@@ -191,7 +191,7 @@ export default function ResumeProgramSidebar({
       <Sidebar
         side="right"
         noOverlay={true}
-        avoidFullHeight={true}
+      // avoidFullHeight={true}
       >
         <ResumeProgramSidebarContent workouts={workouts} />
       </Sidebar>

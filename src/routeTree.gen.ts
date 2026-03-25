@@ -25,16 +25,21 @@ import { Route as TrainerClientsIndexRouteImport } from './routes/trainer/client
 import { Route as TrainerWorkoutsWorkoutIdRouteImport } from './routes/trainer/workouts/$workoutId'
 import { Route as TrainerRoutinesRoutinesLayoutRouteImport } from './routes/trainer/routines/_routinesLayout'
 import { Route as TrainerRoutinesRoutineIdRouteImport } from './routes/trainer/routines/$routineId'
+import { Route as TrainerAnamnesisAnamnesisLayoutRouteImport } from './routes/trainer/anamnesis/_anamnesisLayout'
+import { Route as TrainerAnamnesisAnamnesisIdRouteImport } from './routes/trainer/anamnesis/$anamnesisId'
 import { Route as TrainerClientsClientIdRouteRouteImport } from './routes/trainer/clients/$clientId/route'
 import { Route as TrainerRoutinesRoutinesLayoutIndexRouteImport } from './routes/trainer/routines/_routinesLayout.index'
+import { Route as TrainerAnamnesisAnamnesisLayoutIndexRouteImport } from './routes/trainer/anamnesis/_anamnesisLayout.index'
 import { Route as TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport } from './routes/trainer/routines/_routinesLayout.homug-programs'
 import { Route as TrainerClientsClientIdWorkoutSessionRouteImport } from './routes/trainer/clients/$clientId/workout-session'
 import { Route as TrainerClientsClientIdWeightEvolutionRouteImport } from './routes/trainer/clients/$clientId/weight-evolution'
 import { Route as TrainerClientsClientIdProgramHistoryRouteImport } from './routes/trainer/clients/$clientId/program-history'
 import { Route as TrainerClientsClientIdOverviewRouteImport } from './routes/trainer/clients/$clientId/overview'
 import { Route as TrainerClientsClientIdMeasurementsRouteImport } from './routes/trainer/clients/$clientId/measurements'
+import { Route as TrainerAnamnesisAnamnesisLayoutTemplatesRouteImport } from './routes/trainer/anamnesis/_anamnesisLayout.templates'
 
 const TrainerRoutinesRouteImport = createFileRoute('/trainer/routines')()
+const TrainerAnamnesisRouteImport = createFileRoute('/trainer/anamnesis')()
 
 const TrainerRouteRoute = TrainerRouteRouteImport.update({
   id: '/trainer',
@@ -53,6 +58,11 @@ const IndexRoute = IndexRouteImport.update({
 const TrainerRoutinesRoute = TrainerRoutinesRouteImport.update({
   id: '/routines',
   path: '/routines',
+  getParentRoute: () => TrainerRouteRoute,
+} as any)
+const TrainerAnamnesisRoute = TrainerAnamnesisRouteImport.update({
+  id: '/anamnesis',
+  path: '/anamnesis',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
 const TrainerHomeRoute = TrainerHomeRouteImport.update({
@@ -113,6 +123,17 @@ const TrainerRoutinesRoutineIdRoute =
     path: '/routines/$routineId',
     getParentRoute: () => TrainerRouteRoute,
   } as any)
+const TrainerAnamnesisAnamnesisLayoutRoute =
+  TrainerAnamnesisAnamnesisLayoutRouteImport.update({
+    id: '/_anamnesisLayout',
+    getParentRoute: () => TrainerAnamnesisRoute,
+  } as any)
+const TrainerAnamnesisAnamnesisIdRoute =
+  TrainerAnamnesisAnamnesisIdRouteImport.update({
+    id: '/anamnesis/$anamnesisId',
+    path: '/anamnesis/$anamnesisId',
+    getParentRoute: () => TrainerRouteRoute,
+  } as any)
 const TrainerClientsClientIdRouteRoute =
   TrainerClientsClientIdRouteRouteImport.update({
     id: '/clients/$clientId',
@@ -124,6 +145,12 @@ const TrainerRoutinesRoutinesLayoutIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => TrainerRoutinesRoutinesLayoutRoute,
+  } as any)
+const TrainerAnamnesisAnamnesisLayoutIndexRoute =
+  TrainerAnamnesisAnamnesisLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => TrainerAnamnesisAnamnesisLayoutRoute,
   } as any)
 const TrainerRoutinesRoutinesLayoutHomugProgramsRoute =
   TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport.update({
@@ -161,6 +188,12 @@ const TrainerClientsClientIdMeasurementsRoute =
     path: '/measurements',
     getParentRoute: () => TrainerClientsClientIdRouteRoute,
   } as any)
+const TrainerAnamnesisAnamnesisLayoutTemplatesRoute =
+  TrainerAnamnesisAnamnesisLayoutTemplatesRouteImport.update({
+    id: '/templates',
+    path: '/templates',
+    getParentRoute: () => TrainerAnamnesisAnamnesisLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -173,16 +206,20 @@ export interface FileRoutesByFullPath {
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
+  '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
   '/trainer/routines/$routineId': typeof TrainerRoutinesRoutineIdRoute
   '/trainer/routines': typeof TrainerRoutinesRoutinesLayoutRouteWithChildren
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients': typeof TrainerClientsIndexRoute
+  '/trainer/anamnesis/templates': typeof TrainerAnamnesisAnamnesisLayoutTemplatesRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
+  '/trainer/anamnesis/': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
 }
 export interface FileRoutesByTo {
@@ -196,10 +233,13 @@ export interface FileRoutesByTo {
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
+  '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/$routineId': typeof TrainerRoutinesRoutineIdRoute
   '/trainer/routines': typeof TrainerRoutinesRoutinesLayoutIndexRoute
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients': typeof TrainerClientsIndexRoute
+  '/trainer/anamnesis/templates': typeof TrainerAnamnesisAnamnesisLayoutTemplatesRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
@@ -220,17 +260,22 @@ export interface FileRoutesById {
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
+  '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
+  '/trainer/anamnesis': typeof TrainerAnamnesisRouteWithChildren
+  '/trainer/anamnesis/_anamnesisLayout': typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
   '/trainer/routines/$routineId': typeof TrainerRoutinesRoutineIdRoute
   '/trainer/routines': typeof TrainerRoutinesRouteWithChildren
   '/trainer/routines/_routinesLayout': typeof TrainerRoutinesRoutinesLayoutRouteWithChildren
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
   '/trainer/clients/': typeof TrainerClientsIndexRoute
+  '/trainer/anamnesis/_anamnesisLayout/templates': typeof TrainerAnamnesisAnamnesisLayoutTemplatesRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
   '/trainer/clients/$clientId/overview': typeof TrainerClientsClientIdOverviewRoute
   '/trainer/clients/$clientId/program-history': typeof TrainerClientsClientIdProgramHistoryRoute
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/_routinesLayout/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
+  '/trainer/anamnesis/_anamnesisLayout/': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/_routinesLayout/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
 }
 export interface FileRouteTypes {
@@ -246,16 +291,20 @@ export interface FileRouteTypes {
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
+    | '/trainer/anamnesis/$anamnesisId'
+    | '/trainer/anamnesis'
     | '/trainer/routines/$routineId'
     | '/trainer/routines'
     | '/trainer/workouts/$workoutId'
     | '/trainer/clients'
+    | '/trainer/anamnesis/templates'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program-history'
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
+    | '/trainer/anamnesis/'
     | '/trainer/routines/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -269,10 +318,13 @@ export interface FileRouteTypes {
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
+    | '/trainer/anamnesis/$anamnesisId'
+    | '/trainer/anamnesis'
     | '/trainer/routines/$routineId'
     | '/trainer/routines'
     | '/trainer/workouts/$workoutId'
     | '/trainer/clients'
+    | '/trainer/anamnesis/templates'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program-history'
@@ -292,17 +344,22 @@ export interface FileRouteTypes {
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/clients/$clientId'
+    | '/trainer/anamnesis/$anamnesisId'
+    | '/trainer/anamnesis'
+    | '/trainer/anamnesis/_anamnesisLayout'
     | '/trainer/routines/$routineId'
     | '/trainer/routines'
     | '/trainer/routines/_routinesLayout'
     | '/trainer/workouts/$workoutId'
     | '/trainer/clients/'
+    | '/trainer/anamnesis/_anamnesisLayout/templates'
     | '/trainer/clients/$clientId/measurements'
     | '/trainer/clients/$clientId/overview'
     | '/trainer/clients/$clientId/program-history'
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/_routinesLayout/homug-programs'
+    | '/trainer/anamnesis/_anamnesisLayout/'
     | '/trainer/routines/_routinesLayout/'
   fileRoutesById: FileRoutesById
 }
@@ -340,6 +397,13 @@ declare module '@tanstack/react-router' {
       path: '/routines'
       fullPath: '/trainer/routines'
       preLoaderRoute: typeof TrainerRoutinesRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/anamnesis': {
+      id: '/trainer/anamnesis'
+      path: '/anamnesis'
+      fullPath: '/trainer/anamnesis'
+      preLoaderRoute: typeof TrainerAnamnesisRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
     '/trainer/home': {
@@ -419,6 +483,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerRoutinesRoutineIdRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
+    '/trainer/anamnesis/_anamnesisLayout': {
+      id: '/trainer/anamnesis/_anamnesisLayout'
+      path: '/anamnesis'
+      fullPath: '/trainer/anamnesis'
+      preLoaderRoute: typeof TrainerAnamnesisAnamnesisLayoutRouteImport
+      parentRoute: typeof TrainerAnamnesisRoute
+    }
+    '/trainer/anamnesis/$anamnesisId': {
+      id: '/trainer/anamnesis/$anamnesisId'
+      path: '/anamnesis/$anamnesisId'
+      fullPath: '/trainer/anamnesis/$anamnesisId'
+      preLoaderRoute: typeof TrainerAnamnesisAnamnesisIdRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
     '/trainer/clients/$clientId': {
       id: '/trainer/clients/$clientId'
       path: '/clients/$clientId'
@@ -432,6 +510,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/trainer/routines/'
       preLoaderRoute: typeof TrainerRoutinesRoutinesLayoutIndexRouteImport
       parentRoute: typeof TrainerRoutinesRoutinesLayoutRoute
+    }
+    '/trainer/anamnesis/_anamnesisLayout/': {
+      id: '/trainer/anamnesis/_anamnesisLayout/'
+      path: '/'
+      fullPath: '/trainer/anamnesis/'
+      preLoaderRoute: typeof TrainerAnamnesisAnamnesisLayoutIndexRouteImport
+      parentRoute: typeof TrainerAnamnesisAnamnesisLayoutRoute
     }
     '/trainer/routines/_routinesLayout/homug-programs': {
       id: '/trainer/routines/_routinesLayout/homug-programs'
@@ -474,6 +559,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/trainer/clients/$clientId/measurements'
       preLoaderRoute: typeof TrainerClientsClientIdMeasurementsRouteImport
       parentRoute: typeof TrainerClientsClientIdRouteRoute
+    }
+    '/trainer/anamnesis/_anamnesisLayout/templates': {
+      id: '/trainer/anamnesis/_anamnesisLayout/templates'
+      path: '/templates'
+      fullPath: '/trainer/anamnesis/templates'
+      preLoaderRoute: typeof TrainerAnamnesisAnamnesisLayoutTemplatesRouteImport
+      parentRoute: typeof TrainerAnamnesisAnamnesisLayoutRoute
     }
   }
 }
@@ -522,6 +614,36 @@ const TrainerClientsClientIdRouteRouteWithChildren =
     TrainerClientsClientIdRouteRouteChildren,
   )
 
+interface TrainerAnamnesisAnamnesisLayoutRouteChildren {
+  TrainerAnamnesisAnamnesisLayoutTemplatesRoute: typeof TrainerAnamnesisAnamnesisLayoutTemplatesRoute
+  TrainerAnamnesisAnamnesisLayoutIndexRoute: typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
+}
+
+const TrainerAnamnesisAnamnesisLayoutRouteChildren: TrainerAnamnesisAnamnesisLayoutRouteChildren =
+  {
+    TrainerAnamnesisAnamnesisLayoutTemplatesRoute:
+      TrainerAnamnesisAnamnesisLayoutTemplatesRoute,
+    TrainerAnamnesisAnamnesisLayoutIndexRoute:
+      TrainerAnamnesisAnamnesisLayoutIndexRoute,
+  }
+
+const TrainerAnamnesisAnamnesisLayoutRouteWithChildren =
+  TrainerAnamnesisAnamnesisLayoutRoute._addFileChildren(
+    TrainerAnamnesisAnamnesisLayoutRouteChildren,
+  )
+
+interface TrainerAnamnesisRouteChildren {
+  TrainerAnamnesisAnamnesisLayoutRoute: typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
+}
+
+const TrainerAnamnesisRouteChildren: TrainerAnamnesisRouteChildren = {
+  TrainerAnamnesisAnamnesisLayoutRoute:
+    TrainerAnamnesisAnamnesisLayoutRouteWithChildren,
+}
+
+const TrainerAnamnesisRouteWithChildren =
+  TrainerAnamnesisRoute._addFileChildren(TrainerAnamnesisRouteChildren)
+
 interface TrainerRoutinesRoutinesLayoutRouteChildren {
   TrainerRoutinesRoutinesLayoutHomugProgramsRoute: typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
   TrainerRoutinesRoutinesLayoutIndexRoute: typeof TrainerRoutinesRoutinesLayoutIndexRoute
@@ -558,6 +680,8 @@ interface TrainerRouteRouteChildren {
   TrainerExercisesRoute: typeof TrainerExercisesRoute
   TrainerHomeRoute: typeof TrainerHomeRoute
   TrainerClientsClientIdRouteRoute: typeof TrainerClientsClientIdRouteRouteWithChildren
+  TrainerAnamnesisAnamnesisIdRoute: typeof TrainerAnamnesisAnamnesisIdRoute
+  TrainerAnamnesisRoute: typeof TrainerAnamnesisRouteWithChildren
   TrainerRoutinesRoutineIdRoute: typeof TrainerRoutinesRoutineIdRoute
   TrainerRoutinesRoute: typeof TrainerRoutinesRouteWithChildren
   TrainerWorkoutsWorkoutIdRoute: typeof TrainerWorkoutsWorkoutIdRoute
@@ -570,6 +694,8 @@ const TrainerRouteRouteChildren: TrainerRouteRouteChildren = {
   TrainerHomeRoute: TrainerHomeRoute,
   TrainerClientsClientIdRouteRoute:
     TrainerClientsClientIdRouteRouteWithChildren,
+  TrainerAnamnesisAnamnesisIdRoute: TrainerAnamnesisAnamnesisIdRoute,
+  TrainerAnamnesisRoute: TrainerAnamnesisRouteWithChildren,
   TrainerRoutinesRoutineIdRoute: TrainerRoutinesRoutineIdRoute,
   TrainerRoutinesRoute: TrainerRoutinesRouteWithChildren,
   TrainerWorkoutsWorkoutIdRoute: TrainerWorkoutsWorkoutIdRoute,

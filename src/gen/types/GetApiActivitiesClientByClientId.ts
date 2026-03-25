@@ -12,8 +12,14 @@ export type GetApiActivitiesClientByClientIdPathParams = {
 };
 
 export type GetApiActivitiesClientByClientIdQueryParams = {
-    limit?: (string | number);
-    offset?: (string | number);
+    /**
+     * @type number | undefined
+    */
+    limit?: number;
+    /**
+     * @type number | undefined
+    */
+    offset?: number;
 };
 
 export const payloadDirectionEnum = {

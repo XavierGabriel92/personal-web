@@ -53,7 +53,7 @@ function ExerciseSidebarContent({
   onExerciseSelect,
   searchKey,
 }: ExerciseSidebarProps) {
-  const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
+  const [selectedEquipment, _] = useState<string>("all");
   const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -162,8 +162,8 @@ function ExerciseSidebarContent({
   return (
     <>
       <SidebarHeader className="border-b pb-4 flex flex-col gap-3 shrink-0 sticky top-0 bg-sidebar z-10">
-        <div className="grid grid-cols-2 gap-2">
-          <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
+        <div className="grid grid-cols-1 gap-2">
+          {/* <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Equipamentos" />
             </SelectTrigger>
@@ -175,7 +175,7 @@ function ExerciseSidebarContent({
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
           <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Músculos" />
@@ -266,7 +266,7 @@ export default function ExerciseOverviewSidebar({
   return (
     <Sidebar
       side="right"
-      avoidFullHeight={true}
+      // avoidFullHeight={true}
       noOverlay={true}
     >
       <ExerciseSidebarContent onExerciseSelect={onExerciseSelect} searchKey={searchKey} />

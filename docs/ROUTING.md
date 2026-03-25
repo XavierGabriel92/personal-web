@@ -30,8 +30,13 @@ routes/
 │   │   ├── route.tsx
 │   │   ├── index.tsx       # Routines list
 │   │   └── $routineId.tsx  # Routine detail
-│   └── workouts/
-│       └── $workoutId.tsx   # Workout detail
+│   ├── workouts/
+│   │   └── $workoutId.tsx   # Workout detail
+│   └── anamnesis/
+│       ├── _anamnesisLayout.tsx          # Pathless layout (header + tabs)
+│       ├── _anamnesisLayout.index.tsx    # /trainer/anamnesis (list)
+│       ├── _anamnesisLayout.templates.tsx # /trainer/anamnesis/templates
+│       └── $anamnesisId.tsx              # /trainer/anamnesis/:id (detail)
 └── client/                  # Client layout route
     └── home.tsx            # Client dashboard
 ```
@@ -63,7 +68,7 @@ The root route provides:
 **File**: `src/routes/trainer/route.tsx`
 
 ```typescript
-export const Route = createFileRoute("/trainer")({{
+export const Route = createFileRoute("/trainer")({
   component: TrainerDashboardLayout,
   beforeLoad: async () => {
     const data = await cachedSession();
@@ -81,7 +86,7 @@ Protected routes use `beforeLoad` to check authentication before rendering.
 **File**: `src/routes/_auth/route.tsx`
 
 ```typescript
-export const Route = createFileRoute("/_auth")({{
+export const Route = createFileRoute("/_auth")({
   component: Layout,
   beforeLoad: async () => {
     const data = await cachedSession();
@@ -96,6 +101,57 @@ export const Route = createFileRoute("/_auth")({{
 ```
 
 Auth routes redirect authenticated users away from sign-in/sign-up pages.
+
+## Pathless Layout Routes within a Segment
+
+When a group of URLs sharing the same path prefix need a shared layout (header, tabs, context) **without** that layout adding its own path segment, use a **pathless layout route** named with an underscore: `_layoutName`.
+
+This is different from the root-level `_auth` pattern — here the underscore layout lives *inside* a named segment.
+
+```
+routes/trainer/anamnesis/
+├── _anamnesisLayout.tsx          → layout wrapper (renders header + tabs + <Outlet />)
+├── _anamnesisLayout.index.tsx    → matches /trainer/anamnesis      (list)
+├── _anamnesisLayout.templates.tsx → matches /trainer/anamnesis/templates
+└── $anamnesisId.tsx              → matches /trainer/anamnesis/:id  (outside the layout)
+```
+
+The layout file renders both the shared UI and an `<Outlet>` for the active child:
+
+```tsx
+// src/routes/trainer/anamnesis/_anamnesisLayout.tsx
+export const Route = createFileRoute('/trainer/anamnesis/_anamnesisLayout')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  return (
+    <>
+      <AnamnesisLayoutPage />  {/* shared header + tab bar */}
+      <Outlet />
+    </>
+  )
+}
+```
+
+Child routes opt into the layout by including the layout name in their filename:
+
+```tsx
+// _anamnesisLayout.index.tsx  → /trainer/anamnesis
+export const Route = createFileRoute('/trainer/anamnesis/_anamnesisLayout/')({ ... })
+
+// _anamnesisLayout.templates.tsx  → /trainer/anamnesis/templates
+export const Route = createFileRoute('/trainer/anamnesis/_anamnesisLayout/templates')({ ... })
+```
+
+Routes that should **not** share the layout (e.g. the detail page) are siblings of the layout file, not children:
+
+```tsx
+// $anamnesisId.tsx  → /trainer/anamnesis/:anamnesisId (no shared layout)
+export const Route = createFileRoute('/trainer/anamnesis/$anamnesisId')({ ... })
+```
+
+**When to use this pattern**: any time two or more URLs under the same prefix need a tab bar, breadcrumb, or contextual header that the detail/sub-pages should not share.
 
 ## Route Features
 
@@ -121,7 +177,7 @@ navigate({ to: "/trainer/exercises" });
 Data loading before route renders (using React Query Suspense):
 
 ```typescript
-export const Route = createFileRoute("/trainer/routines/$routineId")({{
+export const Route = createFileRoute("/trainer/routines/$routineId")({
   loader: ({ params }) => {
     return queryClient.ensureQueryData({
       queryKey: getApiRoutineByIdSuspenseQueryKey(params.routineId),
@@ -171,7 +227,7 @@ const router = createRouter({
 
 ```typescript
 // Route file: routes/trainer/routines/$routineId.tsx
-export const Route = createFileRoute("/trainer/routines/$routineId")({{
+export const Route = createFileRoute("/trainer/routines/$routineId")({
   component: RoutineDetail,
 });
 
@@ -267,4 +323,6 @@ Use the existing `<Spinner />` component (`@/components/ui/spinner`) as the fall
 - ✅ Leverage type-safe navigation
 - ✅ Use route parameters for dynamic segments
 - ✅ Use search parameters for filters/pagination
+- ✅ Use pathless layout routes (`_layoutName`) to share headers/tabs across sibling routes without adding a URL segment
+- ✅ Keep detail pages as siblings of the layout file (not children) when they should not inherit the shared layout
 - ✅ Keep route components focused and small
