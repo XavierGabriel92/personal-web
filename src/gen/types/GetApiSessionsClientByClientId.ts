@@ -46,13 +46,9 @@ export type GetApiSessionsClientByClientId200 = {
         */
         clientId: string;
         /**
-         * @type string | undefined
+         * @type string
         */
-        workoutId?: string;
-        /**
-         * @type string | undefined
-        */
-        workoutName?: string;
+        workoutName: string;
         /**
          * @type string
         */

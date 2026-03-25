@@ -139,7 +139,7 @@ export default function WorkoutSessionPage({ clientId }: WorkoutSessionPageProps
       >
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{selectedSession?.workoutName ?? "Treino livre"}</DialogTitle>
+            <DialogTitle>{selectedSession?.workoutName}</DialogTitle>
           </DialogHeader>
           {selectedSession && <SessionCard session={selectedSession} />}
         </DialogContent>

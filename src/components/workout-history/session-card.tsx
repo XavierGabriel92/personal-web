@@ -6,8 +6,19 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { TypographyH5, TypographySpan, TypographySpanXSmall } from "@/components/ui/typography";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  TypographyH5,
+  TypographySpan,
+  TypographySpanXSmall,
+} from "@/components/ui/typography";
 import { formatRelativeDate } from "@/lib/date";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
@@ -50,8 +61,10 @@ export default function SessionCard({ session }: SessionCardProps) {
   const duration =
     session.completedAt && session.startedAt
       ? Math.round(
-          (new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000
-        )
+        (new Date(session.completedAt).getTime() -
+          new Date(session.startedAt).getTime()) /
+        60000,
+      )
       : 0;
   const exercises: Exercise[] = (session.exercises ?? []).map((ex) => ({
     id: ex.exerciseId,
@@ -65,25 +78,36 @@ export default function SessionCard({ session }: SessionCardProps) {
     })),
   }));
   const volume = (session.exercises ?? []).reduce(
-    (sum, ex) => sum + ex.sets.reduce((s, set) => s + set.reps * set.weight_kg, 0),
-    0
+    (sum, ex) =>
+      sum + ex.sets.reduce((s, set) => s + set.reps * set.weight_kg, 0),
+    0,
   );
 
   return (
     <Card>
       <CardHeader className="gap-4">
         <div className="flex gap-2 items-center">
-          <TypographyH5 className="font-medium">{session.workoutName ?? "Treino livre"}</TypographyH5>
-          <TypographySpanXSmall className="text-muted-foreground">Feito {formatRelativeDate(finishedAt)}</TypographySpanXSmall>
+          <TypographyH5 className="font-medium">
+            {session.workoutName}
+          </TypographyH5>
+          <TypographySpanXSmall className="text-muted-foreground">
+            Feito {formatRelativeDate(finishedAt)}
+          </TypographySpanXSmall>
         </div>
 
         <div className="flex gap-4">
           <div className="flex flex-col gap-2">
-            <TypographySpanXSmall className="text-muted-foreground">Duração</TypographySpanXSmall>
-            <TypographySpan className="font-medium">{duration}min</TypographySpan>
+            <TypographySpanXSmall className="text-muted-foreground">
+              Duração
+            </TypographySpanXSmall>
+            <TypographySpan className="font-medium">
+              {duration}min
+            </TypographySpan>
           </div>
           <div className="flex flex-col gap-2">
-            <TypographySpanXSmall className="text-muted-foreground">Volume</TypographySpanXSmall>
+            <TypographySpanXSmall className="text-muted-foreground">
+              Volume
+            </TypographySpanXSmall>
             <TypographySpan className="font-medium">{volume}kg</TypographySpan>
           </div>
         </div>
@@ -105,7 +129,9 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
       <div className="flex items-center gap-4">
         <Avatar className="h-12 w-12">
           <AvatarImage src={exercise.img} alt={exercise.name} />
-          <AvatarFallback>{exercise.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+          <AvatarFallback>
+            {exercise.name.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
         <TypographySpan>{exercise.name}</TypographySpan>
         <CollapsibleTrigger>
@@ -127,13 +153,19 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
           <TableBody>
             {exercise.sets.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                <TableCell
+                  colSpan={5}
+                  className="text-center text-muted-foreground"
+                >
                   Nenhuma série realizada para o exercício {exercise.name}
                 </TableCell>
               </TableRow>
             ) : (
               exercise.sets.map((set, index) => (
-                <TableRow key={`${exercise.id}-${index}`} className="hover:bg-muted">
+                <TableRow
+                  key={`${exercise.id}-${index}`}
+                  className="hover:bg-muted"
+                >
                   <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell className="font-medium">{set.type}</TableCell>
                   <TableCell>{set.weight}kg</TableCell>

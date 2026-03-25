@@ -41,7 +41,7 @@ function SessionList({ sessions, onSessionClick }: SessionListProps) {
             <div className="size-2 rounded-full bg-primary shrink-0" />
             <div className="flex flex-col gap-0.5">
               <span className="text-sm font-medium">
-                {session.workoutName ?? "Treino livre"}
+                {session.workoutName}
               </span>
               <span className="text-xs text-muted-foreground capitalize">{dateLabel}</span>
             </div>

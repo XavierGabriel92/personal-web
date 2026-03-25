@@ -3,6 +3,7 @@
 ## Overview
 
 Each client can have one **active routine** — a cloned copy of a trainer's library routine (or one created from scratch). The client's `activeRoutineId` field points to this routine.
+Client responses also include an optional `lastWorkoutSession` summary used in trainer-facing lists and the overview page.
 
 See the backend doc at `personal-ai-api/docs/client-routine.md` for the data model and cloning logic.
 
@@ -18,6 +19,54 @@ The trainer's client detail view has tabs driven by `src/components/clients/tab/
 | `program-history` | tab-5 | Histórico de programas |
 
 Clicking a tab navigates to the corresponding sub-route under `/trainer/clients/$clientId/`.
+
+## Last Workout Session
+
+The trainer UI surfaces the latest recorded workout session in three places:
+
+- `/trainer/clients` table via the `Ultimo treino registrado` column
+- `/trainer/analytics` client table via the same quick summary column
+- `/trainer/clients/$clientId/overview` via a dedicated `LastWorkoutSessionCard`
+
+The value comes from `client.lastWorkoutSession` returned by `GET /api/clients` and `GET /api/client/:id`.
+
+```ts
+type LastWorkoutSession = {
+  id: string;
+  workoutId?: string;
+  workoutName: string;
+  startedAt: string;
+  completedAt?: string;
+  duration: number;
+  series: number;
+  weight: number;
+  createdAt: string;
+  exercises?: {
+    exerciseId: string;
+    exerciseName: string;
+    thumbnailUrl?: string;
+    sets: { reps: number; weight_kg: number }[];
+    notes?: string;
+  }[];
+};
+```
+
+This type is exported from `src/lib/last-workout-session.ts` and shared by all components that consume it.
+
+## `src/lib/last-workout-session.ts` Utility Module
+
+Provides the shared `LastWorkoutSession` type and two formatting helpers used by both the client list and the analytics list:
+
+```ts
+import { formatLastWorkoutSessionDate, formatWorkoutSessionName } from '@/lib/last-workout-session';
+
+// Returns the workout name as-is (pass-through; centralises future display logic)
+formatWorkoutSessionName(workoutName: string): string
+
+// Returns a relative + absolute date string, or "Nenhum treino registrado" when absent
+// e.g. "há 2 dias • 22 mar. de 2026"
+formatLastWorkoutSessionDate(date?: string): string
+```
 
 ## Client Workout-Session Page
 
@@ -50,6 +99,24 @@ export default function WeightEvolutionPage({ clientId }: WeightEvolutionPagePro
 ```
 
 ## Components
+
+### `LastWorkoutSessionCard` (`src/components/workout-history/last-workout-session-card.tsx`)
+
+Displays a card with the client's most recent workout session on the overview page. Renders nothing when `session` is undefined.
+
+```tsx
+import LastWorkoutSessionCard from '@/components/workout-history/last-workout-session-card';
+import type { LastWorkoutSession } from '@/lib/last-workout-session';
+
+interface LastWorkoutSessionCardProps {
+  session?: LastWorkoutSession;
+}
+
+// Returns null when session is undefined — no empty state rendered
+<LastWorkoutSessionCard session={client.lastWorkoutSession} />
+```
+
+It delegates rendering to `<SessionCard>` for the full session detail.
 
 ### `WorkoutFrequencyCalendar` (`src/components/workout-history/frequency-calendar.tsx`)
 
@@ -144,11 +211,11 @@ const chartConfig = {
 
 ### `SessionCard` (`src/components/workout-history/session-card.tsx`)
 
-Reusable card that renders a single workout session: name, relative timestamp, duration, total volume, and a collapsible exercise list with sets table. Used by both `WorkoutFrequencyCalendar` and `WorkoutHistoryList`.
+Reusable card that renders a single workout session: name, relative timestamp, duration, total volume, and a collapsible exercise list with sets table. Used by `WorkoutFrequencyCalendar`, `LastWorkoutSessionCard`, and `WorkoutHistoryList`.
 
 ### `ActiveProgram` (`src/components/routine/active-routine.tsx`)
 
-Shows the client's currently assigned routine (name, workout count, duration) with an edit link, or an empty state with a "Criar programa" button. This component is no longer rendered on the default client program tab — it may be embedded in other contexts.
+Shows the client's currently assigned routine (name, workout count, duration) with an edit link, or an empty state with a "Criar programa" button.
 
 Data flow:
 1. `useGetApiClientByIdSuspense(clientId)` → get `activeRoutineId`
@@ -171,6 +238,39 @@ Dialog for assigning a routine to a client. Two flows:
 2. Calls `usePostApiRoutineCreate` with `{ name: "Nova rotina", duration: 0, clientId }`
 3. Backend creates an empty routine with `clientId` set (not a library routine)
 4. Navigates trainer to `/trainer/routines/$newRoutineId` to fill in workouts
+
+## Client Overview Page
+
+`src/pages/trainer/client/overview.tsx` renders two columns:
+
+- **Left**: `ProgramOverview` + `LastActivities`
+- **Right**: `LastWorkoutSessionCard` (hidden when `client.lastWorkoutSession` is undefined)
+
+```tsx
+export default function TrainerClientOverviewPage({ clientId }) {
+  const { data: client } = useGetApiClientByIdSuspense(clientId);
+
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <ProgramOverview clientId={clientId} />
+          <LastActivities clientId={clientId} />
+        </div>
+        <div className="flex flex-col gap-4">
+          <LastWorkoutSessionCard session={client.lastWorkoutSession} />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+The `ClientNotes` component that previously appeared here has been removed.
+
+## Client Layout Header
+
+The client layout (`src/pages/trainer/client/layout.tsx`) shows `client.goals` as the page subtitle (description), not the phone number.
 
 ## Cache Invalidation
 
@@ -225,7 +325,7 @@ Relevant generated hooks:
 - `usePostApiClientByIdAssignRoutine` — assign (clone) a routine to a client
 - `usePostApiRoutineCreate` — create a new routine (accepts optional `clientId`)
 - `useGetApiRoutineById` — fetch routine by ID (used for active routine display; non-suspense with `enabled` guard)
-- `useGetApiClientByIdSuspense` — fetch client with `activeRoutineId`
+- `useGetApiClientByIdSuspense` — fetch client with `activeRoutineId` and `lastWorkoutSession`
 - `getApiSessionsClientByClientIdQueryOptions` — query options factory for session list (used with `useSuspenseQuery` directly for date-range filtered calendar and weight-evolution views)
 - `useGetApiRoutinesClientByClientIdSuspense` — fetch all programs for a client (program history list)
 - `usePostApiRoutineByIdCloneToLibrary` — clone a client routine to the trainer's library; takes `{ id: string }` as mutation variables

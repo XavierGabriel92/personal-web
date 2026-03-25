@@ -31,7 +31,7 @@ export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientPro
     <div className="space-y-6 w-full">
       <PageTitle
         title={client.name}
-        description={client.phone}
+        description={client.goals}
         titleIcon={
           <div className="flex items-center gap-1">
             <Badge variant={client.active ? "success" : "secondary"}>

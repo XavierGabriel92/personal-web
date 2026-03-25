@@ -12,10 +12,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { HelpCircle } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { VariantProps } from "class-variance-authority";
 import { parsePhoneNumberWithError } from "libphonenumber-js";
+import { HelpCircle } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
