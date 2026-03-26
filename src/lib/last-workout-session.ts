@@ -3,7 +3,7 @@ import { formatDateToLocaleString, formatRelativeDate } from "@/lib/date";
 export type LastWorkoutSession = {
 	id: string;
 	workoutId?: string;
-	workoutName: string;
+	workoutName?: string;
 	startedAt: string;
 	completedAt?: string;
 	duration: number;
@@ -19,8 +19,8 @@ export type LastWorkoutSession = {
 	}[];
 };
 
-export function formatWorkoutSessionName(workoutName: string) {
-	return workoutName;
+export function formatWorkoutSessionName(workoutName?: string) {
+	return workoutName ?? "Treino sem nome";
 }
 
 export function formatLastWorkoutSessionDate(date?: string) {

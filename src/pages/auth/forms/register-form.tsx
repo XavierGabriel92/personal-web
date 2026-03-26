@@ -82,6 +82,7 @@ export default function RegisterForm() {
 		setIsLoading(true);
 		try {
 			await authClient.signUp.email(
+				// @ts-expect-error - phone is optional at runtime; better-auth's type is overly strict
 				{
 					email: data.email,
 					password: data.password,

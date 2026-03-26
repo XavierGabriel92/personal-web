@@ -46,7 +46,7 @@ The value comes from `client.lastWorkoutSession` returned by `GET /api/clients` 
 type LastWorkoutSession = {
   id: string;
   workoutId?: string;
-  workoutName: string;
+  workoutName?: string;      // optional — may be absent for unnamed workouts
   startedAt: string;
   completedAt?: string;
   duration: number;
@@ -72,8 +72,8 @@ Provides the shared `LastWorkoutSession` type and two formatting helpers used by
 ```ts
 import { formatLastWorkoutSessionDate, formatWorkoutSessionName } from '@/lib/last-workout-session';
 
-// Returns the workout name as-is (pass-through; centralises future display logic)
-formatWorkoutSessionName(workoutName: string): string
+// Returns the workout name, or "Treino sem nome" when workoutName is absent
+formatWorkoutSessionName(workoutName?: string): string
 
 // Returns a relative + absolute date string, or "Nenhum treino registrado" when absent
 // e.g. "há 2 dias • 22 mar. de 2026"
