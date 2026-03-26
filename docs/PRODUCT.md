@@ -83,7 +83,7 @@ Each trainer account is on a billing plan that determines how many clients they 
 **Plan tiers** (exposed via `GET /api/billing/plan`):
 
 | Plan | Client limit |
-|------|--------------|
+|------|-------------|
 | `free` | Small limit (trial) |
 | `starter` | 3–25 clients |
 | `pro` | 25–50 clients |
@@ -110,10 +110,11 @@ Rich, typed event records that capture significant client events (workout comple
 
 ### Trainer onboarding
 1. Sign up → arrive at trainer home dashboard
-2. Create a training program (routine + workouts + exercises)
-3. Invite a client (enter name + phone number)
-4. Assign the program to the client
-5. Client receives their plan via WhatsApp
+2. If no phone on file → redirected to `/trainer/phone-setup` to add a Brazilian phone number before accessing any other page
+3. Create a training program (routine + workouts + exercises)
+4. Invite a client (enter name + phone number)
+5. Assign the program to the client
+6. Client receives their plan via WhatsApp
 
 ### Trainer daily workflow
 - Check trainer home: client stats, latest activity, weekly active chart
@@ -172,6 +173,7 @@ User (Trainer)
 | Route | Description |
 |-------|-------------|
 | `/trainer/home` | Dashboard: stats, latest activity, weekly chart |
+| `/trainer/phone-setup` | Forced phone setup — shown when trainer has no phone on file |
 | `/trainer/clients` | Client list with search and filters |
 | `/trainer/clients/:id` | Client detail: program, progress charts, sessions |
 | `/trainer/clients/:id/anamnesis` | Client's assigned anamneses; edit questions while PENDING |
@@ -181,7 +183,7 @@ User (Trainer)
 | `/trainer/analytics` | Analytics: client activity counts, active/inactive breakdown by period |
 | `/trainer/anamnesis` | Trainer's anamnesis library |
 | `/trainer/anamnesis/:anamnesisId` | Anamnesis detail: edit name/description, manage questions |
-| `/trainer/account` | Account settings modal: edit display name, view billing plan, trigger upgrade |
+| `/trainer/account` | Account settings modal: edit display name and phone, view billing plan, trigger upgrade |
 
 ---
 
@@ -196,5 +198,7 @@ User (Trainer)
 **Client anamnesis isolation**: When a trainer assigns an anamnesis to a client, a client anamnesis record is created (not a pointer to the library item). The trainer can then add, reorder, and delete questions on that client's copy independently of the library anamnesis.
 
 **Billing plan gates client creation**: Before opening the create-client sheet, the frontend reads the cached billing plan from TanStack Query (`queryClient.getQueryData`) to avoid an extra network call. If `remainingClients <= 0`, the upgrade dialog opens immediately without ever showing the create form.
+
+**Phone required to access trainer area**: The `/trainer` route guard checks `data.user?.phone` and redirects to `/trainer/phone-setup` when it is absent. This ensures every trainer account has a valid Brazilian phone number before they can interact with the rest of the app.
 
 **Kubb codegen**: The frontend never writes API call code by hand. All API clients and React Query hooks are generated from the backend's OpenAPI spec via `bun run generate`. This keeps the frontend/backend contract always in sync.

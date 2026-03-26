@@ -30,6 +30,9 @@ export const authClient = createAuthClient({
           type: "boolean",
           defaultValue: false,
         },
+        phone: {
+          type: "string",
+        },
       },
     }),
   ],
@@ -55,7 +58,8 @@ export const {
 1. **Sign In**: User submits credentials → Better Auth handles session → Cookie set
 2. **Session Check**: Routes use `cachedSession()` in `beforeLoad`
 3. **Redirect**: If no session, redirect to `/sign-in`
-4. **User Type**: Redirect based on `user.type` ("trainer" or "member")
+4. **Phone Gate**: If trainer has no phone, redirect to `/trainer/phone-setup`
+5. **User Type**: Redirect based on `user.type` ("trainer" or "member")
 
 ## Sign In
 
@@ -98,6 +102,8 @@ function SignUpForm() {
       email: data.email,
       password: data.password,
       name: data.name,
+      // phone is optional for trainers; omit for members
+      ...(data.phone ? { phone: data.phone } : {}),
     });
     
     if (result.error) {
@@ -187,6 +193,8 @@ export const useCachedSession = () => {
 
 ### Protected Route Example
 
+The trainer layout route performs two checks in `beforeLoad`: authentication and phone setup. The `location` parameter is used to avoid redirect loops.
+
 ```typescript
 // src/routes/trainer/route.tsx
 import { cachedSession } from "@/hooks/auth";
@@ -194,14 +202,22 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/trainer")({
   component: TrainerDashboardLayout,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const data = await cachedSession();
+
     if (!data?.session) {
       throw redirect({ to: "/sign-in" });
+    }
+
+    // Force trainers to set up a phone before accessing any trainer route
+    if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
+      throw redirect({ to: "/trainer/phone-setup" });
     }
   },
 });
 ```
+
+The `/trainer/phone-setup` path is explicitly excluded from the phone guard to prevent an infinite redirect loop.
 
 ### Auth Layout (Redirect if Authenticated)
 
@@ -314,6 +330,7 @@ The session user object includes both BetterAuth built-in fields (`id`, `name`, 
 | `name` | `string` | Trainer's display name (built-in) |
 | `type` | `"trainer" \| "member"` | User role |
 | `onboardingFinished` | `boolean` | Whether the trainer completed the onboarding checklist |
+| `phone` | `string \| undefined` | Brazilian phone number; required to access trainer routes |
 
 ### `onboardingFinished`
 
@@ -325,6 +342,10 @@ if (session?.user.onboardingFinished) return null;
 ```
 
 The flag is set via `PATCH /api/trainer/onboarding-finished` and the session is invalidated immediately after.
+
+### `phone`
+
+A Brazilian phone number stored on the user account. Validated with `libphonenumber-js` on both the registration form (optional for trainers, hidden for members) and the account settings dialog. When a trainer has no phone, the `/trainer` route guard redirects them to `/trainer/phone-setup` before they can access any other trainer page.
 
 ### Onboarding step detection
 
@@ -347,3 +368,4 @@ const hasSession = (clientsData?.clients ?? []).some(c => c.activeRoutineId);
 - ✅ Redirect unauthenticated users to sign-in page
 - ✅ Use user type to determine dashboard/features
 - ✅ Handle errors gracefully with user-friendly messages
+- ✅ When a route guard has multiple conditions (auth + profile completeness), always exclude the destination route from its own guard to prevent redirect loops

@@ -16,6 +16,8 @@ export default function LastActivities({ clientId }: LastActivitiesProps) {
   const { data } = useGetApiActivitiesClientByClientIdSuspense(clientId, { limit: 5, offset: 0 });
   const activities = data?.activities ?? [];
 
+  if (activities.length === 0) return null
+
   return <Card className="h-[400px] overflow-y-auto">
     <CardHeader className="items-center border-b ">
       <CardTitle>Ultimas Atividades</CardTitle>

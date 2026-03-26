@@ -80,7 +80,7 @@ function OnboardingChecklistContent() {
           done={hasRoutine}
           onClick={() => navigate({ to: "/trainer/routines" })}
         />
-        <Step label="Convidar um aluno" done={hasClient}>
+        <Step label="Cadastrar um aluno" done={hasClient}>
           {!hasClient && <CreateClientSheet Trigger={<Button variant="link" size="sm" className="p-0 h-auto text-sm">
             Criar novo aluno
           </Button>} />}

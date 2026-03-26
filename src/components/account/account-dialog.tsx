@@ -9,6 +9,16 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import {
   Form,
   FormControl,
   FormField,
@@ -25,6 +35,7 @@ import { sessionQueryKey, useCachedSession } from '@/hooks/auth'
 import { authClient } from '@/lib/auth-client'
 import { queryClient } from '@/routes/__root'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { parsePhoneNumberWithError } from 'libphonenumber-js'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -37,8 +48,24 @@ const PLAN_LABELS: Record<string, string> = {
   elite: 'Elite',
 }
 
+const brazilianPhoneSchema = z
+  .string()
+  .min(1, 'Telefone é obrigatório')
+  .refine(
+    (phone) => {
+      try {
+        const phoneNumber = parsePhoneNumberWithError(phone, 'BR')
+        return phoneNumber.isValid()
+      } catch {
+        return false
+      }
+    },
+    { message: 'Telefone deve ser um número brasileiro válido' }
+  )
+
 const formSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
+  phone: brazilianPhoneSchema.optional().or(z.literal('')),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -52,26 +79,56 @@ function AccountDialogContent({ onOpenChange }: { onOpenChange: (open: boolean) 
   const { data: session } = useCachedSession()
   const { data: billing } = useGetApiBillingPlanSuspense()
   const [upgradeOpen, setUpgradeOpen] = useState(false)
+  const [phoneWarningOpen, setPhoneWarningOpen] = useState(false)
+  const [pendingValues, setPendingValues] = useState<FormValues | null>(null)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: session?.user.name ?? '',
+      phone: session?.user.phone ?? '',
     },
   })
 
   const { isSubmitting } = form.formState
 
-  const onSubmit = async (values: FormValues) => {
-    const { error } = await authClient.updateUser({ name: values.name })
+  const doUpdate = async (values: FormValues) => {
+    const phone = values.phone || undefined
+    const { error } = await authClient.updateUser({ name: values.name, phone })
     if (error) {
-      toast.error('Erro ao atualizar nome. Tente novamente.')
+      if (error.code === 'DUPLICATE_ENTRY' || error.message?.toLowerCase().includes('unique')) {
+        toast.error('Este telefone já está cadastrado em outra conta.')
+      } else {
+        toast.error('Erro ao atualizar dados. Tente novamente.')
+      }
       return
     }
     await queryClient.invalidateQueries({ queryKey: sessionQueryKey })
     await queryClient.invalidateQueries({ queryKey: getApiBillingPlanSuspenseQueryKey() })
-    toast.success('Nome atualizado com sucesso!')
+    toast.success('Dados atualizados com sucesso!')
     onOpenChange(false)
+  }
+
+  const onSubmit = async (values: FormValues) => {
+    const currentPhone = session?.user.phone ?? ''
+    const newPhone = values.phone ?? ''
+    const phoneChanged = newPhone !== currentPhone && newPhone !== ''
+
+    if (phoneChanged) {
+      setPendingValues(values)
+      setPhoneWarningOpen(true)
+      return
+    }
+
+    await doUpdate(values)
+  }
+
+  const handlePhoneConfirm = async () => {
+    setPhoneWarningOpen(false)
+    if (pendingValues) {
+      await doUpdate(pendingValues)
+      setPendingValues(null)
+    }
   }
 
   const planLabel = PLAN_LABELS[billing.plan] ?? billing.plan
@@ -83,6 +140,23 @@ function AccountDialogContent({ onOpenChange }: { onOpenChange: (open: boolean) 
   return (
     <>
       <UpgradePlanDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} />
+
+      <AlertDialog open={phoneWarningOpen} onOpenChange={setPhoneWarningOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Alterar telefone?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja alterar seu telefone? Este número é usado para identificação da
+              sua conta.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingValues(null)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handlePhoneConfirm}>Confirmar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader className="px-6 pt-6">
@@ -119,6 +193,20 @@ function AccountDialogContent({ onOpenChange }: { onOpenChange: (open: boolean) 
               <FormLabel>Email</FormLabel>
               <Input value={session?.user.email ?? ''} disabled />
             </div>
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone</FormLabel>
+                  <FormControl>
+                    <Input type="tel" placeholder="(99)99999-9999" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <Separator />
 

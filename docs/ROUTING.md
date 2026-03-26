@@ -21,8 +21,9 @@ routes/
 │   ├── request-reset-password.tsx
 │   └── reset-password.tsx
 ├── trainer/                 # Trainer layout route
-│   ├── route.tsx           # Trainer layout (requires auth)
+│   ├── route.tsx           # Trainer layout (requires auth + phone)
 │   ├── home.tsx            # Trainer dashboard
+│   ├── phone-setup.tsx     # Forced phone-setup page (no phone → redirect here)
 │   ├── analytics.tsx       # Analytics dashboard
 │   ├── exercises.tsx       # Exercises list
 │   ├── clients.tsx         # Clients list
@@ -61,30 +62,37 @@ The root route provides:
 - Toast notifications (Sonner)
 - Outlet for child routes
 
-### Protected Route
+### Protected Route with Multi-Condition Guard
 
 **File**: `src/routes/trainer/route.tsx`
 
+When a `beforeLoad` guard has multiple conditions (e.g. authentication AND profile completeness), pass `{ location }` to access the current path and break redirect loops by excluding the destination from its own guard:
+
 ```typescript
-export const Route = createFileRoute("/trainer")(
+export const Route = createFileRoute("/trainer")({
   component: TrainerDashboardLayout,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const data = await cachedSession();
+
     if (!data?.session) {
       throw redirect({ to: "/sign-in" });
+    }
+
+    // Redirect trainers who haven't set up a phone yet.
+    // Exclude /trainer/phone-setup itself to avoid an infinite redirect loop.
+    if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
+      throw redirect({ to: "/trainer/phone-setup" });
     }
   },
 });
 ```
-
-Protected routes use `beforeLoad` to check authentication before rendering.
 
 ### Auth Layout Route
 
 **File**: `src/routes/_auth/route.tsx`
 
 ```typescript
-export const Route = createFileRoute("/_auth")(
+export const Route = createFileRoute("/_auth")({
   component: Layout,
   beforeLoad: async () => {
     const data = await cachedSession();
@@ -171,7 +179,7 @@ navigate({ to: "/trainer/exercises" });
 Data loading before route renders (using React Query Suspense):
 
 ```typescript
-export const Route = createFileRoute("/trainer/routines/$routineId")(
+export const Route = createFileRoute("/trainer/routines/$routineId")({
   loader: ({ params }) => {
     return queryClient.ensureQueryData({
       queryKey: getApiRoutineByIdSuspenseQueryKey(params.routineId),
@@ -184,13 +192,25 @@ export const Route = createFileRoute("/trainer/routines/$routineId")(
 
 ### Route Guards
 
-Use `beforeLoad` for authentication checks:
+Use `beforeLoad` for authentication checks. For a single condition:
 
 ```typescript
 beforeLoad: async () => {
   const data = await cachedSession();
   if (!data?.session) {
     throw redirect({ to: "/sign-in" });
+  }
+}
+```
+
+For multiple conditions, destructure `{ location }` to inspect the current path and avoid redirect loops:
+
+```typescript
+beforeLoad: async ({ location }) => {
+  const data = await cachedSession();
+  if (!data?.session) throw redirect({ to: "/sign-in" });
+  if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
+    throw redirect({ to: "/trainer/phone-setup" });
   }
 }
 ```
@@ -221,7 +241,7 @@ const router = createRouter({
 
 ```typescript
 // Route file: routes/trainer/routines/$routineId.tsx
-export const Route = createFileRoute("/trainer/routines/$routineId")(
+export const Route = createFileRoute("/trainer/routines/$routineId")({
   component: RoutineDetail,
 });
 
@@ -380,6 +400,32 @@ Use this pattern when:
 
 Do **not** use it for ephemeral dialogs (e.g. a confirmation prompt) or dialogs that depend heavily on local parent state that isn't expressible as a URL param.
 
+## Forced/Blocking Route Dialogs
+
+For profile-completeness gates (e.g. a user must supply required data before accessing the app), render a regular route that shows a non-dismissable `<Dialog>`:
+
+```tsx
+// src/routes/trainer/phone-setup.tsx
+export const Route = createFileRoute('/trainer/phone-setup')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  const navigate = useNavigate()
+  return (
+    <PhoneSetupDialog onSuccess={() => navigate({ to: '/trainer/home' })} />
+  )
+}
+```
+
+The dialog component prevents dismissal via `onPointerDownOutside` and `onEscapeKeyDown` prevention and hides the close button. The parent layout's `beforeLoad` guard redirects here when the condition is unmet, and must exclude this path to avoid an infinite loop:
+
+```typescript
+if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
+  throw redirect({ to: "/trainer/phone-setup" });
+}
+```
+
 ## Best Practices
 
 - ✅ Use file-based routing structure
@@ -393,3 +439,5 @@ Do **not** use it for ephemeral dialogs (e.g. a confirmation prompt) or dialogs 
 - ✅ Keep detail pages as siblings of the layout file (not children) when they should not inherit the shared layout
 - ✅ Keep route components focused and small
 - ✅ Use modal routes (`$id.tsx` renders a dialog) for reusable dialogs that need deep-linking or multiple entry points
+- ✅ For multi-condition `beforeLoad` guards, destructure `{ location }` and exclude the redirect target path to prevent infinite loops
+- ✅ For forced profile-completeness gates, use a regular route with a non-dismissable dialog rather than intercepting routes

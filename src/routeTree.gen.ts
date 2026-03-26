@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrainerRouteRouteImport } from './routes/trainer/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrainerPhoneSetupRouteImport } from './routes/trainer/phone-setup'
 import { Route as TrainerHomeRouteImport } from './routes/trainer/home'
 import { Route as TrainerExercisesRouteImport } from './routes/trainer/exercises'
 import { Route as TrainerAnalyticsRouteImport } from './routes/trainer/analytics'
@@ -64,6 +65,11 @@ const TrainerRoutinesRoute = TrainerRoutinesRouteImport.update({
 const TrainerAnamnesisRoute = TrainerAnamnesisRouteImport.update({
   id: '/anamnesis',
   path: '/anamnesis',
+  getParentRoute: () => TrainerRouteRoute,
+} as any)
+const TrainerPhoneSetupRoute = TrainerPhoneSetupRouteImport.update({
+  id: '/phone-setup',
+  path: '/phone-setup',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
 const TrainerHomeRoute = TrainerHomeRouteImport.update({
@@ -212,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
+  '/trainer/phone-setup': typeof TrainerPhoneSetupRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
   '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
@@ -240,6 +247,7 @@ export interface FileRoutesByTo {
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
+  '/trainer/phone-setup': typeof TrainerPhoneSetupRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
   '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
+  '/trainer/phone-setup': typeof TrainerPhoneSetupRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
   '/trainer/anamnesis': typeof TrainerAnamnesisRouteWithChildren
@@ -300,6 +309,7 @@ export interface FileRouteTypes {
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
+    | '/trainer/phone-setup'
     | '/trainer/clients/$clientId'
     | '/trainer/anamnesis/$anamnesisId'
     | '/trainer/anamnesis'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
+    | '/trainer/phone-setup'
     | '/trainer/clients/$clientId'
     | '/trainer/anamnesis/$anamnesisId'
     | '/trainer/anamnesis'
@@ -355,6 +366,7 @@ export interface FileRouteTypes {
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
+    | '/trainer/phone-setup'
     | '/trainer/clients/$clientId'
     | '/trainer/anamnesis/$anamnesisId'
     | '/trainer/anamnesis'
@@ -416,6 +428,13 @@ declare module '@tanstack/react-router' {
       path: '/anamnesis'
       fullPath: '/trainer/anamnesis'
       preLoaderRoute: typeof TrainerAnamnesisRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
+    '/trainer/phone-setup': {
+      id: '/trainer/phone-setup'
+      path: '/phone-setup'
+      fullPath: '/trainer/phone-setup'
+      preLoaderRoute: typeof TrainerPhoneSetupRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
     '/trainer/home': {
@@ -698,6 +717,7 @@ interface TrainerRouteRouteChildren {
   TrainerAnalyticsRoute: typeof TrainerAnalyticsRoute
   TrainerExercisesRoute: typeof TrainerExercisesRoute
   TrainerHomeRoute: typeof TrainerHomeRoute
+  TrainerPhoneSetupRoute: typeof TrainerPhoneSetupRoute
   TrainerClientsClientIdRouteRoute: typeof TrainerClientsClientIdRouteRouteWithChildren
   TrainerAnamnesisAnamnesisIdRoute: typeof TrainerAnamnesisAnamnesisIdRoute
   TrainerAnamnesisRoute: typeof TrainerAnamnesisRouteWithChildren
@@ -712,6 +732,7 @@ const TrainerRouteRouteChildren: TrainerRouteRouteChildren = {
   TrainerAnalyticsRoute: TrainerAnalyticsRoute,
   TrainerExercisesRoute: TrainerExercisesRoute,
   TrainerHomeRoute: TrainerHomeRoute,
+  TrainerPhoneSetupRoute: TrainerPhoneSetupRoute,
   TrainerClientsClientIdRouteRoute:
     TrainerClientsClientIdRouteRouteWithChildren,
   TrainerAnamnesisAnamnesisIdRoute: TrainerAnamnesisAnamnesisIdRoute,

@@ -160,7 +160,7 @@ export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
         </Popover>
 
         {exercises.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nenhum exercício neste mês.</p>
+          <p className="text-sm text-muted-foreground">Nenhum treino realizado neste mês.</p>
         ) : (
           <Card>
             <CardContent className=" flex flex-col gap-2">
@@ -171,7 +171,7 @@ export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
                 className="h-8 text-sm"
               />
               {filteredExercises.length === 0 ? (
-                <p className="text-sm text-muted-foreground px-1">Nenhum exercício encontrado.</p>
+                <p className="text-sm text-muted-foreground px-1">Nenhum treino encontrado.</p>
               ) : (
                 <ul className="flex flex-col gap-2">
                   {filteredExercises.map((ex) => (
@@ -195,48 +195,50 @@ export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
         )}
       </div>
 
-      <div className="flex-1">
-        {!selectedExerciseId ? (
-          <p className="text-sm text-muted-foreground">
-            Selecione um exercício para ver a evolução.
-          </p>
-        ) : chartData.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Sem dados para este mês.</p>
-        ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>{selectedExercise?.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[280px] w-full">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                  />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) => `${value}kg`}
-                    domain={[(min: number) => Math.floor(min * 0.9), (max: number) => Math.ceil(max * 1.1)]}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Line
-                    dataKey="weight"
-                    stroke="var(--color-weight)"
-                    strokeWidth={2}
-                    dot={{ r: 4, fill: "var(--color-weight)", strokeWidth: 0 }}
-                  />
-                </LineChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      {exercises.length > 0 &&
+        <div className="flex-1">
+          {!selectedExerciseId ? (
+            <p className="text-sm text-muted-foreground">
+              Selecione um exercício para ver a evolução.
+            </p>
+          ) : chartData.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Sem dados para este mês.</p>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>{selectedExercise?.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-[280px] w-full">
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                    />
+                    <YAxis
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) => `${value}kg`}
+                      domain={[(min: number) => Math.floor(min * 0.9), (max: number) => Math.ceil(max * 1.1)]}
+                    />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Line
+                      dataKey="weight"
+                      stroke="var(--color-weight)"
+                      strokeWidth={2}
+                      dot={{ r: 4, fill: "var(--color-weight)", strokeWidth: 0 }}
+                    />
+                  </LineChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      }
     </div>
   );
 }

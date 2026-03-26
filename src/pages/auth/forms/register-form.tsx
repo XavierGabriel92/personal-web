@@ -9,6 +9,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "@tanstack/react-router";
+import { parsePhoneNumberWithError } from "libphonenumber-js";
 
 import { Input } from "@/components/ui/input";
 import { sessionQueryKey } from "@/hooks/auth";
@@ -24,10 +25,26 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 
+const brazilianPhoneSchema = z
+	.string()
+	.min(1, "Telefone é obrigatório")
+	.refine(
+		(phone) => {
+			try {
+				const phoneNumber = parsePhoneNumberWithError(phone, "BR");
+				return phoneNumber.isValid();
+			} catch {
+				return false;
+			}
+		},
+		{ message: "Telefone deve ser um número brasileiro válido" }
+	);
+
 const signUpFormSchema = z
 	.object({
 		name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
 		email: z.string().email("Email inválido"),
+		phone: brazilianPhoneSchema.optional().or(z.literal("")),
 		password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres"),
 		confirmPassword: z
 			.string()
@@ -55,6 +72,7 @@ export default function RegisterForm() {
 		defaultValues: {
 			name: "",
 			email: params.email || "",
+			phone: "",
 			password: "",
 			confirmPassword: "",
 		},
@@ -69,6 +87,7 @@ export default function RegisterForm() {
 					password: data.password,
 					name: data.name,
 					type: params.organizationId ? "member" : "trainer",
+					...(data.phone ? { phone: data.phone } : {}),
 				},
 				{
 					onSuccess: async () => {
@@ -170,6 +189,25 @@ export default function RegisterForm() {
 											</FormItem>
 										)}
 									/>
+									{!params.organizationId && (
+										<FormField
+											control={form.control}
+											name="phone"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Telefone</FormLabel>
+													<FormControl>
+														<Input
+															type="tel"
+															placeholder="(99)99999-9999"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									)}
 								</div>
 								<div className="grid gap-3">
 									<FormField

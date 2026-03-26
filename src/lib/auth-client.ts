@@ -20,6 +20,9 @@ export const authClient = createAuthClient({
 					type: "boolean",
 					defaultValue: false,
 				},
+				phone: {
+					type: "string",
+				},
 			},
 		}),
 	],
