@@ -54,7 +54,7 @@ A health-intake questionnaire that a trainer creates and can assign to clients. 
 
 **Types:**
 - **Trainer anamneses**: Created by a trainer (`ownerId = trainer.id`), managed in the trainer's library
-- **System templates**: Pre-built questionnaires (`isTemplate = true`, `category` set) provided by the platform; trainers clone them into their own library via "Adicionar à minha biblioteca"
+- **System templates**: Pre-built questionnaires (`isTemplate = true`, `category` set) provided by the platform; trainers clone them into their own library
 
 Key properties:
 - `id`, `name`, `description?`, `ownerId?`, `isTemplate?`, `category?`
@@ -85,7 +85,7 @@ Each trainer account is on a billing plan that determines how many clients they 
 | Plan | Client limit |
 |------|--------------|
 | `free` | Small limit (trial) |
-| `starter` | 1–25 clients |
+| `starter` | 3–25 clients |
 | `pro` | 25–50 clients |
 | `elite` | Unlimited |
 
@@ -130,7 +130,6 @@ From the routine detail page or client profile, the trainer assigns a routine to
 Trainers create and edit questionnaires at `/trainer/anamnesis`. They can:
 - Create a blank anamnesis via a dialog (`CreateAnamnesisDialog`)
 - Add, reorder (drag-and-drop), and delete questions on the detail page
-- Browse system templates at `/trainer/anamnesis/templates` and clone them into their library
 
 ### Assigning an anamnesis to a client
 From the client profile (or after client creation), the trainer opens `SelectAnamnesisForClientDialog`:
@@ -180,8 +179,7 @@ User (Trainer)
 | `/trainer/routines/:id` | Program editor: add/edit/reorder workouts and exercises |
 | `/trainer/routines/homug-programs` | Browse system template programs |
 | `/trainer/analytics` | Analytics: client activity counts, active/inactive breakdown by period |
-| `/trainer/anamnesis` | Trainer's anamnesis library (tab: "Minhas anamneses") |
-| `/trainer/anamnesis/templates` | Browse system anamnesis templates (tab: "Anamneses prontas") |
+| `/trainer/anamnesis` | Trainer's anamnesis library |
 | `/trainer/anamnesis/:anamnesisId` | Anamnesis detail: edit name/description, manage questions |
 | `/trainer/account` | Account settings modal: edit display name, view billing plan, trigger upgrade |
 

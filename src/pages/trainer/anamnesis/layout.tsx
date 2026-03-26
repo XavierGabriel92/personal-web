@@ -1,5 +1,5 @@
 import PageTitle from "@/components/core/page-title";
-import AnamnesisTab from "@/components/anamnesis/tab";
+import TrainerAnamnesisPage from "./trainer-anamnesis";
 
 export default function AnamnesisLayoutPage() {
   return (
@@ -8,7 +8,7 @@ export default function AnamnesisLayoutPage() {
         title="Anamneses"
         description="Gerencie seus formulários de anamnese"
       />
-      <AnamnesisTab />
+      <TrainerAnamnesisPage />
     </div>
   );
 }

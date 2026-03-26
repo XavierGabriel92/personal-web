@@ -11,8 +11,6 @@ export type { GetApiAnamnesisQueryKey } from "./hooks/useGetApiAnamnesis.ts";
 export type { GetApiAnamnesisByIdQueryKey } from "./hooks/useGetApiAnamnesisById.ts";
 export type { GetApiAnamnesisByIdSuspenseQueryKey } from "./hooks/useGetApiAnamnesisByIdSuspense.ts";
 export type { GetApiAnamnesisSuspenseQueryKey } from "./hooks/useGetApiAnamnesisSuspense.ts";
-export type { GetApiAnamnesisTemplatesQueryKey } from "./hooks/useGetApiAnamnesisTemplates.ts";
-export type { GetApiAnamnesisTemplatesSuspenseQueryKey } from "./hooks/useGetApiAnamnesisTemplatesSuspense.ts";
 export type { GetApiBillingPlanQueryKey } from "./hooks/useGetApiBillingPlan.ts";
 export type { GetApiBillingPlanSuspenseQueryKey } from "./hooks/useGetApiBillingPlanSuspense.ts";
 export type { GetApiClientByIdQueryKey } from "./hooks/useGetApiClientById.ts";
@@ -44,7 +42,6 @@ export type { GetApiWorkoutRoutineByRoutineIdSuspenseQueryKey } from "./hooks/us
 export type { PatchApiTrainerOnboardingFinishedMutationKey } from "./hooks/usePatchApiTrainerOnboardingFinished.ts";
 export type { PostApiAnamnesisByIdQuestionsMutationKey } from "./hooks/usePostApiAnamnesisByIdQuestions.ts";
 export type { PostApiAnamnesisCreateMutationKey } from "./hooks/usePostApiAnamnesisCreate.ts";
-export type { PostApiAnamnesisTemplatesByIdCloneMutationKey } from "./hooks/usePostApiAnamnesisTemplatesByIdClone.ts";
 export type { PostApiBillingUpgradeMutationKey } from "./hooks/usePostApiBillingUpgrade.ts";
 export type { PostApiClientByIdAnamnesisMutationKey } from "./hooks/usePostApiClientByIdAnamnesis.ts";
 export type { PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsMutationKey } from "./hooks/usePostApiClientByIdAnamnesisByClientAnamnesisIdQuestions.ts";
@@ -80,7 +77,6 @@ export type { GetApiActivitiesClientByClientIdPathParams, GetApiActivitiesClient
 export type { GetApiActivitiesTrainerQueryParams, PayloadDirectionEnum2Key, GetApiActivitiesTrainer200, GetApiActivitiesTrainerQueryResponse, GetApiActivitiesTrainerQuery } from "./types/GetApiActivitiesTrainer.ts";
 export type { GetApiAnamnesis200, GetApiAnamnesisQueryResponse, GetApiAnamnesisQuery } from "./types/GetApiAnamnesis.ts";
 export type { GetApiAnamnesisByIdPathParams, GetApiAnamnesisById200, GetApiAnamnesisByIdQueryResponse, GetApiAnamnesisByIdQuery } from "./types/GetApiAnamnesisById.ts";
-export type { GetApiAnamnesisTemplates200, GetApiAnamnesisTemplatesQueryResponse, GetApiAnamnesisTemplatesQuery } from "./types/GetApiAnamnesisTemplates.ts";
 export type { GetApiBillingPlan200, GetApiBillingPlanQueryResponse, GetApiBillingPlanQuery } from "./types/GetApiBillingPlan.ts";
 export type { GetApiClientByIdPathParams, GetApiClientById200, GetApiClientByIdQueryResponse, GetApiClientByIdQuery } from "./types/GetApiClientById.ts";
 export type { GetApiClientByIdAnamnesisPathParams, AnamnesisStatusEnumKey, GetApiClientByIdAnamnesis200, GetApiClientByIdAnamnesisQueryResponse, GetApiClientByIdAnamnesisQuery } from "./types/GetApiClientByIdAnamnesis.ts";
@@ -98,7 +94,6 @@ export type { GetApiWorkoutRoutineByRoutineIdPathParams, GetApiWorkoutRoutineByR
 export type { PatchApiTrainerOnboardingFinishedMutationResponse, PatchApiTrainerOnboardingFinishedMutation } from "./types/PatchApiTrainerOnboardingFinished.ts";
 export type { PostApiAnamnesisByIdQuestionsPathParams, PostApiAnamnesisByIdQuestions200, PostApiAnamnesisByIdQuestionsMutationRequest, PostApiAnamnesisByIdQuestionsMutationResponse, PostApiAnamnesisByIdQuestionsMutation } from "./types/PostApiAnamnesisByIdQuestions.ts";
 export type { PostApiAnamnesisCreate200, PostApiAnamnesisCreateMutationRequest, PostApiAnamnesisCreateMutationResponse, PostApiAnamnesisCreateMutation } from "./types/PostApiAnamnesisCreate.ts";
-export type { PostApiAnamnesisTemplatesByIdClonePathParams, PostApiAnamnesisTemplatesByIdClone200, PostApiAnamnesisTemplatesByIdCloneMutationResponse, PostApiAnamnesisTemplatesByIdCloneMutation } from "./types/PostApiAnamnesisTemplatesByIdClone.ts";
 export type { PostApiBillingUpgrade200, PostApiBillingUpgradeMutationRequestRequestedPlanEnumKey, PostApiBillingUpgradeMutationRequest, PostApiBillingUpgradeMutationResponse, PostApiBillingUpgradeMutation } from "./types/PostApiBillingUpgrade.ts";
 export type { PostApiClientByIdAnamnesisPathParams, PostApiClientByIdAnamnesis200StatusEnumKey, PostApiClientByIdAnamnesis200, PostApiClientByIdAnamnesisMutationRequest, PostApiClientByIdAnamnesisMutationResponse, PostApiClientByIdAnamnesisMutation } from "./types/PostApiClientByIdAnamnesis.ts";
 export type { PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsPathParams, PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsMutationRequest, PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsMutationResponse, PostApiClientByIdAnamnesisByClientAnamnesisIdQuestionsMutation } from "./types/PostApiClientByIdAnamnesisByClientAnamnesisIdQuestions.ts";
@@ -134,7 +129,6 @@ export { getApiActivitiesClientByClientId } from "./clients/getApiActivitiesClie
 export { getApiActivitiesTrainer } from "./clients/getApiActivitiesTrainer.ts";
 export { getApiAnamnesis } from "./clients/getApiAnamnesis.ts";
 export { getApiAnamnesisById } from "./clients/getApiAnamnesisById.ts";
-export { getApiAnamnesisTemplates } from "./clients/getApiAnamnesisTemplates.ts";
 export { getApiBillingPlan } from "./clients/getApiBillingPlan.ts";
 export { getApiClientById } from "./clients/getApiClientById.ts";
 export { getApiClientByIdAnamnesis } from "./clients/getApiClientByIdAnamnesis.ts";
@@ -152,7 +146,6 @@ export { getApiWorkoutRoutineByRoutineId } from "./clients/getApiWorkoutRoutineB
 export { patchApiTrainerOnboardingFinished } from "./clients/patchApiTrainerOnboardingFinished.ts";
 export { postApiAnamnesisByIdQuestions } from "./clients/postApiAnamnesisByIdQuestions.ts";
 export { postApiAnamnesisCreate } from "./clients/postApiAnamnesisCreate.ts";
-export { postApiAnamnesisTemplatesByIdClone } from "./clients/postApiAnamnesisTemplatesByIdClone.ts";
 export { postApiBillingUpgrade } from "./clients/postApiBillingUpgrade.ts";
 export { postApiClientByIdAnamnesis } from "./clients/postApiClientByIdAnamnesis.ts";
 export { postApiClientByIdAnamnesisByClientAnamnesisIdQuestions } from "./clients/postApiClientByIdAnamnesisByClientAnamnesisIdQuestions.ts";
@@ -218,12 +211,6 @@ export { useGetApiAnamnesisByIdSuspense } from "./hooks/useGetApiAnamnesisByIdSu
 export { getApiAnamnesisSuspenseQueryKey } from "./hooks/useGetApiAnamnesisSuspense.ts";
 export { getApiAnamnesisSuspenseQueryOptions } from "./hooks/useGetApiAnamnesisSuspense.ts";
 export { useGetApiAnamnesisSuspense } from "./hooks/useGetApiAnamnesisSuspense.ts";
-export { getApiAnamnesisTemplatesQueryKey } from "./hooks/useGetApiAnamnesisTemplates.ts";
-export { getApiAnamnesisTemplatesQueryOptions } from "./hooks/useGetApiAnamnesisTemplates.ts";
-export { useGetApiAnamnesisTemplates } from "./hooks/useGetApiAnamnesisTemplates.ts";
-export { getApiAnamnesisTemplatesSuspenseQueryKey } from "./hooks/useGetApiAnamnesisTemplatesSuspense.ts";
-export { getApiAnamnesisTemplatesSuspenseQueryOptions } from "./hooks/useGetApiAnamnesisTemplatesSuspense.ts";
-export { useGetApiAnamnesisTemplatesSuspense } from "./hooks/useGetApiAnamnesisTemplatesSuspense.ts";
 export { getApiBillingPlanQueryKey } from "./hooks/useGetApiBillingPlan.ts";
 export { getApiBillingPlanQueryOptions } from "./hooks/useGetApiBillingPlan.ts";
 export { useGetApiBillingPlan } from "./hooks/useGetApiBillingPlan.ts";
@@ -317,9 +304,6 @@ export { usePostApiAnamnesisByIdQuestions } from "./hooks/usePostApiAnamnesisByI
 export { postApiAnamnesisCreateMutationKey } from "./hooks/usePostApiAnamnesisCreate.ts";
 export { postApiAnamnesisCreateMutationOptions } from "./hooks/usePostApiAnamnesisCreate.ts";
 export { usePostApiAnamnesisCreate } from "./hooks/usePostApiAnamnesisCreate.ts";
-export { postApiAnamnesisTemplatesByIdCloneMutationKey } from "./hooks/usePostApiAnamnesisTemplatesByIdClone.ts";
-export { postApiAnamnesisTemplatesByIdCloneMutationOptions } from "./hooks/usePostApiAnamnesisTemplatesByIdClone.ts";
-export { usePostApiAnamnesisTemplatesByIdClone } from "./hooks/usePostApiAnamnesisTemplatesByIdClone.ts";
 export { postApiBillingUpgradeMutationKey } from "./hooks/usePostApiBillingUpgrade.ts";
 export { postApiBillingUpgradeMutationOptions } from "./hooks/usePostApiBillingUpgrade.ts";
 export { usePostApiBillingUpgrade } from "./hooks/usePostApiBillingUpgrade.ts";

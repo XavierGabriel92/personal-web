@@ -25,7 +25,7 @@ import { toast } from "sonner";
 const PLANS = [
 	{
 		value: "starter" as const,
-		label: "1–25 alunos",
+		label: "3–25 alunos",
 		price: "R$ 49,90",
 	},
 	{

@@ -7,7 +7,6 @@ export { getApiActivitiesClientByClientId } from "./getApiActivitiesClientByClie
 export { getApiActivitiesTrainer } from "./getApiActivitiesTrainer.ts";
 export { getApiAnamnesis } from "./getApiAnamnesis.ts";
 export { getApiAnamnesisById } from "./getApiAnamnesisById.ts";
-export { getApiAnamnesisTemplates } from "./getApiAnamnesisTemplates.ts";
 export { getApiBillingPlan } from "./getApiBillingPlan.ts";
 export { getApiClientById } from "./getApiClientById.ts";
 export { getApiClientByIdAnamnesis } from "./getApiClientByIdAnamnesis.ts";
@@ -25,7 +24,6 @@ export { getApiWorkoutRoutineByRoutineId } from "./getApiWorkoutRoutineByRoutine
 export { patchApiTrainerOnboardingFinished } from "./patchApiTrainerOnboardingFinished.ts";
 export { postApiAnamnesisByIdQuestions } from "./postApiAnamnesisByIdQuestions.ts";
 export { postApiAnamnesisCreate } from "./postApiAnamnesisCreate.ts";
-export { postApiAnamnesisTemplatesByIdClone } from "./postApiAnamnesisTemplatesByIdClone.ts";
 export { postApiBillingUpgrade } from "./postApiBillingUpgrade.ts";
 export { postApiClientByIdAnamnesis } from "./postApiClientByIdAnamnesis.ts";
 export { postApiClientByIdAnamnesisByClientAnamnesisIdQuestions } from "./postApiClientByIdAnamnesisByClientAnamnesisIdQuestions.ts";

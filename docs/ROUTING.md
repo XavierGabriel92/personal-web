@@ -33,10 +33,8 @@ routes/
 │   ├── workouts/
 │   │   └── $workoutId.tsx   # Workout detail
 │   └── anamnesis/
-│       ├── _anamnesisLayout.tsx          # Pathless layout (header + tabs)
-│       ├── _anamnesisLayout.index.tsx    # /trainer/anamnesis (list)
-│       ├── _anamnesisLayout.templates.tsx # /trainer/anamnesis/templates
-│       └── $anamnesisId.tsx              # /trainer/anamnesis/:id (detail)
+│       ├── _anamnesisLayout.tsx   # Layout route, renders /trainer/anamnesis
+│       └── $anamnesisId.tsx       # /trainer/anamnesis/:id (detail/modal)
 └── client/                  # Client layout route
     └── home.tsx            # Client dashboard
 ```
@@ -68,7 +66,7 @@ The root route provides:
 **File**: `src/routes/trainer/route.tsx`
 
 ```typescript
-export const Route = createFileRoute("/trainer")({
+export const Route = createFileRoute("/trainer")(
   component: TrainerDashboardLayout,
   beforeLoad: async () => {
     const data = await cachedSession();
@@ -86,7 +84,7 @@ Protected routes use `beforeLoad` to check authentication before rendering.
 **File**: `src/routes/_auth/route.tsx`
 
 ```typescript
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/_auth")(
   component: Layout,
   beforeLoad: async () => {
     const data = await cachedSession();
@@ -109,25 +107,26 @@ When a group of URLs sharing the same path prefix need a shared layout (header, 
 This is different from the root-level `_auth` pattern — here the underscore layout lives *inside* a named segment.
 
 ```
-routes/trainer/anamnesis/
-├── _anamnesisLayout.tsx          → layout wrapper (renders header + tabs + <Outlet />)
-├── _anamnesisLayout.index.tsx    → matches /trainer/anamnesis      (list)
-├── _anamnesisLayout.templates.tsx → matches /trainer/anamnesis/templates
-└── $anamnesisId.tsx              → matches /trainer/anamnesis/:id  (outside the layout)
+routes/trainer/clients/
+├── _clientLayout.tsx              → layout wrapper (renders header + tabs + <Outlet />)
+├── _clientLayout.index.tsx        → matches /trainer/clients       (list)
+├── _clientLayout.$clientId.tsx    → matches /trainer/clients/:id   (detail)
+└── $clientId/
+    └── ...                        → sub-routes outside the layout
 ```
 
 The layout file renders both the shared UI and an `<Outlet>` for the active child:
 
 ```tsx
-// src/routes/trainer/anamnesis/_anamnesisLayout.tsx
-export const Route = createFileRoute('/trainer/anamnesis/_anamnesisLayout')({
+// src/routes/trainer/clients/_clientLayout.tsx
+export const Route = createFileRoute('/trainer/clients/_clientLayout')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   return (
     <>
-      <AnamnesisLayoutPage />  {/* shared header + tab bar */}
+      <ClientsLayoutPage />  {/* shared header + tab bar */}
       <Outlet />
     </>
   )
@@ -137,21 +136,16 @@ function RouteComponent() {
 Child routes opt into the layout by including the layout name in their filename:
 
 ```tsx
-// _anamnesisLayout.index.tsx  → /trainer/anamnesis
-export const Route = createFileRoute('/trainer/anamnesis/_anamnesisLayout/')({ ... })
+// _clientLayout.index.tsx  → /trainer/clients
+export const Route = createFileRoute('/trainer/clients/_clientLayout/')({ ... })
 
-// _anamnesisLayout.templates.tsx  → /trainer/anamnesis/templates
-export const Route = createFileRoute('/trainer/anamnesis/_anamnesisLayout/templates')({ ... })
+// _clientLayout.$clientId.tsx  → /trainer/clients/:clientId
+export const Route = createFileRoute('/trainer/clients/_clientLayout/$clientId')({ ... })
 ```
 
-Routes that should **not** share the layout (e.g. the detail page) are siblings of the layout file, not children:
+Routes that should **not** share the layout are siblings of the layout file, not children.
 
-```tsx
-// $anamnesisId.tsx  → /trainer/anamnesis/:anamnesisId (no shared layout)
-export const Route = createFileRoute('/trainer/anamnesis/$anamnesisId')({ ... })
-```
-
-**When to use this pattern**: any time two or more URLs under the same prefix need a tab bar, breadcrumb, or contextual header that the detail/sub-pages should not share.
+**When to use this pattern**: any time two or more URLs under the same prefix need a tab bar, breadcrumb, or contextual header. If a route segment has only a single page (no sub-routes), use a plain layout route without `<Outlet>` instead.
 
 ## Route Features
 
@@ -177,7 +171,7 @@ navigate({ to: "/trainer/exercises" });
 Data loading before route renders (using React Query Suspense):
 
 ```typescript
-export const Route = createFileRoute("/trainer/routines/$routineId")({
+export const Route = createFileRoute("/trainer/routines/$routineId")(
   loader: ({ params }) => {
     return queryClient.ensureQueryData({
       queryKey: getApiRoutineByIdSuspenseQueryKey(params.routineId),
@@ -227,7 +221,7 @@ const router = createRouter({
 
 ```typescript
 // Route file: routes/trainer/routines/$routineId.tsx
-export const Route = createFileRoute("/trainer/routines/$routineId")({
+export const Route = createFileRoute("/trainer/routines/$routineId")(
   component: RoutineDetail,
 });
 
@@ -326,8 +320,8 @@ A **modal route** is a route whose sole job is to render a dialog. The dialog is
 
 ```
 routes/trainer/anamnesis/
-├── _anamnesisLayout.index.tsx   → /trainer/anamnesis  (list page)
-└── $anamnesisId.tsx             → /trainer/anamnesis/:id  (modal route)
+├── _anamnesisLayout.tsx   → /trainer/anamnesis  (list page)
+└── $anamnesisId.tsx       → /trainer/anamnesis/:id  (modal route)
 ```
 
 ```tsx
@@ -395,7 +389,7 @@ Do **not** use it for ephemeral dialogs (e.g. a confirmation prompt) or dialogs 
 - ✅ Leverage type-safe navigation
 - ✅ Use route parameters for dynamic segments
 - ✅ Use search parameters for filters/pagination
-- ✅ Use pathless layout routes (`_layoutName`) to share headers/tabs across sibling routes without adding a URL segment
+- ✅ Use pathless layout routes (`_layoutName`) to share headers/tabs across sibling routes without adding a URL segment — only when there are multiple child routes
 - ✅ Keep detail pages as siblings of the layout file (not children) when they should not inherit the shared layout
 - ✅ Keep route components focused and small
 - ✅ Use modal routes (`$id.tsx` renders a dialog) for reusable dialogs that need deep-linking or multiple entry points
