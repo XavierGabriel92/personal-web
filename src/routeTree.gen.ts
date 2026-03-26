@@ -30,6 +30,7 @@ import { Route as TrainerAnamnesisAnamnesisLayoutRouteImport } from './routes/tr
 import { Route as TrainerAnamnesisAnamnesisIdRouteImport } from './routes/trainer/anamnesis/$anamnesisId'
 import { Route as TrainerClientsClientIdRouteRouteImport } from './routes/trainer/clients/$clientId/route'
 import { Route as TrainerRoutinesRoutinesLayoutIndexRouteImport } from './routes/trainer/routines/_routinesLayout.index'
+import { Route as TrainerAnamnesisAnamnesisLayoutIndexRouteImport } from './routes/trainer/anamnesis/_anamnesisLayout.index'
 import { Route as TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport } from './routes/trainer/routines/_routinesLayout.homug-programs'
 import { Route as TrainerClientsClientIdWorkoutSessionRouteImport } from './routes/trainer/clients/$clientId/workout-session'
 import { Route as TrainerClientsClientIdWeightEvolutionRouteImport } from './routes/trainer/clients/$clientId/weight-evolution'
@@ -151,6 +152,12 @@ const TrainerRoutinesRoutinesLayoutIndexRoute =
     path: '/',
     getParentRoute: () => TrainerRoutinesRoutinesLayoutRoute,
   } as any)
+const TrainerAnamnesisAnamnesisLayoutIndexRoute =
+  TrainerAnamnesisAnamnesisLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => TrainerAnamnesisAnamnesisLayoutRoute,
+  } as any)
 const TrainerRoutinesRoutinesLayoutHomugProgramsRoute =
   TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport.update({
     id: '/homug-programs',
@@ -207,7 +214,7 @@ export interface FileRoutesByFullPath {
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
-  '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutRoute
+  '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
   '/trainer/routines/$routineId': typeof TrainerRoutinesRoutineIdRoute
   '/trainer/routines': typeof TrainerRoutinesRoutinesLayoutRouteWithChildren
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
+  '/trainer/anamnesis/': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
 }
 export interface FileRoutesByTo {
@@ -234,7 +242,7 @@ export interface FileRoutesByTo {
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
-  '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutRoute
+  '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/$routineId': typeof TrainerRoutinesRoutineIdRoute
   '/trainer/routines': typeof TrainerRoutinesRoutinesLayoutIndexRoute
   '/trainer/workouts/$workoutId': typeof TrainerWorkoutsWorkoutIdRoute
@@ -263,7 +271,7 @@ export interface FileRoutesById {
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
   '/trainer/anamnesis': typeof TrainerAnamnesisRouteWithChildren
-  '/trainer/anamnesis/_anamnesisLayout': typeof TrainerAnamnesisAnamnesisLayoutRoute
+  '/trainer/anamnesis/_anamnesisLayout': typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
   '/trainer/routines/$routineId': typeof TrainerRoutinesRoutineIdRoute
   '/trainer/routines': typeof TrainerRoutinesRouteWithChildren
   '/trainer/routines/_routinesLayout': typeof TrainerRoutinesRoutinesLayoutRouteWithChildren
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/_routinesLayout/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
+  '/trainer/anamnesis/_anamnesisLayout/': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/_routinesLayout/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
 }
 export interface FileRouteTypes {
@@ -305,6 +314,7 @@ export interface FileRouteTypes {
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
+    | '/trainer/anamnesis/'
     | '/trainer/routines/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -361,6 +371,7 @@ export interface FileRouteTypes {
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/_routinesLayout/homug-programs'
+    | '/trainer/anamnesis/_anamnesisLayout/'
     | '/trainer/routines/_routinesLayout/'
   fileRoutesById: FileRoutesById
 }
@@ -519,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerRoutinesRoutinesLayoutIndexRouteImport
       parentRoute: typeof TrainerRoutinesRoutinesLayoutRoute
     }
+    '/trainer/anamnesis/_anamnesisLayout/': {
+      id: '/trainer/anamnesis/_anamnesisLayout/'
+      path: '/'
+      fullPath: '/trainer/anamnesis/'
+      preLoaderRoute: typeof TrainerAnamnesisAnamnesisLayoutIndexRouteImport
+      parentRoute: typeof TrainerAnamnesisAnamnesisLayoutRoute
+    }
     '/trainer/routines/_routinesLayout/homug-programs': {
       id: '/trainer/routines/_routinesLayout/homug-programs'
       path: '/homug-programs'
@@ -617,12 +635,28 @@ const TrainerClientsClientIdRouteRouteWithChildren =
     TrainerClientsClientIdRouteRouteChildren,
   )
 
+interface TrainerAnamnesisAnamnesisLayoutRouteChildren {
+  TrainerAnamnesisAnamnesisLayoutIndexRoute: typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
+}
+
+const TrainerAnamnesisAnamnesisLayoutRouteChildren: TrainerAnamnesisAnamnesisLayoutRouteChildren =
+  {
+    TrainerAnamnesisAnamnesisLayoutIndexRoute:
+      TrainerAnamnesisAnamnesisLayoutIndexRoute,
+  }
+
+const TrainerAnamnesisAnamnesisLayoutRouteWithChildren =
+  TrainerAnamnesisAnamnesisLayoutRoute._addFileChildren(
+    TrainerAnamnesisAnamnesisLayoutRouteChildren,
+  )
+
 interface TrainerAnamnesisRouteChildren {
-  TrainerAnamnesisAnamnesisLayoutRoute: typeof TrainerAnamnesisAnamnesisLayoutRoute
+  TrainerAnamnesisAnamnesisLayoutRoute: typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
 }
 
 const TrainerAnamnesisRouteChildren: TrainerAnamnesisRouteChildren = {
-  TrainerAnamnesisAnamnesisLayoutRoute: TrainerAnamnesisAnamnesisLayoutRoute,
+  TrainerAnamnesisAnamnesisLayoutRoute:
+    TrainerAnamnesisAnamnesisLayoutRouteWithChildren,
 }
 
 const TrainerAnamnesisRouteWithChildren =

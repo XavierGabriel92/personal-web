@@ -142,20 +142,22 @@ function AnamnesisPickerList({
 							className="h-auto w-full justify-start rounded-xl p-4"
 							onClick={() => onSelect(selectedId === item.id ? null : item.id)}
 						>
-							<div className="flex w-full min-w-0 items-center justify-between gap-3">
-								<TypographySpan className="font-medium">
-									{item.name}
-								</TypographySpan>
-								<Badge variant="secondary" className="text-xs shrink-0">
-									{item.questions.length}{" "}
-									{item.questions.length === 1 ? "pergunta" : "perguntas"}
-								</Badge>
+							<div className="flex w-full min-w-0 flex-col gap-2">
+								<div className="flex w-full min-w-0 items-center justify-between gap-3">
+									<TypographySpan className="font-medium">
+										{item.name}
+									</TypographySpan>
+									<Badge variant="secondary" className="text-xs shrink-0">
+										{item.questions.length}{" "}
+										{item.questions.length === 1 ? "pergunta" : "perguntas"}
+									</Badge>
+								</div>
+								{item.description && (
+									<TypographyP className="text-muted-foreground w-full whitespace-normal break-words text-left text-sm">
+										{item.description}
+									</TypographyP>
+								)}
 							</div>
-							{item.description && (
-								<TypographyP className="text-muted-foreground text-sm text-left line-clamp-1 w-full">
-									{item.description}
-								</TypographyP>
-							)}
 						</Button>
 					))
 				)}
