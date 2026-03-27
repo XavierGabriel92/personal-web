@@ -20,7 +20,7 @@ export type LastWorkoutSession = {
 };
 
 export function formatWorkoutSessionName(workoutName?: string) {
-	return workoutName ?? "Treino sem nome";
+	return workoutName ?? "";
 }
 
 export function formatLastWorkoutSessionDate(date?: string) {

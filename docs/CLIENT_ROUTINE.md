@@ -72,7 +72,7 @@ Provides the shared `LastWorkoutSession` type and two formatting helpers used by
 ```ts
 import { formatLastWorkoutSessionDate, formatWorkoutSessionName } from '@/lib/last-workout-session';
 
-// Returns the workout name, or "Treino sem nome" when workoutName is absent
+// Returns the workout name, or "" when workoutName is absent
 formatWorkoutSessionName(workoutName?: string): string
 
 // Returns a relative + absolute date string, or "Nenhum treino registrado" when absent
