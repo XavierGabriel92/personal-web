@@ -61,6 +61,66 @@ export const {
 4. **Phone Gate**: If trainer has no phone, redirect to `/trainer/phone-setup`
 5. **User Type**: Redirect based on `user.type` ("trainer" or "member")
 
+## Sign Up Flow (Access Code Gate)
+
+The sign-up page (`src/pages/auth/sign-up.tsx`) has a two-step flow controlled by a `codeVerified` state:
+
+1. **Code step** (`AskCodeForm`): User enters an access code validated client-side against `VITE_SIGNUP_CODE`. If invalid, an error is shown inline. If the user doesn't have a code, they can switch to the waitlist view.
+2. **Register step** (`RegisterForm`): Shown only after the code is verified.
+
+```tsx
+// src/pages/auth/sign-up.tsx
+export default function SignUp() {
+  const [codeVerified, setCodeVerified] = useState(false);
+
+  return (
+    // ...
+    <main>
+      {codeVerified ? (
+        <RegisterForm />
+      ) : (
+        <AskCodeForm onCodeVerified={() => setCodeVerified(true)} />
+      )}
+    </main>
+  );
+}
+```
+
+### AskCodeForm Views
+
+`AskCodeForm` has three internal views managed by local `useState`:
+
+| View | Description |
+|------|-------------|
+| `"code"` | Default — user enters the access code |
+| `"waitlist"` | User submits name/email/phone to join the waitlist via `POST /api/lead` |
+| `"success"` | Shown after a successful waitlist submission |
+
+Code validation is purely client-side:
+
+```typescript
+const handleCodeSubmit = (data: CodeFormType) => {
+  const validCode = import.meta.env.VITE_SIGNUP_CODE;
+  if (data.code === validCode) {
+    onCodeVerified();
+  } else {
+    setCodeError("Código inválido. Verifique e tente novamente.");
+  }
+};
+```
+
+Waitlist submission uses a direct axios call (not a generated hook) since it's a public endpoint:
+
+```typescript
+await axios.post(
+  `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/lead`,
+  { name, email, phone },
+  { withCredentials: true },
+);
+```
+
+A 409 response means the email is already on the waitlist — handled as a field-level error on the email field.
+
 ## Sign In
 
 ```typescript
@@ -91,7 +151,9 @@ function SignInForm() {
 }
 ```
 
-## Sign Up
+## Sign Up (Registration Form)
+
+The `RegisterForm` is only rendered after code verification (see [Sign Up Flow](#sign-up-flow-access-code-gate) above).
 
 ```typescript
 import { signUp } from "@/lib/auth-client";
@@ -369,3 +431,4 @@ const hasSession = (clientsData?.clients ?? []).some(c => c.activeRoutineId);
 - ✅ Use user type to determine dashboard/features
 - ✅ Handle errors gracefully with user-friendly messages
 - ✅ When a route guard has multiple conditions (auth + profile completeness), always exclude the destination route from its own guard to prevent redirect loops
+- ✅ Gate sign-up behind `AskCodeForm` — validate `VITE_SIGNUP_CODE` client-side before showing `RegisterForm`

@@ -85,6 +85,7 @@ Create `.env` file in project root:
 ```env
 VITE_API_URL=http://localhost:3000
 VITE_APP_URL=http://localhost:4000
+VITE_SIGNUP_CODE=your-secret-code
 PORT=4000
 ```
 
@@ -97,6 +98,15 @@ const appUrl = import.meta.env.VITE_APP_URL;
 ```
 
 **Note**: Only variables prefixed with `VITE_` are exposed to the client.
+
+### Variable Reference
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_API_URL` | Yes | Backend API base URL |
+| `VITE_APP_URL` | Yes | Frontend app URL (used for OAuth callbacks) |
+| `VITE_SIGNUP_CODE` | Yes | Access code required to reach the sign-up registration form. Validated client-side in `AskCodeForm`. |
+| `PORT` | No | Dev server port (default: 4000) |
 
 ## API Client Generation
 
@@ -188,4 +198,3 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 - ✅ Follow Biome configuration
 - ✅ Use path aliases (`@/`) for imports
 - ✅ Keep build output (`dist/`) out of version control
-
