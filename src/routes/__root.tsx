@@ -9,7 +9,7 @@ function NotFound() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		navigate({ to: "/_auth/sign-in", replace: true });
+		navigate({ to: "/sign-in", replace: true });
 	}, [navigate]);
 
 	return null;
