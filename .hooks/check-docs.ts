@@ -118,7 +118,7 @@ Documentation structure:
 - docs/BUILD_DEVELOPMENT.md: dev workflow
 - docs/BEST_PRACTICES.md: coding standards
 - docs/CLIENT_ROUTINE.md: client/routine relationship
-- docs/WHATSAPP_INVITE.md: WhatsApp invite feature
+- docs/WHATSAPP_INVITE.md: Client email activation (legacy path)
 - docs/backlog.md: future work
 
 Rules:

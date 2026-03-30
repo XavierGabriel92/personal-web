@@ -31,6 +31,18 @@ export type GetApiClients200 = {
         /**
          * @type string | undefined
         */
+        userId?: string;
+        /**
+         * @type string | undefined
+        */
+        email?: string;
+        /**
+         * @type boolean | undefined
+        */
+        emailVerified?: boolean;
+        /**
+         * @type string | undefined
+        */
         activeRoutineId?: string;
         /**
          * @type string | undefined
@@ -40,10 +52,6 @@ export type GetApiClients200 = {
          * @type boolean
         */
         active: boolean;
-        /**
-         * @type boolean
-        */
-        whatsappConnected: boolean;
         /**
          * @type object | undefined
         */

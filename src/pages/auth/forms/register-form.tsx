@@ -22,10 +22,8 @@ import { TypographySpanXSmall } from "@/components/ui/typography";
 import { sessionQueryKey } from "@/hooks/auth";
 import { authClient } from "@/lib/auth-client";
 import { queryClient } from "@/routes/__root";
-import { Route } from "@/routes/_auth/sign-up";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@tanstack/react-router";
-import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -46,67 +44,74 @@ const brazilianPhoneSchema = z
 		{ message: "Telefone deve ser um número brasileiro válido" },
 	);
 
-const signUpFormSchema = z
-	.object({
-		name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
-		email: z.string().email("Email inválido"),
-		phone: brazilianPhoneSchema.optional().or(z.literal("")),
-		password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres"),
-		confirmPassword: z
-			.string()
-			.min(8, "Senha deve ter pelo menos 8 caracteres"),
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: "As senhas não coincidem",
-		path: ["confirmPassword"],
-	});
+const trainerMagicFields = z.object({
+	name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
+	email: z.string().email("Email inválido"),
+	phone: brazilianPhoneSchema.optional().or(z.literal("")),
+});
 
-type SignUpFormType = z.infer<typeof signUpFormSchema>;
+type TrainerMagicFormType = z.infer<typeof trainerMagicFields>;
 
 export default function RegisterForm() {
-	const params = Route.useSearch() as {
-		organizationId?: string;
-		email?: string;
-	};
-
 	const [isLoading, setIsLoading] = useState(false);
-	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
-	const form = useForm<SignUpFormType>({
-		resolver: zodResolver(signUpFormSchema),
+	const trainerForm = useForm<TrainerMagicFormType>({
+		resolver: zodResolver(trainerMagicFields),
 		defaultValues: {
 			name: "",
-			email: params.email || "",
+			email: "",
 			phone: "",
-			password: "",
-			confirmPassword: "",
 		},
 	});
 
-	const handleSignUp = async (data: SignUpFormType) => {
+	const postTrainerIntent = async (data: TrainerMagicFormType) => {
+		const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+		const accessCode = import.meta.env.VITE_SIGNUP_CODE ?? "";
+		const res = await fetch(`${baseURL}/api/trainer/magic-signup/intent`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			credentials: "include",
+			body: JSON.stringify({
+				accessCode,
+				name: data.name,
+				email: data.email,
+				...(data.phone ? { phone: data.phone } : {}),
+			}),
+		});
+		const json = (await res.json()) as { ok?: boolean; error?: string };
+		if (!res.ok) {
+			throw new Error(json.error || "Não foi possível iniciar o cadastro.");
+		}
+	};
+
+	const handleTrainerMagicSignUp = async (data: TrainerMagicFormType) => {
 		setIsLoading(true);
 		try {
-			await authClient.signUp.email(
-				// @ts-expect-error - phone is optional at runtime; better-auth's type is overly strict
+			await postTrainerIntent(data);
+			await authClient.signIn.magicLink(
 				{
 					email: data.email,
-					password: data.password,
 					name: data.name,
-					type: params.organizationId ? "member" : "trainer",
-					...(data.phone ? { phone: data.phone } : {}),
+					callbackURL: `${window.location.origin}/`,
+					newUserCallbackURL: `${window.location.origin}/`,
 				},
 				{
-					onSuccess: async () => {
-						toast.success("Login realizado com sucesso");
-						await queryClient.invalidateQueries({ queryKey: sessionQueryKey });
-						router.navigate({ to: "/" });
+					onSuccess: () => {
+						toast.success(
+							"Enviamos um link para o seu email. Abra a mensagem para criar a conta e entrar.",
+						);
+						void queryClient.invalidateQueries({ queryKey: sessionQueryKey });
+						router.navigate({ to: "/sign-in" });
 					},
 					onError: (ctx) => {
 						toast.error(ctx.error.message);
 					},
 				},
 			);
+		} catch (e) {
+			const msg = e instanceof Error ? e.message : "Erro ao registrar.";
+			toast.error(msg);
 		} finally {
 			setIsLoading(false);
 		}
@@ -115,26 +120,21 @@ export default function RegisterForm() {
 	return (
 		<Card className="border-0 shadow-none">
 			<CardHeader className="text-center">
-				<CardTitle className="text-2xl">
-					{params.organizationId
-						? "Finalize o cadastro para acessar seus treinos"
-						: "Abra sua conta"}
-				</CardTitle>
+				<CardTitle className="text-2xl">Abra sua conta</CardTitle>
 				<CardDescription>
-					{params.organizationId
-						? "Crie sua senha para continuar"
-						: "Preencha seus dados para começar"}
+					Você recebe um link por email para confirmar e entrar. Use o mesmo
+					email neste passo e ao abrir o link.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="mt-8">
-				<Form {...form}>
+				<Form {...trainerForm}>
 					<form
-						onSubmit={form.handleSubmit(handleSignUp)}
+						onSubmit={trainerForm.handleSubmit(handleTrainerMagicSignUp)}
 						className="flex flex-col gap-8"
 					>
 						<div className="flex flex-col gap-4">
 							<FormField
-								control={form.control}
+								control={trainerForm.control}
 								name="name"
 								render={({ field }) => (
 									<FormItem>
@@ -147,7 +147,7 @@ export default function RegisterForm() {
 								)}
 							/>
 							<FormField
-								control={form.control}
+								control={trainerForm.control}
 								name="email"
 								render={({ field }) => (
 									<FormItem>
@@ -159,84 +159,18 @@ export default function RegisterForm() {
 									</FormItem>
 								)}
 							/>
-							{!params.organizationId && (
-								<FormField
-									control={form.control}
-									name="phone"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Telefone</FormLabel>
-											<FormControl>
-												<Input
-													type="tel"
-													placeholder="(99)99999-9999"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							)}
 							<FormField
-								control={form.control}
-								name="password"
+								control={trainerForm.control}
+								name="phone"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Senha</FormLabel>
+										<FormLabel>Telefone (opcional)</FormLabel>
 										<FormControl>
-											<div className="relative">
-												<Input
-													type={showPassword ? "text" : "password"}
-													{...field}
-													className="pr-10"
-												/>
-												<Button
-													type="button"
-													variant="ghost"
-													size="sm"
-													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowPassword(!showPassword)}
-												>
-													{showPassword ? (
-														<EyeOff className="h-4 w-4" />
-													) : (
-														<Eye className="h-4 w-4" />
-													)}
-												</Button>
-											</div>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="confirmPassword"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Confirmar Senha</FormLabel>
-										<FormControl>
-											<div className="relative">
-												<Input
-													type={showPassword ? "text" : "password"}
-													{...field}
-													className="pr-10"
-												/>
-												<Button
-													type="button"
-													variant="ghost"
-													size="sm"
-													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowPassword(!showPassword)}
-												>
-													{showPassword ? (
-														<EyeOff className="h-4 w-4" />
-													) : (
-														<Eye className="h-4 w-4" />
-													)}
-												</Button>
-											</div>
+											<Input
+												type="tel"
+												placeholder="(99)99999-9999"
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -244,15 +178,12 @@ export default function RegisterForm() {
 							/>
 						</div>
 						<Button type="submit" className="w-full" disabled={isLoading}>
-							{isLoading ? "Registrando..." : "Registrar"}
+							{isLoading ? "Enviando..." : "Enviar link de cadastro"}
 						</Button>
 						<TypographySpanXSmall className="text-center text-muted-foreground">
 							Já tem uma conta?{" "}
 							<Button type="button" variant="link" className="h-auto p-0" asChild>
-								<Link
-									to="/sign-in"
-									search={{ organizationId: params.organizationId }}
-								>
+								<Link to="/sign-in">
 									<TypographySpanXSmall>Login</TypographySpanXSmall>
 								</Link>
 							</Button>

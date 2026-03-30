@@ -99,7 +99,7 @@ export const Route = createFileRoute("/_auth")({
     if (data?.session) {
       // Redirect based on user type
       const redirectTo =
-        data.user?.type === "member" ? "/client/home" : "/trainer/home";
+        data.user?.type === "client" ? "/client/home" : "/trainer/home";
       throw redirect({ to: redirectTo });
     }
   },

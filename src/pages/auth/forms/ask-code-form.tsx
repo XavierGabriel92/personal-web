@@ -15,9 +15,14 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TypographySpanXSmall } from "@/components/ui/typography";
+import { Separator } from "@/components/ui/separator";
+import {
+	TypographyH4,
+	TypographyP,
+	TypographySpanXSmall,
+} from "@/components/ui/typography";
+import { usePostApiLead } from "@/gen/hooks/usePostApiLead";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { parsePhoneNumberWithError } from "libphonenumber-js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -59,7 +64,7 @@ interface AskCodeFormProps {
 export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 	const [view, setView] = useState<"code" | "waitlist" | "success">("code");
 	const [codeError, setCodeError] = useState<string | null>(null);
-	const [isLoading, setIsLoading] = useState(false);
+	const { mutateAsync: submitLead, isPending } = usePostApiLead();
 
 	const codeForm = useForm<CodeFormType>({
 		resolver: zodResolver(codeSchema),
@@ -82,15 +87,14 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 	};
 
 	const handleWaitlistSubmit = async (data: WaitlistFormType) => {
-		setIsLoading(true);
 		try {
-			const baseURL =
-				import.meta.env.VITE_API_URL || "http://localhost:3000";
-			await axios.post(
-				`${baseURL}/api/lead`,
-				{ name: data.name, email: data.email, phone: data.phone },
-				{ withCredentials: true },
-			);
+			await submitLead({
+				data: {
+					name: data.name,
+					email: data.email,
+					phone: data.phone,
+				},
+			});
 			setView("success");
 		} catch (error: unknown) {
 			const axiosError = error as {
@@ -103,8 +107,6 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 			} else {
 				toast.error("Erro ao entrar na lista de espera. Tente novamente.");
 			}
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
@@ -119,14 +121,14 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 				</CardHeader>
 				<CardContent className="mt-8 flex flex-col gap-4 text-center">
 					<TypographySpanXSmall className="text-muted-foreground">
-						Já tem um código de acesso?{" "}
+						Já recebeu um convite?{" "}
 						<Button
 							type="button"
 							variant="link"
 							className="h-auto p-0"
 							onClick={() => setView("code")}
 						>
-							<TypographySpanXSmall>Entrar com código</TypographySpanXSmall>
+							<TypographySpanXSmall>Inserir código do convite</TypographySpanXSmall>
 						</Button>
 					</TypographySpanXSmall>
 				</CardContent>
@@ -194,18 +196,18 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 									)}
 								/>
 							</div>
-							<Button type="submit" className="w-full" disabled={isLoading}>
-								{isLoading ? "Enviando..." : "Entrar na lista de espera"}
+							<Button type="submit" className="w-full" disabled={isPending}>
+								{isPending ? "Enviando..." : "Entrar na lista de espera"}
 							</Button>
 							<TypographySpanXSmall className="text-center text-muted-foreground">
-								Já tem um código de acesso?{" "}
+								Já recebeu um convite?{" "}
 								<Button
 									type="button"
 									variant="link"
 									className="h-auto p-0"
 									onClick={() => setView("code")}
 								>
-									<TypographySpanXSmall>Entrar com código</TypographySpanXSmall>
+									<TypographySpanXSmall>Inserir código do convite</TypographySpanXSmall>
 								</Button>
 							</TypographySpanXSmall>
 						</form>
@@ -218,9 +220,10 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 	return (
 		<Card className="border-0 shadow-none">
 			<CardHeader className="text-center">
-				<CardTitle className="text-2xl">Código de acesso</CardTitle>
+				<CardTitle className="text-2xl">Insira o código do seu convite</CardTitle>
 				<CardDescription>
-					Insira seu código para criar uma conta.
+					Quem te convidou te passou um código único. Use-o abaixo para criar
+					sua conta.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
@@ -235,7 +238,7 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 								name="code"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Código</FormLabel>
+										<FormLabel>Código do convite</FormLabel>
 										<FormControl>
 											<Input
 												placeholder="••••••••"
@@ -256,21 +259,31 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 							/>
 						</div>
 						<Button type="submit" className="w-full">
-							Entrar
+							Continuar com o convite
 						</Button>
-						<TypographySpanXSmall className="text-center text-muted-foreground">
-							Não tenho um código.{" "}
-							<Button
-								type="button"
-								variant="link"
-								className="h-auto p-0"
-								onClick={() => setView("waitlist")}
-							>
-								<TypographySpanXSmall>
-									Entrar na lista de espera
-								</TypographySpanXSmall>
-							</Button>
-						</TypographySpanXSmall>
+						<div className="flex flex-col gap-6">
+							<Separator />
+							<div className="bg-muted/50 border-border flex flex-col gap-4 rounded-lg border p-6">
+								<div className="flex flex-col gap-2 text-center">
+									<TypographyH4 className="font-semibold">
+										Não tenho um convite ainda
+									</TypographyH4>
+									<TypographyP className="text-muted-foreground">
+										Entre na lista de espera e avisamos quando abrirmos vagas.
+										É rápido e sem compromisso.
+									</TypographyP>
+								</div>
+								<Button
+									type="button"
+									variant="outline"
+									size="lg"
+									className="w-full"
+									onClick={() => setView("waitlist")}
+								>
+									Quero entrar na lista de espera
+								</Button>
+							</div>
+						</div>
 					</form>
 				</Form>
 			</CardContent>

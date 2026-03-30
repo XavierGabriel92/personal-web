@@ -13,7 +13,7 @@ function getPostApiClientByIdAnamnesisByClientAnamnesisIdSendUrl(id: PostApiClie
 }
 
 /**
- * @description Sends a WhatsApp notification to the client to answer the anamnesis. Subject to 2-day cooldown.
+ * @description Sends an email to the client to answer the anamnesis when their email is verified. Subject to 2-day cooldown.
  * @summary Send anamnesis to client
  * {@link /api/client/:id/anamnesis/:clientAnamnesisId/send}
  */

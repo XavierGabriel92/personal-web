@@ -1,58 +1,45 @@
-# WhatsApp Invite
+# Client email activation (legacy filename)
+
+> This doc previously described the WhatsApp invite flow, which has been removed. The file name is kept so existing links from `CLAUDE.md` and hooks still resolve.
 
 ## Overview
 
-Trainers send a WhatsApp activation message directly to the client's phone via the bot. The client just needs to reply — no token, no link copying.
+When a trainer creates a client, the API provisions a Better Auth user (`type: client`), links the roster row via `userId`, and sends a verification email. The client confirms the email; the backend then sets `clients.active` to true. Clients sign in with a **magic link** (see [AUTHENTICATION.md](./AUTHENTICATION.md)).
 
-## Flow
+## Trainer flow
 
-```
-1. Trainer creates client (name, phone, goals)
-2. Trainer clicks "Enviar convite" on the client profile
-3. Bot sends message to client's phone:
-   "Olá {name}! Seu personal trainer {trainer} te adicionou ao Homug 💪
-    Responda esta mensagem para ativar seu acesso."
-4. Client replies with anything → phone activated
-5. Client profile shows "WhatsApp conectado"
-```
+1. Trainer creates a client with **name**, **email**, **phone**, and optional goals.
+2. The client receives an email to confirm the account.
+3. If needed, the trainer uses **Reenviar email de ativação** on the client profile (`POST /api/client/:id/resend-activation`).
 
-## Endpoints
+## API fields
 
-| Endpoint | Description |
-|----------|-------------|
-| `POST /api/client/:id/send-invite` | Sends activation message via bot. Client replies to activate. |
+Client list and detail responses include:
 
-## `whatsappConnected` field
+- `userId` — set for clients created with the new flow; omitted or null for legacy rows without an app account.
+- `email`, `emailVerified` — from the linked auth user when present.
 
-All client responses (`GET /api/clients`, `GET /api/client/:id`, `PUT /api/client/:id`) now include:
+Legacy clients without `userId` show as **Sem app** in the trainer UI.
 
-```ts
-whatsappConnected: boolean  // true when binding exists and activated = true
-```
-
-## Phone number change
-
-If the trainer changes the client's phone number (`PUT /api/client/:id`), the backend automatically resets the WhatsApp binding. The client will need to be re-invited via "Enviar convite".
-
-The edit-client sheet shows a warning when editing a connected client's phone.
-
-## Generated Hook
+## Generated hook (resend)
 
 ```typescript
-import { usePostApiClientByIdSendInvite } from '@/gen/hooks/usePostApiClientByIdSendInvite';
+import { usePostApiClientByIdResendActivation } from '@/gen/hooks/usePostApiClientByIdResendActivation';
 
-const { mutateAsync: sendInvite } = usePostApiClientByIdSendInvite();
-await sendInvite({ id: clientId });
+const { mutateAsync: resendActivation } = usePostApiClientByIdResendActivation();
+await resendActivation({ id: clientId });
 ```
 
-After backend changes run:
+After OpenAPI changes:
 
 ```bash
-bun run generate
+pnpm run generate
 ```
 
-## Client List
+## Client list
 
-The client list shows a **WhatsApp** column with:
-- **Conectado** (green) — client has replied and activated
-- **Pendente** (gray) — invite not yet sent or client hasn't replied
+The **Conta no app** column shows:
+
+- **Sem app** — no linked auth user (legacy).
+- **Email pendente** — account exists, email not verified yet.
+- **Confirmado** — email verified; client can use magic link sign-in.

@@ -13,7 +13,7 @@ function getPutApiClientByIdUrl(id: PutApiClientByIdPathParams["id"]) {
 }
 
 /**
- * @description Update a client by ID. If phone changes, WhatsApp binding is reset and trainer must re-send invite.
+ * @description Update a client by ID.
  * @summary Update client
  * {@link /api/client/:id}
  */

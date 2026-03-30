@@ -45,7 +45,7 @@ const FEATURES = [
 	"Anamneses personalizadas para seus alunos",
 	"Histórico completo de treinos realizados",
 	"Evolução de carga com gráficos detalhados",
-	"Acesso via WhatsApp para seus alunos",
+	"Alunos com conta por email e link de acesso",
 	"Analytics de performance dos alunos",
 ];
 

@@ -1,6 +1,7 @@
 import {
 	customSessionClient,
 	inferAdditionalFields,
+	magicLinkClient,
 	organizationClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
@@ -9,11 +10,12 @@ export const authClient = createAuthClient({
 	plugins: [
 		organizationClient(),
 		customSessionClient(),
+		magicLinkClient(),
 		inferAdditionalFields({
 			user: {
 				type: {
 					type: "string",
-					enum: ["trainer", "member"],
+					enum: ["trainer", "client"],
 					defaultValue: "trainer",
 				},
 				onboardingFinished: {
@@ -36,8 +38,6 @@ export const {
 	signIn,
 	signUp,
 	signOut,
-	requestPasswordReset,
-	resetPassword,
 	revokeSession,
 	organization,
 } = authClient;

@@ -11,6 +11,7 @@ For general architecture patterns, see [ARCHITECTURE.md](../ARCHITECTURE.md).
 import {
   customSessionClient,
   inferAdditionalFields,
+  magicLinkClient,
   organizationClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
@@ -19,11 +20,12 @@ export const authClient = createAuthClient({
   plugins: [
     organizationClient(),      // Organization support
     customSessionClient(),     // Custom session handling
+    magicLinkClient(),         // Passwordless sign-in (verified users)
     inferAdditionalFields({   // Custom user fields
       user: {
         type: {
           type: "string",
-          enum: ["trainer", "member"],
+          enum: ["trainer", "client"],
           defaultValue: "trainer",
         },
         onboardingFinished: {
@@ -59,7 +61,7 @@ export const {
 2. **Session Check**: Routes use `cachedSession()` in `beforeLoad`
 3. **Redirect**: If no session, redirect to `/sign-in`
 4. **Phone Gate**: If trainer has no phone, redirect to `/trainer/phone-setup`
-5. **User Type**: Redirect based on `user.type` ("trainer" or "member")
+5. **User Type**: Redirect based on `user.type` ("trainer" or "client")
 
 ## Sign Up Flow (Access Code Gate)
 
@@ -142,7 +144,7 @@ function SignInForm() {
     }
     
     // Redirect based on user type
-    const redirectTo = result.data.user.type === "member" 
+    const redirectTo = result.data.user.type === "client" 
       ? "/client/home" 
       : "/trainer/home";
     
@@ -155,26 +157,39 @@ function SignInForm() {
 
 The `RegisterForm` is only rendered after code verification (see [Sign Up Flow](#sign-up-flow-access-code-gate) above).
 
+### Trainer (no `organizationId`)
+
+- Submits **name**, **email**, optional **phone** (no password).
+- Calls **`POST /api/trainer/magic-signup/intent`** with the same invite code as `VITE_SIGNUP_CODE` (`accessCode`); the API validates against **`TRAINER_SIGNUP_ACCESS_CODE`** (must match in production).
+- Then calls **`authClient.signIn.magicLink`** with `email`, `name`, `callbackURL`, and **`newUserCallbackURL`** pointing at the SPA origin. Opening the link creates the user (verified) and a session; the user lands logged in on the app.
+- Optional phone is copied from the intent row on the API via `databaseHooks` after user creation.
+
+### Organization client (`organizationId` in search)
+
+- Still uses **`authClient.signUp.email`** with password and `callbackURL` to `/email-verified`.
+- With `requireEmailVerification`, **sign-up does not create a session** until email is verified; the app toasts and navigates to **`/sign-in`**.
+
 ```typescript
 import { signUp } from "@/lib/auth-client";
 
-function SignUpForm() {
+// Org client only — trainers use magic link as above
+function OrgClientSignUpForm() {
   const handleSubmit = async (data: SignUpFormData) => {
     const result = await signUp.email({
       email: data.email,
       password: data.password,
       name: data.name,
-      // phone is optional for trainers; omit for members
-      ...(data.phone ? { phone: data.phone } : {}),
+      type: "client",
+      callbackURL: `${window.location.origin}/email-verified`,
     });
-    
+
     if (result.error) {
       toast.error(result.error.message);
       return;
     }
-    
-    toast.success("Account created!");
-    // Redirect to sign in or dashboard
+
+    toast.success("Check your email to verify, then sign in with magic link or password");
+    navigate({ to: "/sign-in" });
   };
 }
 ```
@@ -295,7 +310,7 @@ export const Route = createFileRoute("/_auth")({
     if (data?.session) {
       // Redirect based on user type
       const redirectTo =
-        data.user?.type === "member" ? "/client/home" : "/trainer/home";
+        data.user?.type === "client" ? "/client/home" : "/trainer/home";
       throw redirect({ to: redirectTo });
     }
   },
@@ -351,7 +366,7 @@ function ResetPasswordForm({ token }: { token: string }) {
 
 ## User Type Handling
 
-The application supports two user types: "trainer" and "member".
+The application supports two user types: "trainer" and "client".
 
 ### Checking User Type
 
@@ -364,12 +379,12 @@ function MyComponent() {
   if (!session) return null;
   
   const isTrainer = session.user.type === "trainer";
-  const isMember = session.user.type === "member";
+  const isClientUser = session.user.type === "client";
   
   return (
     <div>
       {isTrainer && <TrainerContent />}
-      {isMember && <MemberContent />}
+      {isClientUser && <ClientContent />}
     </div>
   );
 }
@@ -378,10 +393,16 @@ function MyComponent() {
 ### Redirecting Based on Type
 
 ```typescript
-const redirectTo = session.user.type === "member" 
+const redirectTo = session.user.type === "client" 
   ? "/client/home" 
   : "/trainer/home";
 ```
+
+## Sign-in (magic link first)
+
+The sign-in page ([`src/pages/auth/forms/login-form.tsx`](src/pages/auth/forms/login-form.tsx)) defaults to `authClient.signIn.magicLink` with `callbackURL` set to the app origin. The API only sends a link if the user exists and `emailVerified` is true (same for trainers and clients). An optional **Entrar com senha** path still uses `authClient.signIn.email` for accounts with a password.
+
+Clients created by a trainer verify via the activation email before magic link works. Trainers verify after sign-up before magic link works.
 
 ## Custom Session Fields
 
@@ -390,7 +411,7 @@ The session user object includes both BetterAuth built-in fields (`id`, `name`, 
 | Field | Type | Description |
 |-------|------|-------------|
 | `name` | `string` | Trainer's display name (built-in) |
-| `type` | `"trainer" \| "member"` | User role |
+| `type` | `"trainer" \| "client"` | User role |
 | `onboardingFinished` | `boolean` | Whether the trainer completed the onboarding checklist |
 | `phone` | `string \| undefined` | Brazilian phone number; required to access trainer routes |
 
@@ -407,7 +428,7 @@ The flag is set via `PATCH /api/trainer/onboarding-finished` and the session is 
 
 ### `phone`
 
-A Brazilian phone number stored on the user account. Validated with `libphonenumber-js` on both the registration form (optional for trainers, hidden for members) and the account settings dialog. When a trainer has no phone, the `/trainer` route guard redirects them to `/trainer/phone-setup` before they can access any other trainer page.
+A Brazilian phone number stored on the user account. Validated with `libphonenumber-js` on both the registration form (optional for trainers, hidden for organization client sign-up) and the account settings dialog. When a trainer has no phone, the `/trainer` route guard redirects them to `/trainer/phone-setup` before they can access any other trainer page.
 
 ### Onboarding step detection
 

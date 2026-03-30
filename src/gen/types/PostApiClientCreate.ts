@@ -27,6 +27,18 @@ export type PostApiClientCreate200 = {
     /**
      * @type string | undefined
     */
+    userId?: string;
+    /**
+     * @type string | undefined
+    */
+    email?: string;
+    /**
+     * @type boolean | undefined
+    */
+    emailVerified?: boolean;
+    /**
+     * @type string | undefined
+    */
     activeRoutineId?: string;
     /**
      * @type string | undefined
@@ -36,10 +48,6 @@ export type PostApiClientCreate200 = {
      * @type boolean
     */
     active: boolean;
-    /**
-     * @type boolean
-    */
-    whatsappConnected: boolean;
     /**
      * @type object | undefined
     */
@@ -145,12 +153,26 @@ export type PostApiClientCreate409 = {
     message: string;
 };
 
+/**
+ * @description Response for status 500
+*/
+export type PostApiClientCreate500 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
 export type PostApiClientCreateMutationRequest = {
     /**
      * @minLength 1
      * @type string
     */
     name: string;
+    /**
+     * @type string, email
+    */
+    email: string;
     /**
      * @minLength 1
      * @type string
@@ -175,5 +197,5 @@ export type PostApiClientCreateMutationResponse = PostApiClientCreate200;
 export type PostApiClientCreateMutation = {
     Response: PostApiClientCreate200;
     Request: PostApiClientCreateMutationRequest;
-    Errors: PostApiClientCreate403 | PostApiClientCreate409;
+    Errors: PostApiClientCreate403 | PostApiClientCreate409 | PostApiClientCreate500;
 };

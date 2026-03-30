@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PostApiClientCreateMutationRequest, PostApiClientCreateMutationResponse, PostApiClientCreate403, PostApiClientCreate409 } from "../types/PostApiClientCreate.ts";
+import type { PostApiClientCreateMutationRequest, PostApiClientCreateMutationResponse, PostApiClientCreate403, PostApiClientCreate409, PostApiClientCreate500 } from "../types/PostApiClientCreate.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getPostApiClientCreateUrl() {
@@ -13,7 +13,7 @@ function getPostApiClientCreateUrl() {
 }
 
 /**
- * @description Create a new client. Use the send-invite endpoint to send the WhatsApp activation message. Returns 409 if the phone number is already registered. Returns 403 if the trainer has reached their plan client limit.
+ * @description Creates a roster client and a Better Auth user (type client). Sends an email so the client can confirm and activate. Returns 409 if phone or email is already in use.
  * @summary Create client
  * {@link /api/client/create}
  */
@@ -22,6 +22,6 @@ export async function postApiClientCreate(data: PostApiClientCreateMutationReque
   
   const requestData = data  
   
-  const res = await request<PostApiClientCreateMutationResponse, ResponseErrorConfig<PostApiClientCreate403 | PostApiClientCreate409>, PostApiClientCreateMutationRequest>({ method : "POST", url : getPostApiClientCreateUrl().url.toString(), data : requestData, ... requestConfig })  
+  const res = await request<PostApiClientCreateMutationResponse, ResponseErrorConfig<PostApiClientCreate403 | PostApiClientCreate409 | PostApiClientCreate500>, PostApiClientCreateMutationRequest>({ method : "POST", url : getPostApiClientCreateUrl().url.toString(), data : requestData, ... requestConfig })  
   return res.data
 }

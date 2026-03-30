@@ -11,7 +11,7 @@ export default function SignUp() {
 				<img src="/homug_gorilla_logo.svg" alt="homug" className="h-16 w-16" />
 				<span className="font-semibold text-xl">Homug</span>
 			</header>
-			<main className="flex flex-1 justify-center p-6 md:p-10 mt-14">
+			<main className="flex flex-1 justify-center p-6 md:p-10">
 				<div className="w-full max-w-sm">
 					{codeVerified ? (
 						<RegisterForm />

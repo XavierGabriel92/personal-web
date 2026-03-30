@@ -18,7 +18,7 @@ This document provides an overview of the personal-web frontend application arch
 - [Build & Development](./docs/BUILD_DEVELOPMENT.md) - Development workflows
 - [Best Practices](./docs/BEST_PRACTICES.md) - Coding standards and best practices
 - [Client-Routine Integration](./docs/CLIENT_ROUTINE.md) - Assigning and cloning routines for clients
-- [WhatsApp Invite](./docs/WHATSAPP_INVITE.md) - Sharing invite links and re-binding client phone numbers
+- [Client email activation](./docs/WHATSAPP_INVITE.md) - Verify email, resend activation, magic-link client login
 
 ---
 

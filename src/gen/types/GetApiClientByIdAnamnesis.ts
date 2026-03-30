@@ -13,6 +13,7 @@ export type GetApiClientByIdAnamnesisPathParams = {
 
 export const anamnesisStatusEnum = {
     "PENDING": "PENDING",
+    "AWAITING_CONFIRMATION": "AWAITING_CONFIRMATION",
     "FINISHED": "FINISHED"
 } as const;
 

@@ -77,7 +77,7 @@ export default function ClientsList() {
 								<TableHead>Nome</TableHead>
 								<TableHead>Telefone</TableHead>
 								<TableHead>Status</TableHead>
-								<TableHead>WhatsApp</TableHead>
+								<TableHead>Conta no app</TableHead>
 								<TableHead>Ultimo treino registrado</TableHead>
 								<TableHead>Data de Cadastro</TableHead>
 							</TableRow>
@@ -112,13 +112,13 @@ export default function ClientsList() {
 											</Badge>
 										</TableCell>
 										<TableCell>
-											<Badge
-												variant={
-													client.whatsappConnected ? "success" : "secondary"
-												}
-											>
-												{client.whatsappConnected ? "Conectado" : "Pendente"}
-											</Badge>
+											{!client.userId ? (
+												<Badge variant="outline">Sem app</Badge>
+											) : client.emailVerified ? (
+												<Badge variant="success">Confirmado</Badge>
+											) : (
+												<Badge variant="secondary">Email pendente</Badge>
+											)}
 										</TableCell>
 										<TableCell>
 											<div className="min-w-[220px]">

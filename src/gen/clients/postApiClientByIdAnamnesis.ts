@@ -13,7 +13,7 @@ function getPostApiClientByIdAnamnesisUrl(id: PostApiClientByIdAnamnesisPathPara
 }
 
 /**
- * @description Snapshots the anamnesis form and assigns it to the client. Sends a WhatsApp notification if the client is connected.
+ * @description Snapshots the anamnesis form and assigns it to the client. Sends an email if the client has verified their email.
  * @summary Assign anamnesis to client
  * {@link /api/client/:id/anamnesis}
  */

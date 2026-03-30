@@ -29,12 +29,6 @@ export type PutApiAnamnesisByIdQuestionsReorder200 = {
     description?: string;
     ownerId?: (string | null);
     /**
-     * @default false
-     * @type boolean
-    */
-    isTemplate: boolean;
-    category?: (string | null);
-    /**
      * @type array
     */
     questions: {

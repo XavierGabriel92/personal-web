@@ -18,9 +18,19 @@ function App() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		const err = params.get("error");
+		// Better Auth redirects failed verify to callbackURL?error=… — default callback is "/"
+		if (
+			err &&
+			["token_expired", "invalid_token", "user_not_found", "unauthorized"].includes(err)
+		) {
+			navigate({ to: "/email-verified", search: { error: err }, replace: true });
+			return;
+		}
 		if (session?.user) {
 			const redirectTo =
-				session.user.type === "member" ? "/client/home" : "/trainer/home";
+				session.user.type === "client" ? "/client/home" : "/trainer/home";
 			navigate({ to: redirectTo as never });
 		} else {
 			navigate({ to: "/sign-in" });
