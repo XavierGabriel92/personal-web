@@ -16,7 +16,9 @@ export default function SignUp() {
 					{codeVerified ? (
 						<RegisterForm />
 					) : (
-						<AskCodeForm onCodeVerified={() => setCodeVerified(true)} />
+						<AskCodeForm
+							onCodeVerified={() => setCodeVerified(true)}
+						/>
 					)}
 				</div>
 			</main>

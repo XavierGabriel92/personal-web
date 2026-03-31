@@ -50,7 +50,7 @@ const brazilianPhoneSchema = z
 
 const waitlistSchema = z.object({
 	name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
-	email: z.string().email("Email inválido"),
+	email: z.string(),
 	phone: brazilianPhoneSchema,
 });
 
@@ -61,19 +61,17 @@ interface AskCodeFormProps {
 	onCodeVerified: () => void;
 }
 
-export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
-	const [view, setView] = useState<"code" | "waitlist" | "success">("code");
+function CodeView({
+	onCodeVerified,
+	onWaitlist,
+}: {
+	onCodeVerified: () => void;
+	onWaitlist: () => void;
+}) {
 	const [codeError, setCodeError] = useState<string | null>(null);
-	const { mutateAsync: submitLead, isPending } = usePostApiLead();
-
 	const codeForm = useForm<CodeFormType>({
 		resolver: zodResolver(codeSchema),
 		defaultValues: { code: "" },
-	});
-
-	const waitlistForm = useForm<WaitlistFormType>({
-		resolver: zodResolver(waitlistSchema),
-		defaultValues: { name: "", email: "", phone: "" },
 	});
 
 	const handleCodeSubmit = (data: CodeFormType) => {
@@ -85,137 +83,6 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 			setCodeError("Código inválido. Verifique e tente novamente.");
 		}
 	};
-
-	const handleWaitlistSubmit = async (data: WaitlistFormType) => {
-		try {
-			await submitLead({
-				data: {
-					name: data.name,
-					email: data.email,
-					phone: data.phone,
-				},
-			});
-			setView("success");
-		} catch (error: unknown) {
-			const axiosError = error as {
-				response?: { status?: number; data?: { error?: string } };
-			};
-			if (axiosError?.response?.status === 409) {
-				waitlistForm.setError("email", {
-					message: "Email já cadastrado na lista de espera",
-				});
-			} else {
-				toast.error("Erro ao entrar na lista de espera. Tente novamente.");
-			}
-		}
-	};
-
-	if (view === "success") {
-		return (
-			<Card>
-				<CardHeader className="text-center">
-					<CardTitle className="text-xl">Você está na lista!</CardTitle>
-					<CardDescription>
-						Entraremos em contato assim que abrirmos novas vagas.
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="mt-8 flex flex-col gap-4 text-center">
-					<TypographySpanXSmall className="text-muted-foreground">
-						Já recebeu um convite?{" "}
-						<Button
-							type="button"
-							variant="link"
-							className="h-auto p-0"
-							onClick={() => setView("code")}
-						>
-							<TypographySpanXSmall>Inserir código do convite</TypographySpanXSmall>
-						</Button>
-					</TypographySpanXSmall>
-				</CardContent>
-			</Card>
-		);
-	}
-
-	if (view === "waitlist") {
-		return (
-			<Card>
-				<CardHeader className="text-center">
-					<CardTitle className="text-xl">Lista de espera</CardTitle>
-					<CardDescription>
-						Deixe seus dados e entraremos em contato quando houver vagas.
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="mt-8">
-					<Form {...waitlistForm}>
-						<form
-							onSubmit={waitlistForm.handleSubmit(handleWaitlistSubmit)}
-							className="flex flex-col gap-8"
-						>
-							<div className="flex flex-col gap-4">
-								<FormField
-									control={waitlistForm.control}
-									name="name"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Nome</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={waitlistForm.control}
-									name="email"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Email</FormLabel>
-											<FormControl>
-												<Input type="email" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={waitlistForm.control}
-									name="phone"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Telefone</FormLabel>
-											<FormControl>
-												<Input
-													type="tel"
-													placeholder="(99) 99999-9999"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
-							<Button type="submit" className="w-full" disabled={isPending}>
-								{isPending ? "Enviando..." : "Entrar na lista de espera"}
-							</Button>
-							<TypographySpanXSmall className="text-center text-muted-foreground">
-								Já recebeu um convite?{" "}
-								<Button
-									type="button"
-									variant="link"
-									className="h-auto p-0"
-									onClick={() => setView("code")}
-								>
-									<TypographySpanXSmall>Inserir código do convite</TypographySpanXSmall>
-								</Button>
-							</TypographySpanXSmall>
-						</form>
-					</Form>
-				</CardContent>
-			</Card>
-		);
-	}
 
 	return (
 		<Card className="border-0 shadow-none">
@@ -278,7 +145,7 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 									variant="outline"
 									size="lg"
 									className="w-full"
-									onClick={() => setView("waitlist")}
+									onClick={onWaitlist}
 								>
 									Quero entrar na lista de espera
 								</Button>
@@ -288,5 +155,167 @@ export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
 				</Form>
 			</CardContent>
 		</Card>
+	);
+}
+
+function WaitlistView({
+	onSuccess,
+	onBack,
+}: {
+	onSuccess: () => void;
+	onBack: () => void;
+}) {
+	const { mutateAsync: submitLead, isPending } = usePostApiLead();
+	const waitlistForm = useForm<WaitlistFormType>({
+		resolver: zodResolver(waitlistSchema),
+		defaultValues: { name: "", email: "", phone: "" },
+	});
+
+	const handleWaitlistSubmit = async (data: WaitlistFormType) => {
+		try {
+			await submitLead({
+				data: {
+					name: data.name,
+					email: data.email,
+					phone: data.phone,
+				},
+			});
+			onSuccess();
+		} catch (error: unknown) {
+			const axiosError = error as {
+				response?: { status?: number; data?: { error?: string } };
+			};
+			if (axiosError?.response?.status === 409) {
+				waitlistForm.setError("email", {
+					message: "Email já cadastrado na lista de espera",
+				});
+			} else {
+				toast.error("Erro ao entrar na lista de espera. Tente novamente.");
+			}
+		}
+	};
+
+	return (
+		<Card>
+			<CardHeader className="text-center">
+				<CardTitle className="text-xl">Lista de espera</CardTitle>
+				<CardDescription>
+					Deixe seus dados e entraremos em contato quando houver vagas.
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="mt-8">
+				<Form {...waitlistForm}>
+					<form
+						onSubmit={waitlistForm.handleSubmit(handleWaitlistSubmit)}
+						className="flex flex-col gap-8"
+					>
+						<div className="flex flex-col gap-4">
+							<FormField
+								control={waitlistForm.control}
+								name="name"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Nome</FormLabel>
+										<FormControl>
+											<Input type="text" placeholder="Seu nome" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={waitlistForm.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Email</FormLabel>
+										<FormControl>
+											<Input type="email" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={waitlistForm.control}
+								name="phone"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Telefone</FormLabel>
+										<FormControl>
+											<Input
+												type="tel"
+												placeholder="(99) 99999-9999"
+												{...field}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+						<Button type="submit" className="w-full" disabled={isPending}>
+							{isPending ? "Enviando..." : "Entrar na lista de espera"}
+						</Button>
+						<TypographySpanXSmall className="text-center text-muted-foreground">
+							Já recebeu um convite?{" "}
+							<Button
+								type="button"
+								variant="link"
+								className="h-auto p-0"
+								onClick={onBack}
+							>
+								<TypographySpanXSmall>Inserir código do convite</TypographySpanXSmall>
+							</Button>
+						</TypographySpanXSmall>
+					</form>
+				</Form>
+			</CardContent>
+		</Card>
+	);
+}
+
+function SuccessView({ onBack }: { onBack: () => void }) {
+	return (
+		<Card>
+			<CardHeader className="text-center">
+				<CardTitle className="text-xl">Você está na lista!</CardTitle>
+				<CardDescription>
+					Entraremos em contato assim que abrirmos novas vagas.
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="mt-8 flex flex-col gap-4 text-center">
+				<TypographySpanXSmall className="text-muted-foreground">
+					Já recebeu um convite?{" "}
+					<Button
+						type="button"
+						variant="link"
+						className="h-auto p-0"
+						onClick={onBack}
+					>
+						<TypographySpanXSmall>Inserir código do convite</TypographySpanXSmall>
+					</Button>
+				</TypographySpanXSmall>
+			</CardContent>
+		</Card>
+	);
+}
+
+export default function AskCodeForm({ onCodeVerified }: AskCodeFormProps) {
+	const [view, setView] = useState<"code" | "waitlist" | "success">("code");
+
+	if (view === "success") return <SuccessView onBack={() => setView("code")} />;
+	if (view === "waitlist")
+		return (
+			<WaitlistView
+				onSuccess={() => setView("success")}
+				onBack={() => setView("code")}
+			/>
+		);
+	return (
+		<CodeView
+			onCodeVerified={onCodeVerified}
+			onWaitlist={() => setView("waitlist")}
+		/>
 	);
 }
