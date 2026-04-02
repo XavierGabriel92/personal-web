@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -133,13 +134,16 @@ function CodeView({
 							<div className="bg-muted/50 border-border flex flex-col gap-4 rounded-lg border p-6">
 								<div className="flex flex-col gap-2 text-center">
 									<TypographyH4 className="font-semibold">
-										Não tenho um convite ainda
+										Não tem um convite ainda?
 									</TypographyH4>
 									<TypographyP className="text-muted-foreground">
 										Entre na lista de espera e avisamos quando abrirmos vagas.
 										É rápido e sem compromisso.
 									</TypographyP>
 								</div>
+								<Badge variant="success" className="mx-auto text-sm px-4">
+									931 pessoas aguardando na lista
+								</Badge>
 								<Button
 									type="button"
 									variant="outline"

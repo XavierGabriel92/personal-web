@@ -1,6 +1,48 @@
-# Project Guide
+# Personal Web Agent Guide
 
-## Documentation
+## Scope
+
+Applies to this repository only (`personal-web`).
+
+## Rule Priority
+
+1. Follow this file first for repository-specific constraints.
+2. Use docs in `docs/` for detailed implementation patterns.
+3. If a conflict appears, prefer the most specific rule.
+
+## Rule Sync Requirement
+
+- `CLAUDE.md` and `.cursor/rules/critical-rules.md` must stay aligned.
+- Whenever one file changes, update the other in the same task/PR to reflect the same rule intent.
+
+## Core Rules
+
+### Components
+
+- Never use raw HTML elements when a UI component exists.
+- Resolution order: `src/components/ui/` -> `src/components/core/` -> shadcn (`pnpx shadcn@latest add <name>`) -> build new.
+- Use `<Button>` not `<button>`, `<Input>` not `<input>`, `<Separator>` not `<hr>`, and equivalent UI primitives.
+
+### Spacing
+
+- Allowed spacing scale: `0.5`, `1`, `1.5`, `2`, `4`, `6`, `8`.
+- Never use `3`, `5`, `7`, `9`.
+- If `gap-2` is too tight and `gap-4` too loose, adjust layout structure instead of using `gap-3`.
+
+### Colors
+
+- Always use semantic tokens (`text-muted-foreground`, `bg-muted`, `bg-destructive`, etc.).
+- Never use raw Tailwind palette classes (for example `text-gray-500`, `bg-zinc-100`).
+
+### Data Fetching
+
+- Always use `*Suspense` query hooks.
+- Wrap suspense usage at route level with `<Suspense fallback={<Spinner />}>`.
+- Every mutation must define both:
+  - `onSuccess` (invalidate queries + toast)
+  - `onError` (toast)
+
+## Reference Docs
 
 | Doc | What it covers |
 |-----|----------------|
@@ -20,24 +62,3 @@
 | [CLIENT_ROUTINE.md](docs/CLIENT_ROUTINE.md) | How clients and routines relate (active routine, cloning, assignment) |
 | [WHATSAPP_INVITE.md](docs/WHATSAPP_INVITE.md) | Client email activation and resend (legacy doc path) |
 | [backlog.md](docs/backlog.md) | Known bugs, improvements, and missing features by page |
-
-## Critical rules (always apply)
-
-### Components
-- **Never use raw HTML elements when a UI component exists.** Check `src/components/ui/` first, then `src/components/core/`, then shadcn (`pnpx shadcn@latest add <name>`), then build.
-- Use `<Button>` not `<button>`, `<Input>` not `<input>`, `<Separator>` not `<hr>`, etc.
-- See the full component inventory in [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md).
-
-### Spacing
-- Only use spacing values from the core scale: `0.5`, `1`, `1.5`, `2`, `4`, `6`, `8`.
-- **Never use `3`, `5`, `7`, `9`** — these are in-between values that break visual consistency.
-- When `gap-2` feels too tight and `gap-4` feels too loose, fix the layout — don't reach for `gap-3`.
-
-### Colors
-- Always use semantic tokens (`text-muted-foreground`, `bg-muted`, `bg-destructive`, etc.).
-- Never use raw Tailwind palette colors (`text-gray-500`, `bg-zinc-100`, etc.).
-
-### Data fetching
-- Always use `*Suspense` hooks (e.g. `useGetApiClientsSuspense`), never the non-suspense variants.
-- Wrap suspense components in `<Suspense fallback={<Spinner />}>` at the route level.
-- Always handle `onSuccess` (invalidate + toast) and `onError` (toast) on every mutation.
