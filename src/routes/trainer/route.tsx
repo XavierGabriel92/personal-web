@@ -5,16 +5,16 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/trainer")({
 	component: TrainerDashboardLayout,
-	beforeLoad: async ({ location }) => {
+	beforeLoad: async () => {
 		const data = await cachedSession();
 
 		if (!data?.session) {
 			throw redirect({ to: "/sign-in" });
 		}
 
-		if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
-			throw redirect({ to: "/trainer/phone-setup" });
-		}
+		// if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
+		// 	throw redirect({ to: "/trainer/phone-setup" });
+		// }
 	},
 });
 
@@ -28,5 +28,5 @@ function TrainerDashboardLayout() {
 				</div>
 			</SidebarInset>
 		</SidebarProvider>
-	)
+	);
 }

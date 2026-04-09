@@ -75,7 +75,8 @@ export default function LoginForm() {
 						className="flex flex-col gap-8"
 					>
 						<p className="text-sm text-muted-foreground">
-							Use o email da sua conta. Enviaremos um link para entrar sem senha.
+							Use o email da sua conta. Enviaremos um link para entrar sem
+							senha.
 						</p>
 						<FormField
 							control={form.control}
@@ -94,8 +95,27 @@ export default function LoginForm() {
 							{isLoading ? "Enviando..." : "Entrar com email"}
 						</Button>
 						<TypographySpanXSmall className="text-center text-muted-foreground">
+							<Button
+								type="button"
+								variant="link"
+								className="h-auto p-0"
+								asChild
+							>
+								<Link to="/forgot-password">
+									<TypographySpanXSmall>
+										Esqueci minha senha
+									</TypographySpanXSmall>
+								</Link>
+							</Button>
+						</TypographySpanXSmall>
+						<TypographySpanXSmall className="text-center text-muted-foreground">
 							Não tem uma conta?{" "}
-							<Button type="button" variant="link" className="h-auto p-0" asChild>
+							<Button
+								type="button"
+								variant="link"
+								className="h-auto p-0"
+								asChild
+							>
 								<Link to="/sign-up">
 									<TypographySpanXSmall>Registrar</TypographySpanXSmall>
 								</Link>

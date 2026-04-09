@@ -11,17 +11,22 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as EmailVerifiedRouteImport } from './routes/email-verified'
 import { Route as TrainerRouteRouteImport } from './routes/trainer/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrainerIndexRouteImport } from './routes/trainer/index'
 import { Route as TrainerPhoneSetupRouteImport } from './routes/trainer/phone-setup'
 import { Route as TrainerHomeRouteImport } from './routes/trainer/home'
 import { Route as TrainerExercisesRouteImport } from './routes/trainer/exercises'
 import { Route as TrainerAnalyticsRouteImport } from './routes/trainer/analytics'
 import { Route as TrainerAccountRouteImport } from './routes/trainer/account'
+import { Route as ClientWelcomeRouteImport } from './routes/client/welcome'
+import { Route as ClientSetPasswordRouteImport } from './routes/client/set-password'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
+import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as TrainerClientsIndexRouteImport } from './routes/trainer/clients/index'
 import { Route as TrainerWorkoutsWorkoutIdRouteImport } from './routes/trainer/workouts/$workoutId'
 import { Route as TrainerRoutinesRoutinesLayoutRouteImport } from './routes/trainer/routines/_routinesLayout'
@@ -42,6 +47,11 @@ import { Route as TrainerClientsClientIdAnamnesisRouteImport } from './routes/tr
 const TrainerRoutinesRouteImport = createFileRoute('/trainer/routines')()
 const TrainerAnamnesisRouteImport = createFileRoute('/trainer/anamnesis')()
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmailVerifiedRoute = EmailVerifiedRouteImport.update({
   id: '/email-verified',
   path: '/email-verified',
@@ -71,6 +81,11 @@ const TrainerAnamnesisRoute = TrainerAnamnesisRouteImport.update({
   path: '/anamnesis',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
+const TrainerIndexRoute = TrainerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TrainerRouteRoute,
+} as any)
 const TrainerPhoneSetupRoute = TrainerPhoneSetupRouteImport.update({
   id: '/phone-setup',
   path: '/phone-setup',
@@ -96,6 +111,16 @@ const TrainerAccountRoute = TrainerAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => TrainerRouteRoute,
 } as any)
+const ClientWelcomeRoute = ClientWelcomeRouteImport.update({
+  id: '/client/welcome',
+  path: '/client/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientSetPasswordRoute = ClientSetPasswordRouteImport.update({
+  id: '/client/set-password',
+  path: '/client/set-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/sign-up',
   path: '/sign-up',
@@ -104,6 +129,11 @@ const AuthSignUpRoute = AuthSignUpRouteImport.update({
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const TrainerClientsIndexRoute = TrainerClientsIndexRouteImport.update({
@@ -204,13 +234,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/trainer': typeof TrainerRouteRouteWithChildren
   '/email-verified': typeof EmailVerifiedRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/client/set-password': typeof ClientSetPasswordRoute
+  '/client/welcome': typeof ClientWelcomeRoute
   '/trainer/account': typeof TrainerAccountRoute
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/phone-setup': typeof TrainerPhoneSetupRoute
+  '/trainer/': typeof TrainerIndexRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
   '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutRouteWithChildren
@@ -230,15 +265,19 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/trainer': typeof TrainerRouteRouteWithChildren
   '/email-verified': typeof EmailVerifiedRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
+  '/client/set-password': typeof ClientSetPasswordRoute
+  '/client/welcome': typeof ClientWelcomeRoute
   '/trainer/account': typeof TrainerAccountRoute
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/phone-setup': typeof TrainerPhoneSetupRoute
+  '/trainer': typeof TrainerIndexRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
   '/trainer/anamnesis': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
@@ -260,13 +299,18 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/trainer': typeof TrainerRouteRouteWithChildren
   '/email-verified': typeof EmailVerifiedRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
+  '/client/set-password': typeof ClientSetPasswordRoute
+  '/client/welcome': typeof ClientWelcomeRoute
   '/trainer/account': typeof TrainerAccountRoute
   '/trainer/analytics': typeof TrainerAnalyticsRoute
   '/trainer/exercises': typeof TrainerExercisesRoute
   '/trainer/home': typeof TrainerHomeRoute
   '/trainer/phone-setup': typeof TrainerPhoneSetupRoute
+  '/trainer/': typeof TrainerIndexRoute
   '/trainer/clients/$clientId': typeof TrainerClientsClientIdRouteRouteWithChildren
   '/trainer/anamnesis/$anamnesisId': typeof TrainerAnamnesisAnamnesisIdRoute
   '/trainer/anamnesis': typeof TrainerAnamnesisRouteWithChildren
@@ -292,13 +336,18 @@ export interface FileRouteTypes {
     | '/'
     | '/trainer'
     | '/email-verified'
+    | '/reset-password'
+    | '/forgot-password'
     | '/sign-in'
     | '/sign-up'
+    | '/client/set-password'
+    | '/client/welcome'
     | '/trainer/account'
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/phone-setup'
+    | '/trainer/'
     | '/trainer/clients/$clientId'
     | '/trainer/anamnesis/$anamnesisId'
     | '/trainer/anamnesis'
@@ -318,15 +367,19 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/trainer'
     | '/email-verified'
+    | '/reset-password'
+    | '/forgot-password'
     | '/sign-in'
     | '/sign-up'
+    | '/client/set-password'
+    | '/client/welcome'
     | '/trainer/account'
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/phone-setup'
+    | '/trainer'
     | '/trainer/clients/$clientId'
     | '/trainer/anamnesis/$anamnesisId'
     | '/trainer/anamnesis'
@@ -347,13 +400,18 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/trainer'
     | '/email-verified'
+    | '/reset-password'
+    | '/_auth/forgot-password'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
+    | '/client/set-password'
+    | '/client/welcome'
     | '/trainer/account'
     | '/trainer/analytics'
     | '/trainer/exercises'
     | '/trainer/home'
     | '/trainer/phone-setup'
+    | '/trainer/'
     | '/trainer/clients/$clientId'
     | '/trainer/anamnesis/$anamnesisId'
     | '/trainer/anamnesis'
@@ -379,10 +437,20 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   TrainerRouteRoute: typeof TrainerRouteRouteWithChildren
   EmailVerifiedRoute: typeof EmailVerifiedRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  ClientSetPasswordRoute: typeof ClientSetPasswordRoute
+  ClientWelcomeRoute: typeof ClientWelcomeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/email-verified': {
       id: '/email-verified'
       path: '/email-verified'
@@ -425,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerAnamnesisRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
+    '/trainer/': {
+      id: '/trainer/'
+      path: '/'
+      fullPath: '/trainer/'
+      preLoaderRoute: typeof TrainerIndexRouteImport
+      parentRoute: typeof TrainerRouteRoute
+    }
     '/trainer/phone-setup': {
       id: '/trainer/phone-setup'
       path: '/phone-setup'
@@ -460,6 +535,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerAccountRouteImport
       parentRoute: typeof TrainerRouteRoute
     }
+    '/client/welcome': {
+      id: '/client/welcome'
+      path: '/client/welcome'
+      fullPath: '/client/welcome'
+      preLoaderRoute: typeof ClientWelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/set-password': {
+      id: '/client/set-password'
+      path: '/client/set-password'
+      fullPath: '/client/set-password'
+      preLoaderRoute: typeof ClientSetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth/sign-up': {
       id: '/_auth/sign-up'
       path: '/sign-up'
@@ -472,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/forgot-password': {
+      id: '/_auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/trainer/clients/': {
@@ -590,11 +686,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthRouteRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
 }
@@ -695,6 +793,7 @@ interface TrainerRouteRouteChildren {
   TrainerExercisesRoute: typeof TrainerExercisesRoute
   TrainerHomeRoute: typeof TrainerHomeRoute
   TrainerPhoneSetupRoute: typeof TrainerPhoneSetupRoute
+  TrainerIndexRoute: typeof TrainerIndexRoute
   TrainerClientsClientIdRouteRoute: typeof TrainerClientsClientIdRouteRouteWithChildren
   TrainerAnamnesisAnamnesisIdRoute: typeof TrainerAnamnesisAnamnesisIdRoute
   TrainerAnamnesisRoute: typeof TrainerAnamnesisRouteWithChildren
@@ -710,6 +809,7 @@ const TrainerRouteRouteChildren: TrainerRouteRouteChildren = {
   TrainerExercisesRoute: TrainerExercisesRoute,
   TrainerHomeRoute: TrainerHomeRoute,
   TrainerPhoneSetupRoute: TrainerPhoneSetupRoute,
+  TrainerIndexRoute: TrainerIndexRoute,
   TrainerClientsClientIdRouteRoute:
     TrainerClientsClientIdRouteRouteWithChildren,
   TrainerAnamnesisAnamnesisIdRoute: TrainerAnamnesisAnamnesisIdRoute,
@@ -729,6 +829,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   TrainerRouteRoute: TrainerRouteRouteWithChildren,
   EmailVerifiedRoute: EmailVerifiedRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  ClientSetPasswordRoute: ClientSetPasswordRoute,
+  ClientWelcomeRoute: ClientWelcomeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

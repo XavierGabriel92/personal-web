@@ -40,4 +40,6 @@ export const {
 	signOut,
 	revokeSession,
 	organization,
+	requestPasswordReset,
+	resetPassword,
 } = authClient;

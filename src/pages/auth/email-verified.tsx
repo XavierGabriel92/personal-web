@@ -11,7 +11,7 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 const ERROR_COPY: Record<string, string> = {
 	token_expired:
-		"Este link expirou. Solicite um novo email de confirmação ou entre com o link mágico.",
+		"Este link expirou. Solicite um novo email de confirmação ou fale com seu personal.",
 	expired: "Este link expirou. Solicite um novo email de confirmação.",
 	invalid_token: "Este link não é válido. Verifique se copiou o endereço completo.",
 	user_not_found: "Não encontramos esta conta.",
@@ -53,7 +53,8 @@ export default function EmailVerifiedPage({ error }: EmailVerifiedPageProps) {
 								</div>
 								<CardTitle>Email confirmado</CardTitle>
 								<CardDescription>
-									Sua conta está ativa. Use o link mágico para entrar.
+									Sua conta está ativa. Treinadores: use o link mágico para entrar. Se você
+									é aluno e já definiu a senha no site, entre pelo app com email e senha.
 								</CardDescription>
 							</>
 						)}
