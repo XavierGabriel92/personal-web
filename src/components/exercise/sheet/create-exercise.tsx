@@ -50,9 +50,9 @@ export default function CreateExerciseSheet({ trigger = defaultTrigger, onSucces
         data: {
           name: exerciseData.name,
           category: exerciseData.category,
-          equipment: exerciseData.equipment || undefined,
-          primaryMuscle: exerciseData.primaryMuscle || undefined,
-          secondaryMuscle: exerciseData.secondaryMuscle || undefined,
+          equipment: exerciseData.equipment ?? "",
+          primaryMuscle: exerciseData.primaryMuscle ?? "",
+          secondaryMuscle: exerciseData.secondaryMuscle ?? "",
           howTo: exerciseData.howTo || undefined,
         },
       });

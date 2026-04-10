@@ -10,23 +10,17 @@ import {
 } from "@/components/ui/table";
 import { formatDateToLocaleString } from "@/lib/date";
 import {
-	type LastWorkoutSession,
 	formatLastWorkoutSessionDate,
 	formatWorkoutSessionName,
 } from "@/lib/last-workout-session";
+import type { GetApiClients200 } from "@/gen/types/GetApiClients";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
-interface Client {
-	id: string;
-	name: string;
-	phone: string;
-	createdAt: string;
-	lastWorkoutSession?: LastWorkoutSession;
-}
+type ApiClient = GetApiClients200["clients"][number];
 
 interface AnalyticsClientsListProps {
-	clients: Client[];
+	clients: ApiClient[];
 	activeClientIds: Set<string>;
 	periodLabel: string;
 }
@@ -101,8 +95,10 @@ export default function AnalyticsClientsList({
 									}
 									className="cursor-pointer hover:bg-muted"
 								>
-									<TableCell className="font-medium">{client.name}</TableCell>
-									<TableCell>{client.phone}</TableCell>
+									<TableCell className="font-medium">
+										{client.name ?? "—"}
+									</TableCell>
+									<TableCell>{client.phone ?? "—"}</TableCell>
 									<TableCell>
 										<Badge variant={isActive ? "success" : "secondary"}>
 											{isActive ? "Ativo" : "Inativo"}

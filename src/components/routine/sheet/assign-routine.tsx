@@ -48,10 +48,20 @@ export default function AssignRoutineSheet({ routineId, trigger = <Button size="
   const studentData = {
     withProgram: clients
       .filter((c) => !!c.activeRoutineId)
-      .map((c) => ({ id: c.id, name: c.name, avatar: null, programName: "Programa ativo" })),
+      .map((c) => ({
+        id: c.id,
+        name: c.name ?? "Sem nome",
+        avatar: null,
+        programName: "Programa ativo",
+      })),
     withoutProgram: clients
       .filter((c) => !c.activeRoutineId)
-      .map((c) => ({ id: c.id, name: c.name, avatar: null, programName: null })),
+      .map((c) => ({
+        id: c.id,
+        name: c.name ?? "Sem nome",
+        avatar: null,
+        programName: null,
+      })),
   };
 
   const handleOpenChange = (isOpen: boolean) => {

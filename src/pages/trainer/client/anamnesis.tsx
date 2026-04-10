@@ -106,7 +106,7 @@ export default function TrainerClientAnamnesisPage({
 
 			<SelectAnamnesisForClientDialog
 				clientId={clientId}
-				clientName={client.name}
+				clientName={client.name ?? ""}
 				open={selectDialogOpen}
 				onOpenChange={setSelectDialogOpen}
 				onDone={() => {

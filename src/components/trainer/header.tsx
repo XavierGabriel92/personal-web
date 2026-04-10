@@ -10,7 +10,7 @@ function ClientSearchList({ search }: { search: string }) {
 	const { data } = useGetApiClients();
 	const navigate = useNavigate();
 	const clients = (data?.clients ?? []).filter((c) =>
-		c.name.toLowerCase().includes(search.toLowerCase())
+		(c.name ?? "").toLowerCase().includes(search.toLowerCase())
 	);
 
 	if (!search) return null;
@@ -29,7 +29,7 @@ function ClientSearchList({ search }: { search: string }) {
 							navigate({ to: "/trainer/clients/$clientId/overview", params: { clientId: c.id } })
 						}
 					>
-						{c.name}
+						{c.name ?? "Sem nome"}
 					</Button>
 				))
 			)}
