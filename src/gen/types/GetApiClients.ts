@@ -107,7 +107,7 @@ export type GetApiClients200 = {
                 /**
                  * @type string | undefined
                 */
-                thumbnailUrl?: string;
+                imgSrc?: string;
                 /**
                  * @type array
                 */

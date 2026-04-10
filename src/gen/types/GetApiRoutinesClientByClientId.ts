@@ -130,73 +130,37 @@ export type GetApiRoutinesClientByClientId200 = {
                     */
                     name: string;
                     /**
-                     * @type string | undefined
+                     * @type string
                     */
-                    videoUrl?: string;
+                    category: string;
                     /**
                      * @type string | undefined
                     */
-                    thumbnailUrl?: string;
+                    imgSrc?: string | null;
                     /**
-                     * @default 0
-                     * @type number
+                     * @type string
                     */
-                    setsLogged: number;
+                    equipment: string;
                     /**
-                     * @type array
+                     * @type string
                     */
-                    instructions: string[];
+                    primaryMuscle: string;
                     /**
-                     * @type array
+                     * @type string
                     */
-                    alternativeExercises: string[];
-                    /**
-                     * @type object | undefined
-                    */
-                    primaryMuscle?: {
-                        /**
-                         * @type string
-                        */
-                        id: string;
-                        /**
-                         * @type string
-                        */
-                        name: string;
-                    };
-                    /**
-                     * @type array
-                    */
-                    secondaryMuscles: {
-                        /**
-                         * @type string
-                        */
-                        id: string;
-                        /**
-                         * @type string
-                        */
-                        name: string;
-                    }[];
-                    /**
-                     * @type array
-                    */
-                    equipments: {
-                        /**
-                         * @type string
-                        */
-                        id: string;
-                        /**
-                         * @type string
-                        */
-                        name: string;
-                    }[];
+                    secondaryMuscle: string;
                     /**
                      * @type string | undefined
                     */
-                    ownerId?: string;
+                    howTo?: string | null;
                     /**
                      * @type string | undefined
                     */
-                    bodyPart?: string;
+                    videoUrl?: string | null;
+                    /**
+                     * @type string | undefined
+                    */
+                    ownerId?: string | null;
                 };
             }[];
             /**

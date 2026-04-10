@@ -13,7 +13,7 @@ type Session = {
   exercises?: {
     exerciseId: string;
     exerciseName: string;
-    thumbnailUrl?: string;
+    imgSrc?: string;
     sets: { reps: number; weight_kg: number }[];
     notes?: string;
   }[];

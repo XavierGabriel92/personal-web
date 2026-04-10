@@ -53,41 +53,52 @@ export default function TrainerExercisesPage() {
                 <div className="flex flex-col gap-1 w-full">
                   <TypographyH4 className="mb-2 font-medium">Sobre</TypographyH4>
                   <div className="flex items-center justify-start gap-2">
-                    <TypographyH5>Musculo primário:</TypographyH5>
-                    <TypographyP className="text-muted-foreground">{selectedExercise.primaryMuscle?.name || "N/A"}</TypographyP>
+                    <TypographyH5>Categoria:</TypographyH5>
+                    <TypographyP className="text-muted-foreground">{selectedExercise.category || "N/A"}</TypographyP>
                   </div>
-                  {selectedExercise.secondaryMuscles.length > 0 &&
+                  <div className="flex items-center justify-start gap-2">
+                    <TypographyH5>Músculo primário:</TypographyH5>
+                    <TypographyP className="text-muted-foreground">{selectedExercise.primaryMuscle || "N/A"}</TypographyP>
+                  </div>
+                  {selectedExercise.secondaryMuscle?.trim() ? (
                     <div className="flex items-start justify-between gap-2">
-                      <TypographyH5 className="text-nowrap">Musculos secundários:</TypographyH5>
-                      <TypographyP className="text-muted-foreground">{selectedExercise.secondaryMuscles.map((muscle) => muscle.name).join(", ")}</TypographyP>
-                    </div>}
-                  {selectedExercise.equipments.length > 0 && <div className="flex items-center justify-start gap-2">
-                    <TypographyH5>Equipamentos:</TypographyH5>
-                    <TypographyP className="text-muted-foreground">{selectedExercise.equipments?.map((equipment) => equipment.name).join(", ")}</TypographyP>
-                  </div>}
+                      <TypographyH5 className="text-nowrap">Músculo secundário:</TypographyH5>
+                      <TypographyP className="text-muted-foreground">{selectedExercise.secondaryMuscle}</TypographyP>
+                    </div>
+                  ) : null}
+                  {selectedExercise.equipment?.trim() ? (
+                    <div className="flex items-center justify-start gap-2">
+                      <TypographyH5>Equipamento:</TypographyH5>
+                      <TypographyP className="text-muted-foreground">{selectedExercise.equipment}</TypographyP>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="flex justify-center items-center md:justify-end w-auto md:w-full">
-                  {selectedExercise.thumbnailUrl &&
+                  {selectedExercise.imgSrc ? (
                     <ImageLoader
-                      key={selectedExercise.thumbnailUrl}
-                      src={selectedExercise.thumbnailUrl}
+                      key={selectedExercise.imgSrc}
+                      src={selectedExercise.imgSrc}
                       alt="Description of the image"
                       width={200}
                       height={200}
-                    />}
+                    />
+                  ) : null}
                 </div>
               </CardContent>
             </Card>
 
-            {selectedExercise.instructions.length > 0 && <Card>
-              <CardContent>
-                <TypographyH4 className="mb-2 font-medium">Instruções</TypographyH4>
-
-                {selectedExercise.instructions?.map((instruction, index) => (
-                  <TypographyP key={instruction}>{index + 1}. {instruction}</TypographyP>
-                ))}
-              </CardContent>
-            </Card>}
+            {selectedExercise.howTo?.trim() ? (
+              <Card>
+                <CardContent>
+                  <TypographyH4 className="mb-2 font-medium">Como fazer</TypographyH4>
+                  {selectedExercise.howTo.split("|").map((step) => step.trim()).filter(Boolean).map((instruction, index) => (
+                    <TypographyP key={`${instruction}-${index}`}>
+                      {index + 1}. {instruction}
+                    </TypographyP>
+                  ))}
+                </CardContent>
+              </Card>
+            ) : null}
 
             <Card>
               <CardContent>

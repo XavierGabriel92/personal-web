@@ -9,31 +9,20 @@ export interface ExerciseData {
 	id: string;
 	exerciseId: string;
 	name: string;
-	videoUrl?: string;
-	thumbnailUrl?: string;
-	setsLogged: number;
-	instructions: string[];
-	alternativeExercises: string[];
-	primaryMuscle?: {
-		id: string;
-		name: string;
-	};
-	secondaryMuscles: {
-		id: string;
-		name: string;
-	}[];
-	equipments: {
-		id: string;
-		name: string;
-	}[];
-	ownerId?: string;
-	bodyPart?: string;
+	category: string;
+	imgSrc?: string | null;
+	equipment: string;
+	primaryMuscle: string;
+	secondaryMuscle: string;
+	howTo?: string | null;
+	videoUrl?: string | null;
+	ownerId?: string | null;
 }
 
 export interface WorkoutExercise {
 	id: string;
 	order: number;
-	sets: Set[]; // Array of sets
+	sets: Set[];
 	exerciseData: ExerciseData;
 }
 
@@ -82,7 +71,7 @@ export interface Anamnesis {
 	ownerId?: string | null;
 	isTemplate?: boolean;
 	category?: string | null;
-	questions: AnamnesisQuestion[];
 	createdAt: string;
 	updatedAt: string;
+	questions: AnamnesisQuestion[];
 }

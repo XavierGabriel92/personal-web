@@ -54,10 +54,10 @@ export function ExerciseSidebarTrigger() {
 
 function ExerciseSidebarContent({
   onExerciseSelect,
-  searchKey: _searchKey,
+  searchKey,
 }: ExerciseSidebarProps) {
-  const [selectedEquipment, _] = useState<string>("all");
-  const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
+  const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -106,11 +106,21 @@ function ExerciseSidebarContent({
         page: nextPage,
         limit: 15,
         name: debouncedSearchTerm || undefined,
-        muscles: selectedMuscle !== "all" ? [selectedMuscle] : undefined,
-        equipments: selectedEquipment !== "all" ? [selectedEquipment] : undefined,
+        categories:
+          selectedCategory !== "all" ? [selectedCategory] : undefined,
+        equipment:
+          selectedEquipment !== "all" ? [selectedEquipment] : undefined,
       },
     });
-  }, [isLoadingMore, pagination, currentPage, searchExercises, debouncedSearchTerm, selectedMuscle, selectedEquipment]);
+  }, [
+    isLoadingMore,
+    pagination,
+    currentPage,
+    searchExercises,
+    debouncedSearchTerm,
+    selectedCategory,
+    selectedEquipment,
+  ]);
 
   // Handle scroll to detect when near bottom
   const handleScroll = useCallback(() => {
@@ -151,11 +161,19 @@ function ExerciseSidebarContent({
         page: 1,
         limit: 15,
         name: debouncedSearchTerm || undefined,
-        muscles: selectedMuscle !== "all" ? [selectedMuscle] : undefined,
-        equipments: selectedEquipment !== "all" ? [selectedEquipment] : undefined,
+        categories:
+          selectedCategory !== "all" ? [selectedCategory] : undefined,
+        equipment:
+          selectedEquipment !== "all" ? [selectedEquipment] : undefined,
       },
     });
-  }, [debouncedSearchTerm, selectedMuscle, selectedEquipment, searchExercises]);
+  }, [
+    debouncedSearchTerm,
+    selectedCategory,
+    selectedEquipment,
+    searchExercises,
+    searchKey,
+  ]);
 
   // Reset and fetch first page when filters/search change
   // searchKey is intentionally included to trigger re-searches when changed
@@ -168,28 +186,28 @@ function ExerciseSidebarContent({
       <SidebarHeader className="border-b pb-4 flex flex-col gap-3 shrink-0 sticky top-0 bg-sidebar z-10">
         <CreateExerciseSheet onSuccess={refreshExerciseList} />
         <div className="grid grid-cols-1 gap-2">
-          {/* <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Equipamentos" />
+              <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos os equipamentos</SelectItem>
-              {filtersData?.equipments?.map((equipment: { id: string; name: string }) => (
-                <SelectItem key={equipment.id} value={equipment.id}>
-                  {equipment.name}
+              <SelectItem value="all">Todas as categorias</SelectItem>
+              {filtersData?.categories?.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select> */}
-          <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
+          </Select>
+          <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Músculos" />
+              <SelectValue placeholder="Equipamento" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos os músculos</SelectItem>
-              {filtersData?.muscles?.map((muscle: { id: string; name: string }) => (
-                <SelectItem key={muscle.id} value={muscle.id}>
-                  {muscle.name}
+              <SelectItem value="all">Todos os equipamentos</SelectItem>
+              {filtersData?.equipment?.map((eq) => (
+                <SelectItem key={eq} value={eq}>
+                  {eq}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -227,9 +245,9 @@ function ExerciseSidebarContent({
                 >
                   <PlusIcon className="size-6 bg-primary text-primary-foreground rounded-full p-1" />
                   <div className="flex items-center gap-4 w-full">
-                    <Avatar key={exercise.thumbnailUrl} className="h-12 w-12">
+                    <Avatar key={exercise.imgSrc ?? ""} className="h-12 w-12">
                       <AvatarFallback>{exercise.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-                      <AvatarImage src={exercise.thumbnailUrl ?? ""} alt={exercise.name} />
+                      <AvatarImage src={exercise.imgSrc ?? ""} alt={exercise.name} />
                     </Avatar>
                     <div className="flex flex-col justify-start items-start">
                       <TypographySpan>
@@ -237,7 +255,7 @@ function ExerciseSidebarContent({
                       </TypographySpan>
                       <div className="flex items-center gap-2">
                         <TypographySpan className="text-muted-foreground">
-                          {exercise.primaryMuscle?.name}
+                          {exercise.primaryMuscle}
                         </TypographySpan>
                         {exercise.ownerId && (
                           <Badge variant="outline">

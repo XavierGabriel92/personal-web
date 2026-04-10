@@ -56,10 +56,11 @@ export default function EditExerciseSheet({
         id: exercise.id,
         data: {
           name: exerciseData.name,
-          equipmentIds: exerciseData.equipmentIds ?? [],
-          primaryMuscleId: exerciseData.primaryMuscleId,
-          secondaryMuscleIds: exerciseData.secondaryMuscleIds ?? [],
-          instructions: exerciseData.instructions ?? [],
+          category: exerciseData.category,
+          equipment: exerciseData.equipment || undefined,
+          primaryMuscle: exerciseData.primaryMuscle || undefined,
+          secondaryMuscle: exerciseData.secondaryMuscle || undefined,
+          howTo: exerciseData.howTo || undefined,
           deleteMedia: videoRemoved,
         },
       });

@@ -46,7 +46,7 @@ interface Session {
   exercises?: {
     exerciseId: string;
     exerciseName: string;
-    thumbnailUrl?: string;
+    imgSrc?: string;
     sets: { reps: number; weight_kg: number }[];
     notes?: string;
   }[];
@@ -69,7 +69,7 @@ export default function SessionCard({ session }: SessionCardProps) {
   const exercises: Exercise[] = (session.exercises ?? []).map((ex) => ({
     id: ex.exerciseId,
     name: ex.exerciseName,
-    img: ex.thumbnailUrl ?? "",
+    img: ex.imgSrc ?? "",
     sets: ex.sets.map((s) => ({
       type: "-",
       reps: s.reps,

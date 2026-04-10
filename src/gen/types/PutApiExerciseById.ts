@@ -28,73 +28,37 @@ export type PutApiExerciseById200 = {
     */
     name: string;
     /**
-     * @type string | undefined
+     * @type string
     */
-    videoUrl?: string;
+    category: string;
     /**
      * @type string | undefined
     */
-    thumbnailUrl?: string;
+    imgSrc?: string | null;
     /**
-     * @default 0
-     * @type number
+     * @type string
     */
-    setsLogged: number;
+    equipment: string;
     /**
-     * @type array
+     * @type string
     */
-    instructions: string[];
+    primaryMuscle: string;
     /**
-     * @type array
+     * @type string
     */
-    alternativeExercises: string[];
-    /**
-     * @type object | undefined
-    */
-    primaryMuscle?: {
-        /**
-         * @type string
-        */
-        id: string;
-        /**
-         * @type string
-        */
-        name: string;
-    };
-    /**
-     * @type array
-    */
-    secondaryMuscles: {
-        /**
-         * @type string
-        */
-        id: string;
-        /**
-         * @type string
-        */
-        name: string;
-    }[];
-    /**
-     * @type array
-    */
-    equipments: {
-        /**
-         * @type string
-        */
-        id: string;
-        /**
-         * @type string
-        */
-        name: string;
-    }[];
+    secondaryMuscle: string;
     /**
      * @type string | undefined
     */
-    ownerId?: string;
+    howTo?: string | null;
     /**
      * @type string | undefined
     */
-    bodyPart?: string;
+    videoUrl?: string | null;
+    /**
+     * @type string | undefined
+    */
+    ownerId?: string | null;
 };
 
 export type PutApiExerciseByIdMutationRequest = {
@@ -104,21 +68,26 @@ export type PutApiExerciseByIdMutationRequest = {
     */
     name: string;
     /**
-     * @type array | undefined
+     * @minLength 1
+     * @type string
     */
-    equipmentIds?: string[];
+    category: string;
     /**
      * @type string | undefined
     */
-    primaryMuscleId?: string;
+    equipment?: string;
     /**
-     * @type array
+     * @type string | undefined
     */
-    secondaryMuscleIds: string[];
+    primaryMuscle?: string;
     /**
-     * @type array
+     * @type string | undefined
     */
-    instructions: string[];
+    secondaryMuscle?: string;
+    /**
+     * @type string | undefined
+    */
+    howTo?: string;
     /**
      * @default false
      * @type boolean

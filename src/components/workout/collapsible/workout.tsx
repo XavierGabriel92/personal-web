@@ -35,7 +35,7 @@ export default function WorkoutCollapsible({ workout, actions }: WorkoutCollapsi
         {exercises.map((exercise) => (
           <div key={exercise.id} className="flex gap-2 items-center">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={exercise.exerciseData.thumbnailUrl} alt={exercise.exerciseData.name} />
+              <AvatarImage src={exercise.exerciseData.imgSrc ?? undefined} alt={exercise.exerciseData.name} />
               <AvatarFallback>{exercise.exerciseData.name.slice(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <TypographySpan className="">{exercise.exerciseData.name}</TypographySpan>

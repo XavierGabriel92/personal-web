@@ -39,17 +39,17 @@ function getMonthRange(month: Date): { since: string; until: string } {
  * Extracts unique exercises from a list of sessions.
  * Returns them sorted alphabetically by name.
  */
-export function extractUniqueExercises(sessions: Session[]): { id: string; name: string; thumbnailUrl?: string }[] {
-  const map = new Map<string, { name: string; thumbnailUrl?: string }>();
+export function extractUniqueExercises(sessions: Session[]): { id: string; name: string; imgSrc?: string }[] {
+  const map = new Map<string, { name: string; imgSrc?: string }>();
   for (const session of sessions) {
     for (const ex of session.exercises ?? []) {
       if (!map.has(ex.exerciseId)) {
-        map.set(ex.exerciseId, { name: ex.exerciseName, thumbnailUrl: ex.thumbnailUrl });
+        map.set(ex.exerciseId, { name: ex.exerciseName, imgSrc: ex.imgSrc });
       }
     }
   }
   return Array.from(map.entries())
-    .map(([id, { name, thumbnailUrl }]) => ({ id, name, thumbnailUrl }))
+    .map(([id, { name, imgSrc }]) => ({ id, name, imgSrc }))
     .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 }
 
@@ -181,8 +181,8 @@ export default function WeightEvolution({ clientId }: WeightEvolutionProps) {
                         className={`w-full justify-start h-auto py-1.5 ${selectedExerciseId === ex.id ? "bg-primary/10 text-primary font-medium hover:bg-primary/15 hover:text-primary" : ""}`}
                         onClick={() => setSelectedExerciseId(ex.id)}
                       >
-                        {ex.thumbnailUrl && (
-                          <img src={ex.thumbnailUrl} alt={ex.name} className="size-10 rounded-full object-cover shrink-0 bg-muted" />
+                        {ex.imgSrc && (
+                          <img src={ex.imgSrc} alt={ex.name} className="size-10 rounded-full object-cover shrink-0 bg-muted" />
                         )}
                         <span>{ex.name}</span>
                       </Button>

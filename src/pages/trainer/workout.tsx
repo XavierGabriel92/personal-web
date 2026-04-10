@@ -1,6 +1,7 @@
 import PageTitle from "@/components/core/page-title";
 import { Button } from "@/components/ui/button";
 import type { ExerciseFormData } from "@/components/exercise/collapsible/exercise";
+import type { Exercise } from "@/components/exercise/schemas";
 import ExerciseListDraggable from "@/components/exercise/list/draggable";
 import ExerciseSidebar, { ExerciseSidebarTrigger } from "@/components/exercise/sidebar/exercise-workout";
 import { Badge } from "@/components/ui/badge";
@@ -63,7 +64,7 @@ export default function TrainerWorkoutPage({ workoutId }: TrainerWorkoutPageProp
     );
   };
 
-  const handleExerciseSelect = (exercise: { id: string; name: string }) => {
+  const handleExerciseSelect = (exercise: Exercise) => {
     const currentExercisesCount = workoutData.exercises?.length || 0;
     const queryKey = getApiWorkoutByIdSuspenseQueryKey(workoutId);
     const tempId = `temp-${Date.now()}-${exercise.id}`;
@@ -75,13 +76,16 @@ export default function TrainerWorkoutPage({ workoutId }: TrainerWorkoutPageProp
       sets: [],
       exerciseData: {
         id: exercise.id,
-        exerciseId: exercise.id,
+        exerciseId: exercise.exerciseId,
         name: exercise.name,
-        setsLogged: 0,
-        instructions: [],
-        alternativeExercises: [],
-        secondaryMuscles: [],
-        equipments: [],
+        category: exercise.category,
+        imgSrc: exercise.imgSrc,
+        equipment: exercise.equipment,
+        primaryMuscle: exercise.primaryMuscle,
+        secondaryMuscle: exercise.secondaryMuscle,
+        howTo: exercise.howTo,
+        videoUrl: exercise.videoUrl,
+        ownerId: exercise.ownerId,
       },
     };
 

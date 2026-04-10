@@ -187,7 +187,7 @@ export default function ExerciseCollapsible({ workoutId: _workoutId, exercise, a
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 sm:gap-4">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={exercise.exerciseData.thumbnailUrl} alt={exercise.exerciseData.name} />
+            <AvatarImage src={exercise.exerciseData.imgSrc ?? undefined} alt={exercise.exerciseData.name} />
             <AvatarFallback>{exercise.exerciseData.name.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <TypographyH5 className="">{exercise.exerciseData.name}</TypographyH5>

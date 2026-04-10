@@ -49,20 +49,44 @@ export function ResumeProgramSidebarTrigger({ className: _className }: { classNa
   );
 }
 
-// Normaliza o bodyPart do exercício para a chave usada no gráfico
-// O API retorna valores em PT-BR capitalizados (ex: "Core", "Ombros", "Braços", etc.)
-// Converte para lowercase para usar como chave no gráfico
-function normalizeBodyPart(bodyPart: string | undefined): string | null {
-  if (!bodyPart) {
-    return null;
-  }
+// Mapeia categoria / músculos (texto livre do catálogo) para a chave do radar
+function resolveRadarBucket(label: string | undefined): string | null {
+  if (!label?.trim()) return null;
+  const n = label
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .trim();
 
-  // Converte para lowercase (mantém acentos)
-  const normalized = bodyPart.toLowerCase().trim();
+  if (n.includes("peito") || n.includes("peitoral")) return "peito";
+  if (n.includes("costa") || n.includes("dorsal") || n.includes("lombar"))
+    return "costas";
+  if (n.includes("ombro") || n.includes("delt")) return "ombros";
+  if (
+    n.includes("bicep") ||
+    n.includes("tricep") ||
+    n.includes("antebraco") ||
+    (n.includes("braco") && !n.includes("antebraco"))
+  )
+    return "braços";
+  if (
+    n.includes("perna") ||
+    n.includes("quadric") ||
+    n.includes("posterior") ||
+    n.includes("panturrilha") ||
+    n.includes("gluteo") ||
+    n.includes("adutor")
+  )
+    return "pernas";
+  if (
+    n.includes("abdomen") ||
+    n.includes("core") ||
+    n.includes("abdominal") ||
+    n.includes("obliquo")
+  )
+    return "core";
 
-  // Valida que é um bodyPart válido
-  const validBodyParts = ["core", "ombros", "braços", "pernas", "costas", "peito"];
-  return validBodyParts.includes(normalized) ? normalized : null;
+  return null;
 }
 
 function ResumeProgramSidebarContent({
@@ -86,15 +110,20 @@ function ResumeProgramSidebarContent({
         const setsCount = Array.isArray(exercise.sets) ? exercise.sets.length : (exercise.sets ? 1 : 0);
         if (setsCount === 0) continue;
 
-        const normalizedBodyPart = normalizeBodyPart(exercise.exerciseData?.bodyPart);
-        if (normalizedBodyPart && normalizedBodyPart in bodyParts) {
-          bodyParts[normalizedBodyPart] += setsCount;
+        const primaryBucket = resolveRadarBucket(
+          exercise.exerciseData?.primaryMuscle,
+        ) ?? resolveRadarBucket(exercise.exerciseData?.category);
+        if (primaryBucket && primaryBucket in bodyParts) {
+          bodyParts[primaryBucket] += setsCount;
         }
 
-        for (const secondary of exercise.exerciseData?.secondaryMuscles || []) {
-          const normalizedSecondary = normalizeBodyPart(secondary.name);
-          if (normalizedSecondary && normalizedSecondary in bodyParts) {
-            bodyParts[normalizedSecondary] += setsCount * 0.5;
+        const secondaryRaw = exercise.exerciseData?.secondaryMuscle?.trim();
+        if (secondaryRaw) {
+          for (const part of secondaryRaw.split(/[,;/]/)) {
+            const secondaryBucket = resolveRadarBucket(part);
+            if (secondaryBucket && secondaryBucket in bodyParts) {
+              bodyParts[secondaryBucket] += setsCount * 0.5;
+            }
           }
         }
       }
