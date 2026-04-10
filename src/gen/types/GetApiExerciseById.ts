@@ -31,10 +31,7 @@ export type GetApiExerciseById200 = {
      * @type string
     */
     category: string;
-    /**
-     * @type string | undefined
-    */
-    imgSrc?: string | null;
+    imgSrc?: (string | null);
     /**
      * @type string
     */
@@ -47,18 +44,9 @@ export type GetApiExerciseById200 = {
      * @type string
     */
     secondaryMuscle: string;
-    /**
-     * @type string | undefined
-    */
-    howTo?: string | null;
-    /**
-     * @type string | undefined
-    */
-    videoUrl?: string | null;
-    /**
-     * @type string | undefined
-    */
-    ownerId?: string | null;
+    howTo?: (string | null);
+    videoUrl?: (string | null);
+    ownerId?: (string | null);
 };
 
 export type GetApiExerciseByIdQueryResponse = GetApiExerciseById200;

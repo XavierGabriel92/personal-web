@@ -13,7 +13,7 @@ function getPostApiExercisesSearchUrl() {
 }
 
 /**
- * @description Search exercises by name, muscles, and/or equipments with pagination
+ * @description Search exercises by name, categories, and/or equipment with pagination
  * @summary Search exercises
  * {@link /api/exercises/search}
  */

@@ -27,8 +27,8 @@ export function getApiExercisesFiltersQueryOptions(config: Partial<RequestConfig
 }
 
 /**
- * @description Get all available muscles for filtering exercises
- * @summary Get muscles filters
+ * @description Get distinct categories and equipment for filtering exercises
+ * @summary Get exercise filters
  * {@link /api/exercises/filters}
  */
 export function useGetApiExercisesFilters<TData = GetApiExercisesFiltersQueryResponse, TQueryData = GetApiExercisesFiltersQueryResponse, TQueryKey extends QueryKey = GetApiExercisesFiltersQueryKey>(options: 

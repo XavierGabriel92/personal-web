@@ -45,7 +45,6 @@ export default function CreateClientSheet({
 	),
 }: CreateClientSheetProps) {
 	const [open, setOpen] = useState(false);
-	const [duplicatePhoneError, setDuplicatePhoneError] = useState(false);
 	const [duplicateEmailError, setDuplicateEmailError] = useState(false);
 	const [upgradePlanOpen, setUpgradePlanOpen] = useState(false);
 	const [createdClient, setCreatedClient] = useState<{
@@ -83,9 +82,7 @@ export default function CreateClientSheet({
 		await createClient(
 			{
 				data: {
-					name: data.name,
 					email: data.email,
-					phone: data.phone,
 					goals: data.goals || undefined,
 				},
 			},
@@ -100,16 +97,14 @@ export default function CreateClientSheet({
 						}),
 					]);
 					setOpen(false);
-					setCreatedClient({ id: res.id, name: res.name });
+					setCreatedClient({ id: res.id, name: res.email ?? res.id });
 					setSelectAnamnesisOpen(true);
 				},
 				onError: (error: unknown) => {
 					const message = (
 						error as { response?: { data?: { message?: string } } }
 					)?.response?.data?.message;
-					if (message === "Phone number already exists") {
-						setDuplicatePhoneError(true);
-					} else if (message === "Este email já está cadastrado") {
+					if (message === "Este email já está cadastrado") {
 						setDuplicateEmailError(true);
 					} else if (message === "plan_limit_reached") {
 						setOpen(false);
@@ -146,24 +141,6 @@ export default function CreateClientSheet({
 			)}
 
 			<AlertDialog
-				open={duplicatePhoneError}
-				onOpenChange={setDuplicatePhoneError}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Número já cadastrado</AlertDialogTitle>
-						<AlertDialogDescription>
-							Já existe um aluno cadastrado com esse número de telefone.
-							Verifique o número informado e tente novamente.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogAction>Entendi</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-
-			<AlertDialog
 				open={duplicateEmailError}
 				onOpenChange={setDuplicateEmailError}
 			>
@@ -186,7 +163,7 @@ export default function CreateClientSheet({
 					<SheetHeader>
 						<SheetTitle>Criar novo aluno</SheetTitle>
 						<SheetDescription>
-							Enviamos um email de confirmação para o aluno ativar a conta. Ele ficará inativo no sistema até confirmar.
+							Enviamos um email de confirmação para o aluno. Ele completa o cadastro (nome, telefone e senha) ao clicar no link.
 						</SheetDescription>
 					</SheetHeader>
 					<div className="flex-1 overflow-y-auto px-4">

@@ -27,8 +27,8 @@ export function getApiExercisesFiltersSuspenseQueryOptions(config: Partial<Reque
 }
 
 /**
- * @description Get all available muscles for filtering exercises
- * @summary Get muscles filters
+ * @description Get distinct categories and equipment for filtering exercises
+ * @summary Get exercise filters
  * {@link /api/exercises/filters}
  */
 export function useGetApiExercisesFiltersSuspense<TData = GetApiExercisesFiltersQueryResponse, TQueryKey extends QueryKey = GetApiExercisesFiltersSuspenseQueryKey>(options: 

@@ -13,11 +13,11 @@ function getPutApiClientByIdUrl(id: PutApiClientByIdPathParams["id"]) {
 }
 
 /**
- * @description Update a client by ID.
+ * @description Update a client by ID. Trainer can update goals and active status.
  * @summary Update client
  * {@link /api/client/:id}
  */
-export async function putApiClientById(id: PutApiClientByIdPathParams["id"], data: PutApiClientByIdMutationRequest, config: Partial<RequestConfig<PutApiClientByIdMutationRequest>> & { client?: typeof fetch } = {}) {
+export async function putApiClientById(id: PutApiClientByIdPathParams["id"], data?: PutApiClientByIdMutationRequest, config: Partial<RequestConfig<PutApiClientByIdMutationRequest>> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
   const requestData = data  

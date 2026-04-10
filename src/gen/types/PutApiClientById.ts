@@ -20,13 +20,13 @@ export type PutApiClientById200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string | undefined
     */
-    name: string;
+    name?: string;
     /**
-     * @type string
+     * @type string | undefined
     */
-    phone: string;
+    phone?: string;
     /**
      * @type string
     */
@@ -141,20 +141,6 @@ export type PutApiClientById200 = {
 };
 
 export type PutApiClientByIdMutationRequest = {
-    /**
-     * @minLength 1
-     * @type string
-    */
-    name: string;
-    /**
-     * @minLength 1
-     * @type string
-    */
-    phone: string;
-    /**
-     * @type string | undefined
-    */
-    activeRoutineId?: string;
     /**
      * @type string | undefined
     */

@@ -20,13 +20,13 @@ export type PostApiClientByIdAssignRoutine200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string | undefined
     */
-    name: string;
+    name?: string;
     /**
-     * @type string
+     * @type string | undefined
     */
-    phone: string;
+    phone?: string;
     /**
      * @type string
     */

@@ -6,7 +6,6 @@ import {
 	FieldGroup,
 	FieldLabel,
 } from "@/components/ui/field";
-import { useHookFormMask } from "use-mask-input";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,40 +13,19 @@ import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { VariantProps } from "class-variance-authority";
-import { parsePhoneNumberWithError } from "libphonenumber-js";
 import { HelpCircle } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const brazilianPhoneSchema = z
-	.string()
-	.min(1, "Telefone é obrigatório")
-	.refine(
-		(phone) => {
-			try {
-				const phoneNumber = parsePhoneNumberWithError(phone, "BR");
-				return phoneNumber.isValid();
-			} catch {
-				return false;
-			}
-		},
-		{
-			message: "Telefone deve ser um número brasileiro válido",
-		},
-	);
-
 const editClientFormSchema = z.object({
-	name: z.string().min(1, "Nome é obrigatório"),
-	phone: brazilianPhoneSchema,
 	goals: z.string().optional(),
 	active: z.boolean().optional(),
 });
 
-const createClientFormSchema = editClientFormSchema
-	.omit({ active: true })
-	.extend({
-		email: z.string().min(1, "Email é obrigatório").email("Email inválido"),
-	});
+const createClientFormSchema = z.object({
+	email: z.string().min(1, "Email é obrigatório").email("Email inválido"),
+	goals: z.string().optional(),
+});
 
 export type CreateClientFormData = z.infer<typeof createClientFormSchema>;
 export type EditClientFormData = z.infer<typeof editClientFormSchema>;
@@ -58,22 +36,29 @@ type ClientFormProps<M extends "create" | "edit"> = {
 		? (data: CreateClientFormData) => void
 		: (data: EditClientFormData) => void;
 } & (M extends "edit"
-	? { initialValues?: Partial<EditClientFormData>; accountEmail?: string | null }
-	: { initialValues?: never; accountEmail?: undefined });
+	? {
+			initialValues?: Partial<EditClientFormData>;
+			accountEmail?: string | null;
+			clientName?: string;
+			clientPhone?: string;
+		}
+	: { initialValues?: never; accountEmail?: undefined; clientName?: undefined; clientPhone?: undefined });
 
 export default function ClientForm<M extends "create" | "edit">({
 	mode,
 	onSubmit,
 	...rest
 }: ClientFormProps<M>) {
-	const initialValues =
-		mode === "edit"
-			? (rest as { initialValues?: Partial<EditClientFormData>; accountEmail?: string | null }).initialValues
-			: undefined;
-	const accountEmail =
-		mode === "edit"
-			? (rest as { initialValues?: Partial<EditClientFormData>; accountEmail?: string | null }).accountEmail
-			: undefined;
+	const editRest = rest as {
+		initialValues?: Partial<EditClientFormData>;
+		accountEmail?: string | null;
+		clientName?: string;
+		clientPhone?: string;
+	};
+	const initialValues = mode === "edit" ? editRest.initialValues : undefined;
+	const accountEmail = mode === "edit" ? editRest.accountEmail : undefined;
+	const clientName = mode === "edit" ? editRest.clientName : undefined;
+	const clientPhone = mode === "edit" ? editRest.clientPhone : undefined;
 	const schema = mode === "create" ? createClientFormSchema : editClientFormSchema;
 
 	const {
@@ -85,11 +70,9 @@ export default function ClientForm<M extends "create" | "edit">({
 		resolver: zodResolver(schema),
 		defaultValues:
 			mode === "create"
-				? { name: "", phone: "", email: "", goals: "" }
+				? { email: "", goals: "" }
 				: { active: true, ...initialValues },
 	});
-
-	const registerWithMask = useHookFormMask(register);
 
 	return (
 		<form
@@ -134,40 +117,54 @@ export default function ClientForm<M extends "create" | "edit">({
 					/>
 				)}
 
-				<Field>
-					<FieldLabel htmlFor="name">
-						Nome <span className="text-destructive">*</span>
-					</FieldLabel>
-					<FieldContent>
-						<Input
-							id="name"
-							type="text"
-							placeholder="Nome do aluno"
-							aria-invalid={errors.name ? "true" : "false"}
-							{...register("name")}
-						/>
-						{errors.name && (
-							<FieldError errors={[{ message: errors.name.message }]} />
-						)}
-					</FieldContent>
-				</Field>
-
 				{mode === "edit" && (
-					<Field>
-						<FieldLabel htmlFor="client-account-email">Email da conta</FieldLabel>
-						<FieldContent>
-							<Input
-								id="client-account-email"
-								type="email"
-								readOnly
-								tabIndex={-1}
-								autoComplete="off"
-								value={accountEmail?.trim() ? accountEmail : ""}
-								placeholder="Não cadastrado — aluno sem conta no app"
-								className="bg-muted"
-							/>
-						</FieldContent>
-					</Field>
+					<>
+						<Field>
+							<FieldLabel htmlFor="client-name-display">Nome</FieldLabel>
+							<FieldContent>
+								<Input
+									id="client-name-display"
+									type="text"
+									readOnly
+									tabIndex={-1}
+									value={clientName || ""}
+									placeholder="Aguardando preenchimento pelo aluno"
+									className="bg-muted"
+								/>
+							</FieldContent>
+						</Field>
+
+						<Field>
+							<FieldLabel htmlFor="client-account-email">Email da conta</FieldLabel>
+							<FieldContent>
+								<Input
+									id="client-account-email"
+									type="email"
+									readOnly
+									tabIndex={-1}
+									autoComplete="off"
+									value={accountEmail?.trim() ? accountEmail : ""}
+									placeholder="Não cadastrado — aluno sem conta no app"
+									className="bg-muted"
+								/>
+							</FieldContent>
+						</Field>
+
+						<Field>
+							<FieldLabel htmlFor="client-phone-display">Telefone</FieldLabel>
+							<FieldContent>
+								<Input
+									id="client-phone-display"
+									type="tel"
+									readOnly
+									tabIndex={-1}
+									value={clientPhone || ""}
+									placeholder="Aguardando preenchimento pelo aluno"
+									className="bg-muted"
+								/>
+							</FieldContent>
+						</Field>
+					</>
 				)}
 
 				{mode === "create" && (
@@ -196,26 +193,6 @@ export default function ClientForm<M extends "create" | "edit">({
 						</FieldContent>
 					</Field>
 				)}
-
-				<Field>
-					<FieldLabel htmlFor="phone">
-						Telefone <span className="text-destructive">*</span>
-					</FieldLabel>
-					<FieldContent>
-						<Input
-							id="phone"
-							type="tel"
-							placeholder="(99)99999-9999"
-							aria-invalid={errors.phone ? "true" : "false"}
-							{...registerWithMask("phone", ["(99)99999-9999", "(99)9999-9999"], {
-								required: true,
-							})}
-						/>
-						{errors.phone && (
-							<FieldError errors={[{ message: errors.phone.message }]} />
-						)}
-					</FieldContent>
-				</Field>
 
 				<Field>
 					<FieldLabel htmlFor="goals">Objetivos</FieldLabel>

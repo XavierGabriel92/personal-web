@@ -21,13 +21,32 @@ import { sessionQueryKey } from "@/hooks/auth";
 import { queryClient } from "@/routes/__root";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { parsePhoneNumberWithError } from "libphonenumber-js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useHookFormMask } from "use-mask-input";
 import { toast } from "sonner";
 import { z } from "zod";
 
+const brazilianPhoneSchema = z
+	.string()
+	.min(1, "Telefone é obrigatório")
+	.refine(
+		(phone) => {
+			try {
+				const phoneNumber = parsePhoneNumberWithError(phone, "BR");
+				return phoneNumber.isValid();
+			} catch {
+				return false;
+			}
+		},
+		{ message: "Telefone deve ser um número brasileiro válido" },
+	);
+
 const schema = z
 	.object({
+		name: z.string().min(1, "Nome é obrigatório"),
+		phone: brazilianPhoneSchema,
 		password: z.string().min(8, "Mínimo de 8 caracteres").max(128),
 		confirm: z.string().min(8, "Mínimo de 8 caracteres"),
 	})
@@ -45,8 +64,10 @@ export default function ClientSetPasswordPage() {
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(schema),
-		defaultValues: { password: "", confirm: "" },
+		defaultValues: { name: "", phone: "", password: "", confirm: "" },
 	});
+
+	const registerWithMask = useHookFormMask(form.register);
 
 	const user = data?.user as { type?: string } | undefined;
 
@@ -58,15 +79,19 @@ export default function ClientSetPasswordPage() {
 				method: "POST",
 				credentials: "include",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ newPassword: values.password }),
+				body: JSON.stringify({
+					name: values.name.trim(),
+					phone: values.phone,
+					newPassword: values.password,
+				}),
 			});
 			const json = (await res.json()) as { ok?: boolean; message?: string };
 			if (!res.ok || !json.ok) {
-				toast.error(json.message ?? "Não foi possível salvar a senha.");
+				toast.error(json.message ?? "Não foi possível completar o perfil.");
 				return;
 			}
 			await queryClient.invalidateQueries({ queryKey: sessionQueryKey });
-			toast.success("Senha definida com sucesso.");
+			toast.success("Perfil completo! Bem-vindo ao Homug.");
 			await navigate({ to: "/client/welcome" });
 		} catch {
 			toast.error("Erro de rede. Tente novamente.");
@@ -96,7 +121,7 @@ export default function ClientSetPasswordPage() {
 							<CardTitle>Sessão necessária</CardTitle>
 							<CardDescription>
 								Abra o link do convite no email e confirme seu endereço. Depois
-								você poderá definir a senha aqui.
+								você poderá completar seu perfil aqui.
 							</CardDescription>
 						</CardHeader>
 					</Card>
@@ -140,9 +165,9 @@ export default function ClientSetPasswordPage() {
 			<main className="flex flex-1 items-center justify-center px-6 py-8 md:px-10">
 				<Card className="w-full max-w-md shrink-0">
 					<CardHeader>
-						<CardTitle>Defina sua senha</CardTitle>
+						<CardTitle>Complete seu perfil</CardTitle>
 						<CardDescription>
-							Escolha uma senha para entrar no app Homug com seu email.
+							Preencha seus dados e escolha uma senha para entrar no app Homug.
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -151,6 +176,45 @@ export default function ClientSetPasswordPage() {
 								onSubmit={form.handleSubmit(onSubmit)}
 								className="flex flex-col gap-4"
 							>
+								<FormField
+									control={form.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Nome completo</FormLabel>
+											<FormControl>
+												<Input
+													type="text"
+													autoComplete="name"
+													placeholder="Seu nome"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="phone"
+									render={() => (
+										<FormItem>
+											<FormLabel>Telefone</FormLabel>
+											<FormControl>
+												<Input
+													type="tel"
+													placeholder="(99)99999-9999"
+													{...registerWithMask(
+														"phone",
+														["(99)99999-9999", "(99)9999-9999"],
+														{ required: true },
+													)}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 								<FormField
 									control={form.control}
 									name="password"
@@ -184,7 +248,7 @@ export default function ClientSetPasswordPage() {
 											<span>Salvando...</span>
 										</span>
 									) : (
-										"Salvar e continuar"
+										"Completar perfil"
 									)}
 								</Button>
 							</form>

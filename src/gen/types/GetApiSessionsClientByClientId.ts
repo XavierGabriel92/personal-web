@@ -97,6 +97,10 @@ export type GetApiSessionsClientByClientId200 = {
                  * @type number
                 */
                 weight_kg: number;
+                /**
+                 * @type boolean | undefined
+                */
+                done?: boolean;
             }[];
             /**
              * @type string | undefined

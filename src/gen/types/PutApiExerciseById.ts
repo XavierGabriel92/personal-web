@@ -31,10 +31,7 @@ export type PutApiExerciseById200 = {
      * @type string
     */
     category: string;
-    /**
-     * @type string | undefined
-    */
-    imgSrc?: string | null;
+    imgSrc?: (string | null);
     /**
      * @type string
     */
@@ -47,18 +44,9 @@ export type PutApiExerciseById200 = {
      * @type string
     */
     secondaryMuscle: string;
-    /**
-     * @type string | undefined
-    */
-    howTo?: string | null;
-    /**
-     * @type string | undefined
-    */
-    videoUrl?: string | null;
-    /**
-     * @type string | undefined
-    */
-    ownerId?: string | null;
+    howTo?: (string | null);
+    videoUrl?: (string | null);
+    ownerId?: (string | null);
 };
 
 export type PutApiExerciseByIdMutationRequest = {
@@ -73,17 +61,20 @@ export type PutApiExerciseByIdMutationRequest = {
     */
     category: string;
     /**
-     * @type string | undefined
+     * @default ""
+     * @type string
     */
-    equipment?: string;
+    equipment: string;
     /**
-     * @type string | undefined
+     * @default ""
+     * @type string
     */
-    primaryMuscle?: string;
+    primaryMuscle: string;
     /**
-     * @type string | undefined
+     * @default ""
+     * @type string
     */
-    secondaryMuscle?: string;
+    secondaryMuscle: string;
     /**
      * @type string | undefined
     */

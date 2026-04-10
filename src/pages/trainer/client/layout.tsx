@@ -34,7 +34,7 @@ export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientPro
 	return (
 		<div className="w-full space-y-6">
 			<PageTitle
-				title={client.name}
+				title={client.name || client.email || "Aluno sem nome"}
 				description={client.goals}
 				titleIcon={
 					<div className="flex flex-wrap items-center gap-1">

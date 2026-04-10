@@ -34,14 +34,12 @@ export default function EditClientSheet({ clientId }: EditClientSheetProps) {
     await updateClient({
       id: clientId,
       data: {
-        name: data.name,
-        phone: data.phone,
         goals: data.goals || undefined,
         active: data.active ?? true,
       },
     }, {
       onSuccess: async () => {
-        toast.success(`Aluno ${data.name} atualizado com sucesso!`);
+        toast.success("Aluno atualizado com sucesso!");
         await Promise.all([
           queryClient.invalidateQueries({
             queryKey: getApiClientsSuspenseQueryKey()
@@ -77,10 +75,10 @@ export default function EditClientSheet({ clientId }: EditClientSheetProps) {
           <ClientForm
             mode="edit"
             accountEmail={client.email}
+            clientName={client.name}
+            clientPhone={client.phone}
             onSubmit={handleSubmit}
             initialValues={{
-              name: client.name,
-              phone: client.phone,
               goals: client.goals,
               active: client.active,
             }}

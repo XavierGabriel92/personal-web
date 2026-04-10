@@ -13,8 +13,8 @@ function getGetApiExercisesFiltersUrl() {
 }
 
 /**
- * @description Get all available muscles for filtering exercises
- * @summary Get muscles filters
+ * @description Get distinct categories and equipment for filtering exercises
+ * @summary Get exercise filters
  * {@link /api/exercises/filters}
  */
 export async function getApiExercisesFilters(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {

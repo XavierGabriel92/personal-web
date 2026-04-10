@@ -104,8 +104,12 @@ export default function ClientsList() {
 										}
 										className="cursor-pointer hover:bg-muted"
 									>
-										<TableCell className="font-medium">{client.name}</TableCell>
-										<TableCell>{client.phone}</TableCell>
+									<TableCell className="font-medium">
+										{client.name || client.email || "—"}
+									</TableCell>
+									<TableCell>
+										{client.phone || "Aguardando"}
+									</TableCell>
 										<TableCell>
 											<Badge variant={client.active ? "success" : "secondary"}>
 												{client.active ? "Ativo" : "Inativo"}

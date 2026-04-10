@@ -13,13 +13,13 @@ export type PostApiClientCreate200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string | undefined
     */
-    name: string;
+    name?: string;
     /**
-     * @type string
+     * @type string | undefined
     */
-    phone: string;
+    phone?: string;
     /**
      * @type string
     */
@@ -165,31 +165,13 @@ export type PostApiClientCreate500 = {
 
 export type PostApiClientCreateMutationRequest = {
     /**
-     * @minLength 1
-     * @type string
-    */
-    name: string;
-    /**
      * @type string, email
     */
     email: string;
     /**
-     * @minLength 1
-     * @type string
-    */
-    phone: string;
-    /**
-     * @type string | undefined
-    */
-    activeRoutineId?: string;
-    /**
      * @type string | undefined
     */
     goals?: string;
-    /**
-     * @type boolean | undefined
-    */
-    active?: boolean;
 };
 
 export type PostApiClientCreateMutationResponse = PostApiClientCreate200;

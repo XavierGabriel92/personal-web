@@ -16,7 +16,7 @@ export type PutApiClientByIdMutationKey = ReturnType<typeof putApiClientByIdMuta
 
 export function putApiClientByIdMutationOptions(config: Partial<RequestConfig<PutApiClientByIdMutationRequest>> & { client?: typeof fetch } = {}) {
   const mutationKey = putApiClientByIdMutationKey()
-  return mutationOptions<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data: PutApiClientByIdMutationRequest}, typeof mutationKey>({
+  return mutationOptions<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data?: PutApiClientByIdMutationRequest}, typeof mutationKey>({
     mutationKey,
     mutationFn: async({ id, data }) => {
       return putApiClientById(id, data, config)
@@ -25,13 +25,13 @@ export function putApiClientByIdMutationOptions(config: Partial<RequestConfig<Pu
 }
 
 /**
- * @description Update a client by ID.
+ * @description Update a client by ID. Trainer can update goals and active status.
  * @summary Update client
  * {@link /api/client/:id}
  */
 export function usePutApiClientById<TContext>(options: 
 {
-  mutation?: UseMutationOptions<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data: PutApiClientByIdMutationRequest}, TContext> & { client?: QueryClient },
+  mutation?: UseMutationOptions<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data?: PutApiClientByIdMutationRequest}, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig<PutApiClientByIdMutationRequest>> & { client?: typeof fetch },
 }
  = {}) {
@@ -39,11 +39,11 @@ export function usePutApiClientById<TContext>(options:
   const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey = mutationOptions.mutationKey ?? putApiClientByIdMutationKey()
 
-  const baseOptions = putApiClientByIdMutationOptions(config) as UseMutationOptions<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data: PutApiClientByIdMutationRequest}, TContext>
+  const baseOptions = putApiClientByIdMutationOptions(config) as UseMutationOptions<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data?: PutApiClientByIdMutationRequest}, TContext>
 
-  return useMutation<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data: PutApiClientByIdMutationRequest}, TContext>({
+  return useMutation<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data?: PutApiClientByIdMutationRequest}, TContext>({
     ...baseOptions,
     mutationKey,
     ...mutationOptions,
-  }, queryClient) as UseMutationResult<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data: PutApiClientByIdMutationRequest}, TContext>
+  }, queryClient) as UseMutationResult<PutApiClientByIdMutationResponse, ResponseErrorConfig<Error>, {id: PutApiClientByIdPathParams["id"], data?: PutApiClientByIdMutationRequest}, TContext>
 }
