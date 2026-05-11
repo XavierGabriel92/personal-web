@@ -6,17 +6,48 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { signOut } from "@/lib/auth-client";
+import { queryClient } from "@/routes/__root";
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
 /** Placeholder store links until the app is listed. */
 const APP_STORE_URL = "https://apps.apple.com/app/homug/id000000000";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.homug.app";
 
 export default function ClientWelcomePage() {
+	const navigate = useNavigate();
+	const [isSigningOut, setIsSigningOut] = useState(false);
+
+	const handleSignOut = () => {
+		setIsSigningOut(true);
+		signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					queryClient.clear();
+					queryClient.removeQueries();
+					navigate({ to: "/" });
+				},
+			},
+		});
+	};
+
 	return (
 		<div className="flex min-h-svh flex-col">
-			<header className="flex items-center gap-1 border-b px-2">
-				<img src="/homug_gorilla_logo.svg" alt="homug" className="h-16 w-16" />
-				<span className="font-semibold text-xl">Homug</span>
+			<header className="flex items-center justify-between border-b px-2">
+				<div className="flex items-center gap-1">
+					<img src="/homug_gorilla_logo.svg" alt="homug" className="h-16 w-16" />
+					<span className="font-semibold text-xl">Homug</span>
+				</div>
+				<Button
+					type="button"
+					variant="outline"
+					size="sm"
+					onClick={handleSignOut}
+					disabled={isSigningOut}
+				>
+					{isSigningOut ? "Saindo..." : "Sair"}
+				</Button>
 			</header>
 			<main className="flex flex-1 items-center justify-center px-6 py-8 md:px-10">
 				<Card className="w-full max-w-md shrink-0">

@@ -35,7 +35,7 @@ export default function EmailVerifiedPage({ error }: EmailVerifiedPageProps) {
 				<img src="/homug_gorilla_logo.svg" alt="homug" className="h-16 w-16" />
 				<span className="font-semibold text-xl">Homug</span>
 			</header>
-			<main className="mt-14 flex flex-1 justify-center p-6 md:p-10">
+			<main className="flex flex-1 justify-center p-6">
 				<Card className="w-full max-w-md">
 					<CardHeader className="text-center">
 						{message ? (
@@ -52,16 +52,12 @@ export default function EmailVerifiedPage({ error }: EmailVerifiedPageProps) {
 									<CheckCircle2 className="h-6 w-6" aria-hidden />
 								</div>
 								<CardTitle>Email confirmado</CardTitle>
-								<CardDescription>
-									Sua conta está ativa. Treinadores: use o link mágico para entrar. Se você
-									é aluno e já definiu a senha no site, entre pelo app com email e senha.
-								</CardDescription>
 							</>
 						)}
 					</CardHeader>
 					<CardContent className="flex flex-col gap-4">
 						<Button asChild>
-							<Link to="/sign-in">Ir para entrar</Link>
+							<Link to="/sign-in">Entrar</Link>
 						</Button>
 					</CardContent>
 				</Card>

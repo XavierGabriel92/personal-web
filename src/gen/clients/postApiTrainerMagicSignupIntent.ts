@@ -13,7 +13,7 @@ function getPostApiTrainerMagicSignupIntentUrl() {
 }
 
 /**
- * @summary Trainer magic-link signup intent
+ * @summary Trainer signup intent (before email/password or Google registration)
  * {@link /api/trainer/magic-signup/intent}
  */
 export async function postApiTrainerMagicSignupIntent(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {

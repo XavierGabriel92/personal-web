@@ -1,5 +1,5 @@
 import EmailVerifiedPage from "@/pages/auth/email-verified";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
 const emailVerifiedSearchSchema = z.object({
@@ -8,6 +8,11 @@ const emailVerifiedSearchSchema = z.object({
 
 export const Route = createFileRoute("/email-verified")({
 	validateSearch: (search) => emailVerifiedSearchSchema.parse(search),
+	beforeLoad: ({ search }) => {
+		if (!search.error) {
+			throw redirect({ to: "/sign-in" });
+		}
+	},
 	component: EmailVerifiedRoute,
 });
 

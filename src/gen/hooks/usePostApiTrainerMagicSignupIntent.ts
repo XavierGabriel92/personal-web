@@ -25,7 +25,7 @@ export function postApiTrainerMagicSignupIntentMutationOptions(config: Partial<R
 }
 
 /**
- * @summary Trainer magic-link signup intent
+ * @summary Trainer signup intent (before email/password or Google registration)
  * {@link /api/trainer/magic-signup/intent}
  */
 export function usePostApiTrainerMagicSignupIntent<TContext>(options: 

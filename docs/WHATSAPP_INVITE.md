@@ -4,7 +4,7 @@
 
 ## Overview
 
-When a trainer creates a client, the API provisions a Better Auth user (`type: client`), links the roster row via `userId`, and sends a verification email. The client confirms the email; the backend then sets `clients.active` to true. Clients sign in with a **magic link** (see [AUTHENTICATION.md](./AUTHENTICATION.md)).
+When a trainer creates a client, the API provisions a Better Auth user (`type: client`), links the roster row via `userId`, and sends a verification email. The client confirms the email; the backend then sets `clients.active` to true. On the web they complete profile and set a password (and may link Google); on the **mobile app** they sign in with **email + password** (see [AUTHENTICATION.md](./AUTHENTICATION.md)).
 
 ## Trainer flow
 
@@ -42,4 +42,4 @@ The **Conta no app** column shows:
 
 - **Sem app** — no linked auth user (legacy).
 - **Email pendente** — account exists, email not verified yet.
-- **Confirmado** — email verified; client can use magic link sign-in.
+- **Confirmado** — email verified; client can use the app (email + password) after completing web onboarding.

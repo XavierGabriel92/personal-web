@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as EmailVerifiedRouteImport } from './routes/email-verified'
 import { Route as TrainerRouteRouteImport } from './routes/trainer/route'
+import { Route as ClientRouteRouteImport } from './routes/client/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrainerIndexRouteImport } from './routes/trainer/index'
@@ -60,6 +61,11 @@ const EmailVerifiedRoute = EmailVerifiedRouteImport.update({
 const TrainerRouteRoute = TrainerRouteRouteImport.update({
   id: '/trainer',
   path: '/trainer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientRouteRoute = ClientRouteRouteImport.update({
+  id: '/client',
+  path: '/client',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -112,14 +118,14 @@ const TrainerAccountRoute = TrainerAccountRouteImport.update({
   getParentRoute: () => TrainerRouteRoute,
 } as any)
 const ClientWelcomeRoute = ClientWelcomeRouteImport.update({
-  id: '/client/welcome',
-  path: '/client/welcome',
-  getParentRoute: () => rootRouteImport,
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => ClientRouteRoute,
 } as any)
 const ClientSetPasswordRoute = ClientSetPasswordRouteImport.update({
-  id: '/client/set-password',
-  path: '/client/set-password',
-  getParentRoute: () => rootRouteImport,
+  id: '/set-password',
+  path: '/set-password',
+  getParentRoute: () => ClientRouteRoute,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/sign-up',
@@ -232,6 +238,7 @@ const TrainerClientsClientIdAnamnesisRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/client': typeof ClientRouteRouteWithChildren
   '/trainer': typeof TrainerRouteRouteWithChildren
   '/email-verified': typeof EmailVerifiedRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -265,6 +272,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/client': typeof ClientRouteRouteWithChildren
   '/email-verified': typeof EmailVerifiedRoute
   '/reset-password': typeof ResetPasswordRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
@@ -297,6 +305,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
+  '/client': typeof ClientRouteRouteWithChildren
   '/trainer': typeof TrainerRouteRouteWithChildren
   '/email-verified': typeof EmailVerifiedRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -334,6 +343,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/client'
     | '/trainer'
     | '/email-verified'
     | '/reset-password'
@@ -367,6 +377,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/client'
     | '/email-verified'
     | '/reset-password'
     | '/forgot-password'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_auth'
+    | '/client'
     | '/trainer'
     | '/email-verified'
     | '/reset-password'
@@ -435,11 +447,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  ClientRouteRoute: typeof ClientRouteRouteWithChildren
   TrainerRouteRoute: typeof TrainerRouteRouteWithChildren
   EmailVerifiedRoute: typeof EmailVerifiedRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  ClientSetPasswordRoute: typeof ClientSetPasswordRoute
-  ClientWelcomeRoute: typeof ClientWelcomeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -463,6 +474,13 @@ declare module '@tanstack/react-router' {
       path: '/trainer'
       fullPath: '/trainer'
       preLoaderRoute: typeof TrainerRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client': {
+      id: '/client'
+      path: '/client'
+      fullPath: '/client'
+      preLoaderRoute: typeof ClientRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -537,17 +555,17 @@ declare module '@tanstack/react-router' {
     }
     '/client/welcome': {
       id: '/client/welcome'
-      path: '/client/welcome'
+      path: '/welcome'
       fullPath: '/client/welcome'
       preLoaderRoute: typeof ClientWelcomeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ClientRouteRoute
     }
     '/client/set-password': {
       id: '/client/set-password'
-      path: '/client/set-password'
+      path: '/set-password'
       fullPath: '/client/set-password'
       preLoaderRoute: typeof ClientSetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ClientRouteRoute
     }
     '/_auth/sign-up': {
       id: '/_auth/sign-up'
@@ -701,6 +719,20 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface ClientRouteRouteChildren {
+  ClientSetPasswordRoute: typeof ClientSetPasswordRoute
+  ClientWelcomeRoute: typeof ClientWelcomeRoute
+}
+
+const ClientRouteRouteChildren: ClientRouteRouteChildren = {
+  ClientSetPasswordRoute: ClientSetPasswordRoute,
+  ClientWelcomeRoute: ClientWelcomeRoute,
+}
+
+const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(
+  ClientRouteRouteChildren,
+)
+
 interface TrainerClientsClientIdRouteRouteChildren {
   TrainerClientsClientIdAnamnesisRoute: typeof TrainerClientsClientIdAnamnesisRoute
   TrainerClientsClientIdMeasurementsRoute: typeof TrainerClientsClientIdMeasurementsRoute
@@ -827,11 +859,10 @@ const TrainerRouteRouteWithChildren = TrainerRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  ClientRouteRoute: ClientRouteRouteWithChildren,
   TrainerRouteRoute: TrainerRouteRouteWithChildren,
   EmailVerifiedRoute: EmailVerifiedRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  ClientSetPasswordRoute: ClientSetPasswordRoute,
-  ClientWelcomeRoute: ClientWelcomeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

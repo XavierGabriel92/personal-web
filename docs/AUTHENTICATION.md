@@ -11,7 +11,6 @@ For general architecture patterns, see [ARCHITECTURE.md](../ARCHITECTURE.md).
 import {
   customSessionClient,
   inferAdditionalFields,
-  magicLinkClient,
   organizationClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
@@ -20,7 +19,6 @@ export const authClient = createAuthClient({
   plugins: [
     organizationClient(),      // Organization support
     customSessionClient(),     // Custom session handling
-    magicLinkClient(),         // Passwordless sign-in (verified users)
     inferAdditionalFields({   // Custom user fields
       user: {
         type: {
@@ -159,10 +157,10 @@ The `RegisterForm` is only rendered after code verification (see [Sign Up Flow](
 
 ### Trainer (no `organizationId`)
 
-- Submits **name**, **email**, optional **phone** (no password).
+- Submits **name**, **email**, optional **phone**, and **password** (or uses **Google** with the same email as in the form).
 - Calls **`POST /api/trainer/magic-signup/intent`** with the same invite code as `VITE_SIGNUP_CODE` (`accessCode`); the API validates against **`TRAINER_SIGNUP_ACCESS_CODE`** (must match in production).
-- Then calls **`authClient.signIn.magicLink`** with `email`, `name`, `callbackURL`, and **`newUserCallbackURL`** pointing at the SPA origin. Opening the link creates the user (verified) and a session; the user lands logged in on the app.
-- Optional phone is copied from the intent row on the API via `databaseHooks` after user creation.
+- Then either **`authClient.signUp.email`** with `type: "trainer"` (and optional `phone`) or **`authClient.signIn.social`** with `provider: "google"`. The API **`databaseHooks.user.create.before`** requires a valid, non-expired intent row for every **new** trainer user (including Google), then **`after`** merges optional **phone** from the consumed intent row, billing, and default anamneses.
+- With `requireEmailVerification`, email/password sign-up does not finish until the user confirms the verification email; Google sign-up typically marks the email verified immediately.
 
 ### Organization client (`organizationId` in search)
 
@@ -172,7 +170,7 @@ The `RegisterForm` is only rendered after code verification (see [Sign Up Flow](
 ```typescript
 import { signUp } from "@/lib/auth-client";
 
-// Org client only — trainers use magic link as above
+// Org client only — trainers use intent + email/Google as above
 function OrgClientSignUpForm() {
   const handleSubmit = async (data: SignUpFormData) => {
     const result = await signUp.email({
@@ -188,7 +186,7 @@ function OrgClientSignUpForm() {
       return;
     }
 
-    toast.success("Check your email to verify, then sign in with magic link or password");
+    toast.success("Check your email to verify, then sign in with Google or password");
     navigate({ to: "/sign-in" });
   };
 }
@@ -398,11 +396,15 @@ const redirectTo = session.user.type === "client"
   : "/trainer/home";
 ```
 
-## Sign-in (magic link first)
+## Sign-in (Google or email + password)
 
-The sign-in page ([`src/pages/auth/forms/login-form.tsx`](src/pages/auth/forms/login-form.tsx)) defaults to `authClient.signIn.magicLink` with `callbackURL` set to the app origin. The API only sends a link if the user exists and `emailVerified` is true (same for trainers and clients). An optional **Entrar com senha** path still uses `authClient.signIn.email` for accounts with a password.
+The sign-in page ([`src/pages/auth/forms/login-form.tsx`](src/pages/auth/forms/login-form.tsx)) uses **`authClient.signIn.social`** (`provider: "google"`) and **`authClient.signIn.email`** with `callbackURL` set to the app origin. There is no magic-link / passwordless email flow.
 
-Clients created by a trainer verify via the activation email before magic link works. Trainers verify after sign-up before magic link works.
+Clients invited by a trainer confirm via the activation link, then complete profile on [`/client/set-password`](src/pages/client/set-password.tsx) with a domain-based rule:
+- invited `@gmail.com` email: can complete without password (Google path) or define password for email+password login.
+- invited non-`@gmail.com` email: must define password to complete activation.
+
+For mobile access, email+password remains supported. Google is available on the web flow for invited `@gmail.com` accounts.
 
 ## Custom Session Fields
 

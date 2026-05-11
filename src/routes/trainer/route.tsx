@@ -12,9 +12,9 @@ export const Route = createFileRoute("/trainer")({
 			throw redirect({ to: "/sign-in" });
 		}
 
-		// if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
-		// 	throw redirect({ to: "/trainer/phone-setup" });
-		// }
+		if (data.user?.type !== "trainer") {
+			throw redirect({ to: "/client/welcome" });
+		}
 	},
 });
 

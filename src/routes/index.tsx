@@ -30,7 +30,7 @@ function App() {
 		}
 		if (session?.user) {
 			const redirectTo =
-				session.user.type === "client" ? "/client/home" : "/trainer/home";
+				session.user.type === "client" ? "/client" : "/trainer/home";
 			navigate({ to: redirectTo as never });
 		} else {
 			navigate({ to: "/sign-in" });
