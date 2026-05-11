@@ -13,7 +13,7 @@ export const Route = createFileRoute("/trainer")({
 		}
 
 		if (data.user?.type !== "trainer") {
-			throw redirect({ to: "/client/welcome" });
+			throw redirect({ to: "/client/home" });
 		}
 	},
 });

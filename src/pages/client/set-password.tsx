@@ -78,7 +78,7 @@ export default function ClientSetPasswordPage() {
 			await authClient.linkSocial(
 				{
 					provider: "google",
-					callbackURL: `${window.location.origin}/client/welcome`,
+					callbackURL: `${window.location.origin}/client/home`,
 				},
 				{
 					onError: (ctx) => {
@@ -108,7 +108,7 @@ export default function ClientSetPasswordPage() {
 
 			await queryClient.refetchQueries({ queryKey: sessionQueryKey });
 			toast.success("Perfil completo! Bem-vindo ao Homug.");
-			await navigate({ to: "/client/welcome", replace: true });
+			await navigate({ to: "/client/home", replace: true });
 		} catch {
 			toast.error("Não foi possível completar o perfil. Tente novamente.");
 		} finally {

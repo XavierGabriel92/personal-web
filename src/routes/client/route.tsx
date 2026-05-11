@@ -1,5 +1,8 @@
 import { cachedSession } from "@/hooks/auth";
-import { fetchClientRegistrationComplete } from "@/lib/client-registration-complete";
+import {
+	fetchClientRegistrationComplete,
+	isClientRegistrationCompleteFromSession,
+} from "@/lib/client-registration-complete";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/client")({
@@ -15,15 +18,17 @@ export const Route = createFileRoute("/client")({
 			throw redirect({ to: "/trainer/home" });
 		}
 
-		if (data.user?.type !== "client") {
-			throw redirect({ to: "/sign-in" });
+		const path = location.pathname.replace(/\/+$/, "") || "/";
+		const complete =
+			isClientRegistrationCompleteFromSession(data.user) ||
+			(await fetchClientRegistrationComplete());
+
+		if (!complete && path !== "/client/set-password") {
+			throw redirect({ to: "/client/set-password" });
 		}
 
-		const path = location.pathname.replace(/\/+$/, "") || "/";
-		const complete = await fetchClientRegistrationComplete();
-		const target = complete ? "/client/welcome" : "/client/set-password";
-		if (path !== target) {
-			throw redirect({ to: target });
+		if (complete && path === "/client") {
+			throw redirect({ to: "/client/home" });
 		}
 	},
 });

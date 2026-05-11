@@ -1,3 +1,5 @@
+import { queryClient } from "@/routes/__root";
+
 /**
  * Invited clients finish web onboarding via `POST /auth/api/client/set-initial-password`,
  * which persists `phone` (and name). Google-only activation links a `google` account row
@@ -9,17 +11,25 @@ export function isClientRegistrationCompleteFromSession(user: {
 	return Boolean(user.phone && String(user.phone).trim().length > 0);
 }
 
+export const clientRegistrationCompleteQueryKey = ["client-registration-complete"];
+
 export async function fetchClientRegistrationComplete(): Promise<boolean> {
-	const apiUrl = import.meta.env.VITE_API_URL as string;
-	try {
-		const res = await fetch(`${apiUrl}/auth/api/client/activation-status`, {
-			method: "GET",
-			credentials: "include",
-		});
-		const json = (await res.json()) as { ok?: boolean; complete?: boolean };
-		if (!res.ok || !json.ok) return false;
-		return Boolean(json.complete);
-	} catch {
-		return false;
-	}
+	return queryClient.fetchQuery({
+		queryKey: clientRegistrationCompleteQueryKey,
+		staleTime: 60_000,
+		queryFn: async () => {
+			const apiUrl = import.meta.env.VITE_API_URL as string;
+			try {
+				const res = await fetch(`${apiUrl}/auth/api/client/activation-status`, {
+					method: "GET",
+					credentials: "include",
+				});
+				const json = (await res.json()) as { ok?: boolean; complete?: boolean };
+				if (!res.ok || !json.ok) return false;
+				return Boolean(json.complete);
+			} catch {
+				return false;
+			}
+		},
+	});
 }

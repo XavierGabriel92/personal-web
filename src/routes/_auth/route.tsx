@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_auth")({
     const data = await cachedSession();
     if (data?.session) {
       const redirectTo =
-        data.user?.type === "client" ? "/client" : "/trainer/home";
+				data.user?.type === "client" ? "/client/home" : "/trainer/home";
       throw redirect({ to: redirectTo as never });
     }
   },

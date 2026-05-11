@@ -108,6 +108,32 @@ export const Route = createFileRoute("/_auth")({
 
 Auth routes redirect authenticated users away from sign-in/sign-up pages.
 
+## Route Groups
+
+Use a folder wrapped in parentheses when you want to group related routes in the filesystem without adding that folder name to the URL.
+
+Example:
+
+```
+routes/client/
+├── route.tsx
+├── (tabs)/
+│   ├── route.tsx
+│   ├── home.tsx
+│   ├── workouts.tsx
+│   ├── history.tsx
+│   └── profile.tsx
+└── activities.tsx
+```
+
+In this structure:
+
+- `routes/client/(tabs)/route.tsx` provides a shared shell for the tabbed client pages
+- `routes/client/(tabs)/home.tsx` still matches `/client/home`
+- siblings outside the group like `routes/client/activities.tsx` are not forced into that shared shell
+
+Use this when you want folder organization for a route cluster but do not want the grouping folder to appear in the pathname.
+
 ## Pathless Layout Routes within a Segment
 
 When a group of URLs sharing the same path prefix need a shared layout (header, tabs, context) **without** that layout adding its own path segment, use a **pathless layout route** named with an underscore: `_layoutName`.
