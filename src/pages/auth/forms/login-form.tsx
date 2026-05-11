@@ -34,6 +34,14 @@ type FormValues = z.infer<typeof schema>;
 
 const appCallbackUrl = () => `${window.location.origin}/client`;
 
+function getGoogleLoginErrorMessage(message?: string) {
+	const normalized = message?.trim().toLowerCase();
+	if (normalized === "signup disabled" || normalized === "error code: signup_disabled") {
+		return "Essa conta Google ainda nao esta vinculada. Entre com email e senha ou use Registrar para criar a conta.";
+	}
+	return message ?? "Nao foi possivel entrar com Google.";
+}
+
 export default function LoginForm() {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
@@ -69,16 +77,19 @@ export default function LoginForm() {
 	};
 
 	const handleGoogle = async () => {
+		const email = form.getValues("email").trim();
+		const loginHint = schema.shape.email.safeParse(email).success ? email : undefined;
 		setGoogleLoading(true);
 		try {
 			await authClient.signIn.social(
 				{
 					provider: "google",
 					callbackURL: appCallbackUrl(),
+					...(loginHint ? { loginHint } : {}),
 				},
 				{
 					onError: (ctx) => {
-						toast.error(ctx.error.message ?? "Não foi possível entrar com Google.");
+						toast.error(getGoogleLoginErrorMessage(ctx.error.message));
 					},
 				},
 			);

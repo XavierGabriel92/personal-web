@@ -1,9 +1,9 @@
 import { queryClient } from "@/routes/__root";
 
 /**
- * Invited clients finish web onboarding via `POST /auth/api/client/set-initial-password`,
- * which persists `phone` (and name). Google-only activation links a `google` account row
- * without necessarily setting phone first — the API status route covers both.
+ * Invited clients finish web onboarding via `POST /auth/api/client/accept-invite`,
+ * which may persist `phone` and/or password. The server is the source of truth for
+ * whether registration is complete, since phone is now optional.
  */
 export function isClientRegistrationCompleteFromSession(user: {
 	phone?: string | null;

@@ -78,42 +78,9 @@ export default function RegisterForm() {
 		},
 	});
 
-	const postTrainerIntent = async (data: {
-		name: string;
-		email: string;
-		phone?: string;
-	}) => {
-		const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-		const accessCode = import.meta.env.VITE_SIGNUP_CODE ?? "";
-		const res = await fetch(`${baseURL}/api/trainer/magic-signup/intent`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			credentials: "include",
-			body: JSON.stringify({
-				accessCode,
-				name: data.name,
-				email: data.email,
-				...(data.phone ? { phone: data.phone } : {}),
-			}),
-		});
-		const json = (await res.json()) as { ok?: boolean; error?: string };
-		if (!res.ok) {
-			throw new Error(
-				typeof json.error === "string"
-					? json.error
-					: "Não foi possível iniciar o cadastro.",
-			);
-		}
-	};
-
 	const handleEmailSignUp = async (data: RegisterFormType) => {
 		setIsLoading(true);
 		try {
-			await postTrainerIntent({
-				name: data.name,
-				email: data.email,
-				...(data.phone ? { phone: data.phone } : {}),
-			});
 			await authClient.signUp.email(
 				{
 					email: data.email,
@@ -124,11 +91,9 @@ export default function RegisterForm() {
 				} as Parameters<typeof authClient.signUp.email>[0],
 				{
 					onSuccess: () => {
-						toast.success(
-							"Enviamos um email de confirmação. Abra o link para ativar sua conta, depois entre com email e senha.",
-						);
+						toast.success("Conta criada com sucesso. Bem-vindo ao Homug!");
 						void queryClient.invalidateQueries({ queryKey: sessionQueryKey });
-						void router.navigate({ to: "/sign-in" });
+						void router.navigate({ to: "/trainer/home" });
 					},
 					onError: (ctx) => {
 						toast.error(ctx.error.message ?? "Não foi possível criar a conta.");
@@ -144,33 +109,16 @@ export default function RegisterForm() {
 	};
 
 	const handleGoogleSignUp = async () => {
-		const raw = form.getValues();
-		const step = baseTrainerFields.safeParse({
-			name: raw.name,
-			email: raw.email,
-			phone: raw.phone,
-		});
-		if (!step.success) {
-			const first = step.error.flatten().fieldErrors;
-			const msg =
-				first.name?.[0] ??
-				first.email?.[0] ??
-				first.phone?.[0] ??
-				"Preencha nome e email corretamente.";
-			toast.error(msg);
-			return;
-		}
+		const email = form.getValues("email").trim();
+		const loginHint = z.string().email().safeParse(email).success ? email : undefined;
 		setGoogleLoading(true);
 		try {
-			await postTrainerIntent({
-				name: step.data.name,
-				email: step.data.email,
-				...(step.data.phone ? { phone: step.data.phone } : {}),
-			});
 			await authClient.signIn.social(
 				{
 					provider: "google",
-					callbackURL: `${window.location.origin}/`,
+					callbackURL: `${window.location.origin}/trainer/home`,
+					requestSignUp: true,
+					...(loginHint ? { loginHint } : {}),
 				},
 				{
 					onError: (ctx) => {

@@ -163,7 +163,7 @@ export default function CreateClientSheet({
 					<SheetHeader>
 						<SheetTitle>Criar novo aluno</SheetTitle>
 						<SheetDescription>
-							Enviamos um email de confirmação para o aluno. Ele completa o cadastro (nome, telefone e senha) ao clicar no link.
+							Enviamos um convite por email para o aluno. Ele completa o cadastro ao clicar no link.
 						</SheetDescription>
 					</SheetHeader>
 					<div className="flex-1 overflow-y-auto px-4">

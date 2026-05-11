@@ -20,16 +20,15 @@ export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientPro
 	const handleResendActivation = async () => {
 		try {
 			await resendActivation({ id: clientId });
-			toast.success("Email de ativação reenviado.");
+			toast.success("Convite reenviado.");
 			await refetch();
 		} catch {
-			toast.error("Não foi possível reenviar o email. Tente novamente.");
+			toast.error("Não foi possível reenviar o convite. Tente novamente.");
 		}
 	};
 
 	const hasAuthUser = Boolean(client.userId);
-	const emailVerified = client.emailVerified === true;
-	const showResend = hasAuthUser && !emailVerified;
+	const showResend = !hasAuthUser && Boolean(client.email);
 
 	return (
 		<div className="w-full space-y-6">
@@ -42,16 +41,12 @@ export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientPro
 							{client.active ? "Ativo" : "Inativo"}
 						</Badge>
 						{hasAuthUser ? (
-							emailVerified ? (
-								<Badge variant="success" className="gap-1">
-									<CheckCircle2 className="h-3.5 w-3.5" />
-									Email confirmado
-								</Badge>
-							) : (
-								<Badge variant="secondary">Aguardando confirmação de email</Badge>
-							)
+							<Badge variant="success" className="gap-1">
+								<CheckCircle2 className="h-3.5 w-3.5" />
+								Conta criada
+							</Badge>
 						) : (
-							<Badge variant="outline">Sem conta no app</Badge>
+							<Badge variant="outline">Convite pendente</Badge>
 						)}
 						<TooltipProvider>
 							<Tooltip>
@@ -70,7 +65,7 @@ export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientPro
 						{showResend ? (
 							<Button variant="outline" size="sm" onClick={handleResendActivation} disabled={isPending}>
 								<Mail className="h-4 w-4" />
-								{isPending ? "Enviando..." : "Reenviar email de ativação"}
+								{isPending ? "Enviando..." : "Reenviar convite"}
 							</Button>
 						) : null}
 						<EditClientSheet clientId={clientId} />

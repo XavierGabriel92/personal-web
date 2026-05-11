@@ -8,9 +8,14 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/client")({
 	component: ClientLayout,
 	beforeLoad: async ({ location }) => {
+		const path = location.pathname.replace(/\/+$/, "") || "/";
+		const token = new URLSearchParams(location.search).get("token")?.trim();
 		const data = await cachedSession();
 
 		if (!data?.session) {
+			if (path === "/client/set-password" && token) {
+				return;
+			}
 			throw redirect({ to: "/sign-in" });
 		}
 
@@ -18,7 +23,6 @@ export const Route = createFileRoute("/client")({
 			throw redirect({ to: "/trainer/home" });
 		}
 
-		const path = location.pathname.replace(/\/+$/, "") || "/";
 		const complete =
 			isClientRegistrationCompleteFromSession(data.user) ||
 			(await fetchClientRegistrationComplete());
