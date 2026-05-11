@@ -22,13 +22,6 @@ export type GetApiSessionsClientByClientIdQueryParams = {
     until: string;
 };
 
-export const sessionsSourceEnum = {
-    "whatsapp": "whatsapp",
-    "app": "app"
-} as const;
-
-export type SessionsSourceEnumKey = (typeof sessionsSourceEnum)[keyof typeof sessionsSourceEnum];
-
 /**
  * @description Response for status 200
 */
@@ -52,7 +45,7 @@ export type GetApiSessionsClientByClientId200 = {
         /**
          * @type string
         */
-        source: SessionsSourceEnumKey;
+        source: string;
         /**
          * @type string | undefined
         */

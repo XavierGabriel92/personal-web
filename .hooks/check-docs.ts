@@ -5,8 +5,8 @@
  * Never blocks the commit — exits 0 on any failure.
  */
 
-import { existsSync } from "fs";
-import path from "path";
+import { existsSync } from "node:fs";
+import path from "node:path";
 
 const REPO_ROOT = path.resolve(import.meta.dir, "..");
 
@@ -118,7 +118,7 @@ Documentation structure:
 - docs/BUILD_DEVELOPMENT.md: dev workflow
 - docs/BEST_PRACTICES.md: coding standards
 - docs/CLIENT_ROUTINE.md: client/routine relationship
-- docs/WHATSAPP_INVITE.md: Client email activation (legacy path)
+- docs/CLIENT_ACTIVATION.md: Client activation and resend flow
 - docs/backlog.md: future work
 
 Rules:
@@ -187,7 +187,7 @@ async function main(): Promise<void> {
   // 2. Get diff
   let diff = await run(["git", "diff", "--cached", "--", ...relevant]);
   if (diff.length > MAX_DIFF_BYTES) {
-    diff = diff.slice(0, MAX_DIFF_BYTES) + "\n\n[DIFF TRUNCATED — showing first 50KB]";
+    diff = `${diff.slice(0, MAX_DIFF_BYTES)}\n\n[DIFF TRUNCATED — showing first 50KB]`;
   }
 
   // 3. Read docs

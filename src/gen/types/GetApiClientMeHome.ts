@@ -11,6 +11,13 @@ export type GetApiClientMeHomeQueryParams = {
     timeZone?: string;
 };
 
+export const pendingAnamnesisStatusEnum = {
+    "PENDING": "PENDING",
+    "AWAITING_CONFIRMATION": "AWAITING_CONFIRMATION"
+} as const;
+
+export type PendingAnamnesisStatusEnumKey = (typeof pendingAnamnesisStatusEnum)[keyof typeof pendingAnamnesisStatusEnum];
+
 /**
  * @description Response for status 200
 */
@@ -239,6 +246,36 @@ export type GetApiClientMeHome200 = {
         */
         weeklyMinutesGoal: number;
     };
+    pendingAnamnesis: ({
+        /**
+         * @type string
+        */
+        id: string;
+        /**
+         * @type string
+        */
+        name: string;
+        /**
+         * @type string | undefined
+        */
+        description?: string;
+        /**
+         * @minLength 0
+         * @maxLength 9007199254740991
+         * @type integer
+        */
+        questionCount: number;
+        /**
+         * @minLength 0
+         * @maxLength 9007199254740991
+         * @type integer
+        */
+        answeredCount: number;
+        /**
+         * @type string
+        */
+        status: PendingAnamnesisStatusEnumKey;
+    } | null);
 };
 
 /**

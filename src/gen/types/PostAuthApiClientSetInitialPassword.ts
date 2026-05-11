@@ -18,9 +18,9 @@ export type PostAuthApiClientSetInitialPasswordMutationRequest = {
     /**
      * @minLength 8
      * @maxLength 128
-     * @type string
+     * @type string | undefined
     */
-    newPassword: string;
+    newPassword?: string;
 };
 
 export type PostAuthApiClientSetInitialPasswordMutationResponse = any;

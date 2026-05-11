@@ -1,14 +1,12 @@
-# Client email activation (legacy filename)
-
-> This doc previously described the WhatsApp invite flow, which has been removed. The file name is kept so existing links from `CLAUDE.md` and hooks still resolve.
+# Client activation
 
 ## Overview
 
-When a trainer creates a client, the API provisions a Better Auth user (`type: client`), links the roster row via `userId`, and sends a verification email. The client confirms the email; the backend then sets `clients.active` to true. On the web they complete profile and set a password (and may link Google); on the **mobile app** they sign in with **email + password** (see [AUTHENTICATION.md](./AUTHENTICATION.md)).
+When a trainer creates a client, the API provisions a Better Auth user (`type: client`), links the roster row via `userId`, and sends a verification email. The client confirms the email; the backend then sets `clients.active` to true. On the web they complete profile and set a password (and may link Google); on the mobile app they sign in with email + password (see [AUTHENTICATION.md](./AUTHENTICATION.md)).
 
 ## Trainer flow
 
-1. Trainer creates a client with **name**, **email**, **phone**, and optional goals.
+1. Trainer creates a client with email and optional goals.
 2. The client receives an email to confirm the account.
 3. If needed, the trainer uses **Reenviar email de ativação** on the client profile (`POST /api/client/:id/resend-activation`).
 

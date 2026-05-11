@@ -6,7 +6,7 @@ This document describes the product, its users, core business concepts, and doma
 
 ## What is this product?
 
-A **personal trainer management platform** that helps fitness trainers run their client base efficiently. Trainers use a web app to build training programs, assign them to clients, and track client progress. Clients receive their programs and workout instructions primarily via **WhatsApp**.
+A **personal trainer management platform** that helps fitness trainers run their client base efficiently. Trainers use a web app to build training programs, assign them to clients, and track client progress. Clients activate their accounts by email and use the Homug client app to access plans, answer anamneses, and log workouts.
 
 ---
 
@@ -18,10 +18,10 @@ The primary user. A personal trainer who:
 - Builds and organizes training programs (routines)
 - Assigns programs to clients
 - Monitors client activity and progress
-- Communicates with clients via WhatsApp
+- Invites clients into the app and follows their progress
 
 ### Client
-A trainer's client. Currently a **passive recipient** — clients receive workout plans via WhatsApp and log their sessions, but do not have a full web app login. Future versions may include a client-facing web/mobile app.
+A trainer's client. Clients activate their account by email, complete onboarding, and then use the client experience to access workouts, answer anamneses, and log sessions.
 
 ---
 
@@ -73,7 +73,7 @@ A logged instance of a client completing a workout. Captures actual performance 
 
 ### Client
 A person training under a trainer. Stored with:
-- Name and phone number (for WhatsApp)
+- Linked app account and contact data
 - Active/inactive status
 - Assigned routines
 
@@ -112,9 +112,9 @@ Rich, typed event records that capture significant client events (workout comple
 1. Sign up → arrive at trainer home dashboard
 2. If no phone on file → redirected to `/trainer/phone-setup` to add a Brazilian phone number before accessing any other page
 3. Create a training program (routine + workouts + exercises)
-4. Invite a client (enter name + phone number)
+4. Invite a client by email
 5. Assign the program to the client
-6. Client receives their plan via WhatsApp
+6. Client confirms the account and accesses the app experience
 
 ### Trainer daily workflow
 - Check trainer home: client stats, latest activity, weekly active chart
@@ -189,7 +189,7 @@ User (Trainer)
 
 ## Key Design Decisions
 
-**WhatsApp as primary client channel**: Clients don't need an account. The platform generates shareable workout plan links delivered via WhatsApp. This lowers the barrier for client adoption.
+**Email activation + app access**: Clients receive an activation email, complete onboarding, and then use the app experience directly. This gives the platform a consistent authenticated surface for workouts, anamneses, and activity history.
 
 **Template vs. owned routine distinction**: System templates use `ownerId = null` + `isTemplate = true`. This means they're naturally invisible to trainer program lists (which filter by `ownerId = trainer.id`), and the FK `ON DELETE SET NULL` ensures templates survive if an owner user were ever deleted. The same convention applies to Anamnesis templates.
 

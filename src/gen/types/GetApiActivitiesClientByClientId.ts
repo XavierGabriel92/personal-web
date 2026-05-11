@@ -22,12 +22,12 @@ export type GetApiActivitiesClientByClientIdQueryParams = {
     offset?: number;
 };
 
-export const payloadDirectionEnum = {
+export const payloadDirectionEnum2 = {
     "up": "up",
     "down": "down"
 } as const;
 
-export type PayloadDirectionEnumKey = (typeof payloadDirectionEnum)[keyof typeof payloadDirectionEnum];
+export type PayloadDirectionEnum2Key = (typeof payloadDirectionEnum2)[keyof typeof payloadDirectionEnum2];
 
 /**
  * @description Response for status 200
@@ -114,7 +114,7 @@ export type GetApiActivitiesClientByClientId200 = {
             /**
              * @type string
             */
-            direction: PayloadDirectionEnumKey;
+            direction: PayloadDirectionEnum2Key;
         };
     } | {
         /**

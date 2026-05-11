@@ -4,7 +4,7 @@
 */
 
 
-export type GetApiActivitiesTrainerQueryParams = {
+export type GetApiClientMeActivitiesQueryParams = {
     /**
      * @type number | undefined
     */
@@ -15,17 +15,17 @@ export type GetApiActivitiesTrainerQueryParams = {
     offset?: number;
 };
 
-export const payloadDirectionEnum3 = {
+export const payloadDirectionEnum = {
     "up": "up",
     "down": "down"
 } as const;
 
-export type PayloadDirectionEnum3Key = (typeof payloadDirectionEnum3)[keyof typeof payloadDirectionEnum3];
+export type PayloadDirectionEnumKey = (typeof payloadDirectionEnum)[keyof typeof payloadDirectionEnum];
 
 /**
  * @description Response for status 200
 */
-export type GetApiActivitiesTrainer200 = {
+export type GetApiClientMeActivities200 = {
     /**
      * @type array
     */
@@ -107,7 +107,7 @@ export type GetApiActivitiesTrainer200 = {
             /**
              * @type string
             */
-            direction: PayloadDirectionEnum3Key;
+            direction: PayloadDirectionEnumKey;
         };
     } | {
         /**
@@ -142,10 +142,40 @@ export type GetApiActivitiesTrainer200 = {
     })[];
 };
 
-export type GetApiActivitiesTrainerQueryResponse = GetApiActivitiesTrainer200;
+/**
+ * @description Response for status 403
+*/
+export type GetApiClientMeActivities403 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
 
-export type GetApiActivitiesTrainerQuery = {
-    Response: GetApiActivitiesTrainer200;
-    QueryParams: GetApiActivitiesTrainerQueryParams;
-    Errors: any;
+/**
+ * @description Response for status 404
+*/
+export type GetApiClientMeActivities404 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
+/**
+ * @description Response for status 500
+*/
+export type GetApiClientMeActivities500 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
+export type GetApiClientMeActivitiesQueryResponse = GetApiClientMeActivities200;
+
+export type GetApiClientMeActivitiesQuery = {
+    Response: GetApiClientMeActivities200;
+    QueryParams: GetApiClientMeActivitiesQueryParams;
+    Errors: GetApiClientMeActivities403 | GetApiClientMeActivities404 | GetApiClientMeActivities500;
 };

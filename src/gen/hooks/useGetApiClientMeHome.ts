@@ -27,7 +27,7 @@ export function getApiClientMeHomeQueryOptions(params?: GetApiClientMeHomeQueryP
 }
 
 /**
- * @description Trainer summary, active program, next workout, and weekly activity for the authenticated client. Send timeZone (IANA) as query or X-Timezone header; defaults to UTC.
+ * @description Trainer summary, active program, next workout, pending anamnesis summary (if any), and weekly activity for the authenticated client. Send timeZone (IANA) as query or X-Timezone header; defaults to UTC.
  * @summary Client home dashboard
  * {@link /api/client/me/home}
  */

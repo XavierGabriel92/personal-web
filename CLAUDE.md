@@ -60,5 +60,5 @@ Applies to this repository only (`personal-web`).
 | [BUILD_DEVELOPMENT.md](docs/BUILD_DEVELOPMENT.md) | Dev server, build, and tooling |
 | [PRODUCT.md](docs/PRODUCT.md) | Product overview, users, core business concepts and domain model |
 | [CLIENT_ROUTINE.md](docs/CLIENT_ROUTINE.md) | How clients and routines relate (active routine, cloning, assignment) |
-| [WHATSAPP_INVITE.md](docs/WHATSAPP_INVITE.md) | Client email activation and resend (legacy doc path) |
+| [CLIENT_ACTIVATION.md](docs/CLIENT_ACTIVATION.md) | Client email activation and resend |
 | [backlog.md](docs/backlog.md) | Known bugs, improvements, and missing features by page |
