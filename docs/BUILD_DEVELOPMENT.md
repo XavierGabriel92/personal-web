@@ -85,7 +85,6 @@ Create `.env` file in project root:
 ```env
 VITE_API_URL=http://localhost:3000
 VITE_APP_URL=http://localhost:4000
-VITE_SIGNUP_CODE=your-secret-code
 PORT=4000
 ```
 
@@ -105,7 +104,6 @@ const appUrl = import.meta.env.VITE_APP_URL;
 |----------|----------|-------------|
 | `VITE_API_URL` | Yes | Backend API base URL |
 | `VITE_APP_URL` | Yes | Frontend app URL (used for OAuth callbacks) |
-| `VITE_SIGNUP_CODE` | Yes | Access code required to reach the sign-up registration form. Validated client-side in `AskCodeForm`. |
 | `PORT` | No | Dev server port (default: 4000) |
 
 ## API Client Generation

@@ -12,7 +12,6 @@ Applies to this repository only (`personal-web`).
 
 ## Rule Sync Requirement
 
-- `CLAUDE.md` and `.cursor/rules/critical-rules.md` must stay aligned.
 - Whenever one file changes, update the other in the same task/PR to reflect the same rule intent.
 
 ## Core Rules

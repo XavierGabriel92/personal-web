@@ -10,13 +10,9 @@ export const Route = createFileRoute("/client")({
 	component: ClientLayout,
 	beforeLoad: async ({ location }) => {
 		const path = location.pathname.replace(/\/+$/, "") || "/";
-		const token = new URLSearchParams(location.search).get("token")?.trim();
 		const data = await cachedSession();
 
 		if (!data?.session) {
-			if (path === "/client/set-password" && token) {
-				return;
-			}
 			throw redirect({ to: "/sign-in" });
 		}
 

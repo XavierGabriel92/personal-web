@@ -6,14 +6,10 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { verifyEmailCallbackDevPlugin } from "./vite-verify-email-callback-plugin";
-
-const apiTarget = process.env.VITE_API_URL || "http://localhost:3000";
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
-		verifyEmailCallbackDevPlugin(),
 		devtools(),
 		tanstackRouter({
 			target: "react",
@@ -31,15 +27,6 @@ export default defineConfig({
 	server: {
 		port: process.env.PORT ? Number(process.env.PORT) : 4000,
 		origin: process.env.VITE_APP_URL as string,
-		// Dev-only: email links sometimes use /api/verify-email; proxy to Better Auth on the API
-		proxy: {
-			"/api/verify-email": {
-				target: apiTarget,
-				changeOrigin: true,
-				rewrite: (path) =>
-					path.replace(/^\/api\/verify-email/, "/auth/api/verify-email"),
-			},
-		},
 	},
 	resolve: {
 		alias: {
@@ -47,7 +34,10 @@ export default defineConfig({
 			// Vite's dep optimizer sometimes resolves `module` to a non-existent
 			// `dist/esm/lucide-react.js`; the package only ships `lucide-react.mjs`.
 			"lucide-react": fileURLToPath(
-				new URL("./node_modules/lucide-react/dist/esm/lucide-react.mjs", import.meta.url),
+				new URL(
+					"./node_modules/lucide-react/dist/esm/lucide-react.mjs",
+					import.meta.url,
+				),
 			),
 		},
 	},
