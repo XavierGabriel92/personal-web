@@ -1,5 +1,5 @@
+import { ClientHomePhonePreview } from "@/components/account/tema/client-home-phone-preview";
 import { IconCropModal } from "@/components/account/tema/icon-crop-modal";
-import { WelcomeCard } from "@/components/client/home/welcome-card";
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -35,6 +35,7 @@ export function TrainerAccountTemaPage() {
 	const { data: branding } = useGetApiTrainerBrandingSuspense();
 	const [cropOpen, setCropOpen] = useState(false);
 	const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
+	const [iconRefreshKey, setIconRefreshKey] = useState(0);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const form = useForm<TemaFormValues>({
@@ -50,6 +51,9 @@ export function TrainerAccountTemaPage() {
 	const patchMutation = usePatchApiTrainerBranding();
 	const postIconMutation = usePostApiTrainerBrandingIcon();
 	const deleteIconMutation = useDeleteApiTrainerBrandingIcon();
+	const resolvedIconUrl = branding.iconUrl
+		? `${branding.iconUrl}${branding.iconUrl.includes("?") ? "&" : "?"}v=${iconRefreshKey}`
+		: null;
 
 	const onSubmit = (values: TemaFormValues) => {
 		patchMutation.mutate(
@@ -97,10 +101,13 @@ export function TrainerAccountTemaPage() {
 			await queryClient.invalidateQueries({
 				queryKey: getApiTrainerBrandingSuspenseQueryKey(),
 			});
+			setIconRefreshKey((current) => current + 1);
 			toast.success("Ícone atualizado.");
+			return true;
 		} catch (error) {
 			const err = error as { response?: { data?: { message?: string } } };
 			toast.error(err.response?.data?.message ?? "Não foi possível enviar o ícone.");
+			return false;
 		}
 	};
 
@@ -110,6 +117,7 @@ export function TrainerAccountTemaPage() {
 				await queryClient.invalidateQueries({
 					queryKey: getApiTrainerBrandingSuspenseQueryKey(),
 				});
+				setIconRefreshKey((current) => current + 1);
 				toast.success("Ícone removido.");
 			},
 			onError: (error) => {
@@ -184,9 +192,9 @@ export function TrainerAccountTemaPage() {
 						</TypographyP>
 						<div className="flex flex-wrap items-center gap-4">
 							<div className="bg-muted flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border">
-								{branding.iconUrl ? (
+								{resolvedIconUrl ? (
 									<img
-										src={branding.iconUrl}
+										src={resolvedIconUrl}
 										alt=""
 										className="size-full object-contain"
 									/>
@@ -213,7 +221,7 @@ export function TrainerAccountTemaPage() {
 								>
 									Escolher imagem
 								</Button>
-								{branding.iconUrl ? (
+								{resolvedIconUrl ? (
 									<Button
 										type="button"
 										variant="ghost"
@@ -231,12 +239,11 @@ export function TrainerAccountTemaPage() {
 				</div>
 
 				<div className="w-full shrink-0 xl:max-w-md">
-					<TypographySpanXSmall className="text-muted-foreground">Pré-visualização</TypographySpanXSmall>
 					<div className="mt-2">
-						<WelcomeCard
+						<ClientHomePhonePreview
 							appName={watched.appName?.trim() || null}
 							welcomeMessage={watched.welcomeMessage?.trim() || null}
-							iconUrl={branding.iconUrl}
+							iconUrl={resolvedIconUrl}
 						/>
 					</div>
 				</div>

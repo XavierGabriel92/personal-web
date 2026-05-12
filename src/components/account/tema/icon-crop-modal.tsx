@@ -12,6 +12,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
+import { useState } from "react";
 
 function dataUrlTo512PngFile(dataUrl: string): Promise<File> {
 	return new Promise((resolve, reject) => {
@@ -46,21 +48,36 @@ type IconCropModalProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	file: File | null;
-	onSave: (file: File) => void | Promise<void>;
+	onSave: (file: File) => boolean | Promise<boolean>;
 };
 
 export function IconCropModal({ open, onOpenChange, file, onSave }: IconCropModalProps) {
+	const [isSaving, setIsSaving] = useState(false);
+
 	return (
 		<Dialog
 			open={open}
 			onOpenChange={(next) => {
+				if (isSaving) return;
 				onOpenChange(next);
 				if (!next) {
 					/* closed */
 				}
 			}}
 		>
-			<DialogContent className="sm:max-w-[560px]">
+			<DialogContent
+				className="sm:max-w-[560px]"
+				onEscapeKeyDown={(event) => {
+					if (isSaving) {
+						event.preventDefault();
+					}
+				}}
+				onInteractOutside={(event) => {
+					if (isSaving) {
+						event.preventDefault();
+					}
+				}}
+			>
 				<DialogHeader>
 					<DialogTitle>Recortar ícone</DialogTitle>
 				</DialogHeader>
@@ -74,9 +91,16 @@ export function IconCropModal({ open, onOpenChange, file, onSave }: IconCropModa
 						locked
 						maxImageSize={2 * 1024 * 1024}
 						onCrop={async (dataUrl) => {
-							const out = await dataUrlTo512PngFile(dataUrl);
-							await onSave(out);
-							onOpenChange(false);
+							setIsSaving(true);
+							try {
+								const out = await dataUrlTo512PngFile(dataUrl);
+								const saved = await onSave(out);
+								if (saved) {
+									onOpenChange(false);
+								}
+							} finally {
+								setIsSaving(false);
+							}
 						}}
 					>
 						<div className="flex flex-col gap-4">
@@ -84,7 +108,12 @@ export function IconCropModal({ open, onOpenChange, file, onSave }: IconCropModa
 							<DialogFooter className="flex flex-row items-center justify-between gap-2 sm:justify-between">
 								<div className="flex gap-2">
 									<ImageCropReset asChild>
-										<Button type="button" variant="outline" size="sm">
+										<Button
+											type="button"
+											variant="outline"
+											size="sm"
+											disabled={isSaving}
+										>
 											Resetar
 										</Button>
 									</ImageCropReset>
@@ -94,11 +123,21 @@ export function IconCropModal({ open, onOpenChange, file, onSave }: IconCropModa
 										type="button"
 										variant="outline"
 										onClick={() => onOpenChange(false)}
+										disabled={isSaving}
 									>
 										Cancelar
 									</Button>
 									<ImageCropApply asChild>
-										<Button type="button">Salvar</Button>
+										<Button type="button" disabled={isSaving}>
+											{isSaving ? (
+												<>
+													<Spinner className="size-4" />
+													Salvando...
+												</>
+											) : (
+												"Salvar"
+											)}
+										</Button>
 									</ImageCropApply>
 								</div>
 							</DialogFooter>
