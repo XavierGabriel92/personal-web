@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetApiClients } from "@/gen/hooks/useGetApiClients";
 import { useGetApiRoutines } from "@/gen/hooks/useGetApiRoutines";
+import { useGetApiTrainerBrandingSuspense } from "@/gen/hooks/useGetApiTrainerBrandingSuspense";
 import { usePatchApiTrainerOnboardingFinished } from "@/gen/hooks/usePatchApiTrainerOnboardingFinished";
 import { sessionQueryKey, useCachedSession } from "@/hooks/auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -21,17 +22,26 @@ function Step({ label, done, onClick, children }: StepProps) {
   return (
     <div className="flex items-center gap-3">
       <div
-        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${done ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground"
+        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${done
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-muted-foreground"
           }`}
       >
         {done && <Check className="h-3 w-3" />}
       </div>
       {done ? (
-        <span className="text-sm text-muted-foreground line-through">{label}</span>
+        <span className="text-sm text-muted-foreground line-through">
+          {label}
+        </span>
       ) : children ? (
         children
       ) : (
-        <Button variant="link" size="sm" className="p-0 h-auto text-sm" onClick={onClick}>
+        <Button
+          variant="link"
+          size="sm"
+          className="p-0 h-auto text-sm"
+          onClick={onClick}
+        >
           {label}
         </Button>
       )}
@@ -50,18 +60,25 @@ export default function OnboardingChecklist() {
 function OnboardingChecklistContent() {
   const { data: routinesData } = useGetApiRoutines();
   const { data: clientsData } = useGetApiClients();
+  const { data: branding } = useGetApiTrainerBrandingSuspense();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: markFinished } = usePatchApiTrainerOnboardingFinished({
     mutation: {
-      onSuccess: () => queryClient.refetchQueries({ queryKey: sessionQueryKey }),
+      onSuccess: () =>
+        queryClient.refetchQueries({ queryKey: sessionQueryKey }),
     },
   });
 
   const hasRoutine = (routinesData?.routines?.length ?? 0) > 0;
   const hasClient = (clientsData?.clients?.length ?? 0) > 0;
-  const hasSession = (clientsData?.clients ?? []).some(c => c.activeRoutineId);
-  const allDone = hasRoutine && hasClient && hasSession;
+  const hasSession = (clientsData?.clients ?? []).some(
+    (c) => c.activeRoutineId,
+  );
+  const hasAppName = Boolean(branding.appName?.trim());
+  const hasIcon = Boolean(branding.iconUrl?.trim());
+  const hasThemeConfigured = hasAppName && hasIcon;
+  const allDone = hasRoutine && hasClient && hasSession && hasThemeConfigured;
 
   useEffect(() => {
     if (allDone) markFinished();
@@ -76,20 +93,32 @@ function OnboardingChecklistContent() {
       </CardHeader>
       <CardContent className="space-y-4">
         <Step
+          label="Configurar o tema do app"
+          done={hasThemeConfigured}
+          onClick={() => navigate({ to: "/trainer/account/tema" })}
+        />
+        <Step
           label="Criar um programa"
           done={hasRoutine}
           onClick={() => navigate({ to: "/trainer/routines" })}
         />
         <Step label="Cadastrar um aluno" done={hasClient}>
-          {!hasClient && <CreateClientSheet Trigger={<Button variant="link" size="sm" className="p-0 h-auto text-sm">
-            Criar novo aluno
-          </Button>} />}
+          {!hasClient && (
+            <CreateClientSheet
+              Trigger={
+                <Button variant="link" size="sm" className="p-0 h-auto text-sm">
+                  Criar um aluno
+                </Button>
+              }
+            />
+          )}
         </Step>
         <Step
-          label="Atribuir um programa ao aluno"
+          label="Criar programa de treino para o aluno"
           done={hasSession}
           onClick={() => navigate({ to: "/trainer/clients" })}
         />
+
       </CardContent>
     </Card>
   );
