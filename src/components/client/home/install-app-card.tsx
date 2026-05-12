@@ -10,7 +10,6 @@ import {
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -115,7 +114,6 @@ export function InstallAppCard() {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Como instalar no iPhone</DialogTitle>
-
 					</DialogHeader>
 
 					<div className="space-y-4">
@@ -138,7 +136,7 @@ export function InstallAppCard() {
 									2. Escolha Adicionar a Tela de Inicio
 								</TypographyP>
 								<TypographyP className="text-muted-foreground">
-									Confirme a acao para salvar instalar o app.
+									Confirme a acao para salvar o app na sua tela inicial.
 								</TypographyP>
 							</div>
 						</div>
