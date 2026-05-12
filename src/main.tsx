@@ -1,3 +1,4 @@
+import { registerSW } from "virtual:pwa-register";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
@@ -37,6 +38,10 @@ if (rootElement && !rootElement.innerHTML) {
 			</ThemeProvider>
 		</StrictMode>,
 	);
+}
+
+if (import.meta.env.PROD) {
+	registerSW({ immediate: true });
 }
 
 // If you want to start measuring performance in your app, pass a function

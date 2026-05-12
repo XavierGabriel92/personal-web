@@ -1,14 +1,18 @@
 {
-	"short_name": "Homug app",
+	"id": "/",
 	"name": "Homug",
+	"short_name": "Homug",
+	"description": "Acompanhe seus treinos e atividades pelo app Homug.",
 	"icons": [
 		{
-			"src": "favicon.ico",
-			"sizes": "64x64 32x32 24x24 16x16",
-			"type": "image/x-icon"
+			"src": "/homug_gorilla_logo.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
 		}
 	],
-	"start_url": ".",
+	"start_url": "/client/home",
+	"scope": "/",
 	"display": "standalone",
 	"theme_color": "#000000",
 	"background_color": "#ffffff"

@@ -1,3 +1,4 @@
+import { InstallAppPromoCard } from "@/components/client/home/install-app-card";
 import { NextWorkoutCard } from "@/components/client/home/next-workout-card";
 import { PendingAnamnesisCard } from "@/components/client/home/pending-anamnesis-card";
 import { WelcomeCard } from "@/components/client/home/welcome-card";
@@ -29,8 +30,7 @@ const previewAnamnesis = {
 const previewWorkout = {
 	id: "preview-workout",
 	name: "Treino 1 - Push",
-	description:
-		"",
+	description: "",
 	exercises: [
 		{ exerciseData: { name: "Flexão de braços" } },
 		{ exerciseData: { name: "Flexão de braços (com carga)" } },
@@ -103,13 +103,17 @@ export function ClientHomePhonePreview({
 						</div>
 
 						<div className="pointer-events-none size-full overflow-hidden select-none">
-							<ClientPageContainer withBottomNav={false} className="pb-24 pt-14">
+							<ClientPageContainer
+								withBottomNav={false}
+								className="pb-24 pt-14"
+							>
 								<div className="space-y-2">
 									<WelcomeCard
 										appName={appName}
 										welcomeMessage={welcomeMessage}
 										iconUrl={iconUrl}
 									/>
+									<InstallAppPromoCard isIosLike isDisabled />
 									<PendingAnamnesisCard anamnesis={previewAnamnesis} />
 									<NextWorkoutCard
 										workout={previewWorkout}

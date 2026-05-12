@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 const DEFAULT_TITLE = "Homug";
 const DEFAULT_MANIFEST_PATH = "/api/client/me/manifest.json";
+const DEFAULT_ICON_PATH = "/homug_gorilla_logo.svg";
 
 type InstallBrandingData = {
 	appName?: string | null;
@@ -13,7 +14,9 @@ type InstallBrandingData = {
 };
 
 function upsertMeta(name: string, content: string) {
-	let el = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
+	let el = document.querySelector(
+		`meta[name="${name}"]`,
+	) as HTMLMetaElement | null;
 	if (!el) {
 		el = document.createElement("meta");
 		el.setAttribute("name", name);
@@ -23,7 +26,9 @@ function upsertMeta(name: string, content: string) {
 }
 
 function upsertLink(rel: string) {
-	let el = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
+	let el = document.querySelector(
+		`link[rel="${rel}"]`,
+	) as HTMLLinkElement | null;
 	if (!el) {
 		el = document.createElement("link");
 		el.rel = rel;
@@ -45,8 +50,13 @@ function buildManifestHref({
 	appName: string;
 	iconUrl: string | null;
 }) {
-	const manifestUrl = new URL(DEFAULT_MANIFEST_PATH, `${resolveBaseUrl(apiBase)}/`);
-	const manifestVersion = [appName, iconUrl?.trim() || "default-icon"].join("|");
+	const manifestUrl = new URL(
+		DEFAULT_MANIFEST_PATH,
+		`${resolveBaseUrl(apiBase)}/`,
+	);
+	const manifestVersion = [appName, iconUrl?.trim() || "default-icon"].join(
+		"|",
+	);
 	manifestUrl.searchParams.set("v", manifestVersion);
 	return manifestUrl.toString();
 }
@@ -61,13 +71,23 @@ export function applyInstallBranding(
 	const appName = data.appName?.trim() || DEFAULT_TITLE;
 	const rawIcon = data.iconUrl?.trim() || null;
 	const apiBase =
-		options?.apiBase?.trim() || import.meta.env.VITE_API_URL || window.location.origin;
-	const locationOrigin = options?.locationOrigin?.trim() || window.location.origin;
+		options?.apiBase?.trim() ||
+		import.meta.env.VITE_API_URL ||
+		window.location.origin;
+	const locationOrigin =
+		options?.locationOrigin?.trim() || window.location.origin;
 	const iconHref =
 		rawIcon && rawIcon.length > 0
 			? rawIcon
-			: new URL("/favicon.ico", `${resolveBaseUrl(locationOrigin)}/`).toString();
-	const manifestHref = buildManifestHref({ apiBase, appName, iconUrl: rawIcon });
+			: new URL(
+					DEFAULT_ICON_PATH,
+					`${resolveBaseUrl(locationOrigin)}/`,
+				).toString();
+	const manifestHref = buildManifestHref({
+		apiBase,
+		appName,
+		iconUrl: rawIcon,
+	});
 
 	document.title = appName;
 
@@ -78,6 +98,9 @@ export function applyInstallBranding(
 
 	const appleIcon = upsertLink("apple-touch-icon");
 	appleIcon.href = iconHref;
+
+	const iconLink = upsertLink("icon");
+	iconLink.href = iconHref;
 
 	upsertMeta("application-name", appName);
 	upsertMeta("apple-mobile-web-app-title", appName);

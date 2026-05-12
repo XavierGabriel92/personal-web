@@ -5,6 +5,7 @@ import { devtools } from "@tanstack/devtools-vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
@@ -20,6 +21,17 @@ export default defineConfig({
 		viteReact(),
 		tailwindcss(),
 		tsconfigPaths(),
+		VitePWA({
+			injectRegister: false,
+			registerType: "autoUpdate",
+			manifest: false,
+			includeAssets: ["homug_gorilla_logo.svg", "robots.txt"],
+			workbox: {
+				cleanupOutdatedCaches: true,
+				globPatterns: ["**/*.{css,html,ico,js,png,svg}"],
+				navigateFallback: "index.html",
+			},
+		}),
 	],
 	build: {
 		target: "es2022",

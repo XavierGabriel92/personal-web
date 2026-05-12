@@ -1,4 +1,5 @@
 import { EmptyProgramCard } from "@/components/client/home/empty-program-card";
+import { InstallAppCard } from "@/components/client/home/install-app-card";
 import { NextWorkoutCard } from "@/components/client/home/next-workout-card";
 import { PendingAnamnesisCard } from "@/components/client/home/pending-anamnesis-card";
 import { WelcomeCard } from "@/components/client/home/welcome-card";
@@ -35,6 +36,8 @@ export default function ClientHomePage() {
 					iconUrl={data.branding.iconUrl}
 				/>
 
+				<InstallAppCard />
+
 				<div className="space-y-2">
 					{data.pendingAnamnesis ? (
 						<PendingAnamnesisCard anamnesis={data.pendingAnamnesis} />
@@ -51,8 +54,8 @@ export default function ClientHomePage() {
 							<Card>
 								<CardContent>
 									<TypographyP className="text-muted-foreground">
-										Os treinos deste programa não estão disponíveis no
-										momento. Fale com seu treinador.
+										Os treinos deste programa não estão disponíveis no momento.
+										Fale com seu treinador.
 									</TypographyP>
 								</CardContent>
 							</Card>
