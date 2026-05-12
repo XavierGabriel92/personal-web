@@ -57,7 +57,10 @@ const centerFixedCrop = (
   naturalHeight: number,
   targetSize: number
 ): PixelCrop => {
-  const renderedScale = mediaWidth / naturalWidth;
+  const renderedScale = Math.min(
+    mediaWidth / naturalWidth,
+    mediaHeight / naturalHeight
+  );
   const renderedSize = Math.min(
     mediaWidth,
     mediaHeight,
