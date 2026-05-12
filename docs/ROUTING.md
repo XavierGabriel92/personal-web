@@ -21,9 +21,8 @@ routes/
 │   ├── request-reset-password.tsx
 │   └── reset-password.tsx
 ├── trainer/                 # Trainer layout route
-│   ├── route.tsx           # Trainer layout (requires auth + phone)
+│   ├── route.tsx           # Trainer layout (requires auth + trainer role)
 │   ├── home.tsx            # Trainer dashboard
-│   ├── phone-setup.tsx     # Forced phone-setup page (no phone → redirect here)
 │   ├── analytics.tsx       # Analytics dashboard
 │   ├── exercises.tsx       # Exercises list
 │   ├── clients.tsx         # Clients list
@@ -66,22 +65,20 @@ The root route provides:
 
 **File**: `src/routes/trainer/route.tsx`
 
-When a `beforeLoad` guard has multiple conditions (e.g. authentication AND profile completeness), pass `{ location }` to access the current path and break redirect loops by excluding the destination from its own guard:
+When a `beforeLoad` guard has multiple conditions (e.g. authentication AND role checks), handle both in the same route guard:
 
 ```typescript
 export const Route = createFileRoute("/trainer")({
   component: TrainerDashboardLayout,
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async () => {
     const data = await cachedSession();
 
     if (!data?.session) {
       throw redirect({ to: "/sign-in" });
     }
 
-    // Redirect trainers who haven't set up a phone yet.
-    // Exclude /trainer/phone-setup itself to avoid an infinite redirect loop.
-    if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
-      throw redirect({ to: "/trainer/phone-setup" });
+    if (data.user?.type !== "trainer") {
+      throw redirect({ to: "/client/home" });
     }
   },
 });
@@ -229,14 +226,14 @@ beforeLoad: async () => {
 }
 ```
 
-For multiple conditions, destructure `{ location }` to inspect the current path and avoid redirect loops:
+For multiple conditions, keep the checks together so the route stays the single source of truth:
 
 ```typescript
-beforeLoad: async ({ location }) => {
+beforeLoad: async () => {
   const data = await cachedSession();
   if (!data?.session) throw redirect({ to: "/sign-in" });
-  if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
-    throw redirect({ to: "/trainer/phone-setup" });
+  if (data.user?.type !== "trainer") {
+    throw redirect({ to: "/client/home" });
   }
 }
 ```
@@ -426,32 +423,6 @@ Use this pattern when:
 
 Do **not** use it for ephemeral dialogs (e.g. a confirmation prompt) or dialogs that depend heavily on local parent state that isn't expressible as a URL param.
 
-## Forced/Blocking Route Dialogs
-
-For profile-completeness gates (e.g. a user must supply required data before accessing the app), render a regular route that shows a non-dismissable `<Dialog>`:
-
-```tsx
-// src/routes/trainer/phone-setup.tsx
-export const Route = createFileRoute('/trainer/phone-setup')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  const navigate = useNavigate()
-  return (
-    <PhoneSetupDialog onSuccess={() => navigate({ to: '/trainer/home' })} />
-  )
-}
-```
-
-The dialog component prevents dismissal via `onPointerDownOutside` and `onEscapeKeyDown` prevention and hides the close button. The parent layout's `beforeLoad` guard redirects here when the condition is unmet, and must exclude this path to avoid an infinite loop:
-
-```typescript
-if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
-  throw redirect({ to: "/trainer/phone-setup" });
-}
-```
-
 ## Best Practices
 
 - ✅ Use file-based routing structure
@@ -465,5 +436,4 @@ if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
 - ✅ Keep detail pages as siblings of the layout file (not children) when they should not inherit the shared layout
 - ✅ Keep route components focused and small
 - ✅ Use modal routes (`$id.tsx` renders a dialog) for reusable dialogs that need deep-linking or multiple entry points
-- ✅ For multi-condition `beforeLoad` guards, destructure `{ location }` and exclude the redirect target path to prevent infinite loops
-- ✅ For forced profile-completeness gates, use a regular route with a non-dismissable dialog rather than intercepting routes
+- ✅ Keep multi-condition `beforeLoad` guards explicit so auth and role redirects stay easy to reason about

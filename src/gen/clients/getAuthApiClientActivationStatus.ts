@@ -13,7 +13,7 @@ function getGetAuthApiClientActivationStatusUrl() {
 }
 
 /**
- * @description GET with session cookie. Returns whether invited client finished web activation (phone on user, or Google account linked).
+ * @description GET with session cookie. Returns whether invited client finished web activation (linked account exists, optionally with phone filled in).
  * @summary Client activation status
  * {@link /auth/api/client/activation-status}
  */

@@ -8,6 +8,7 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Spinner } from "@/components/ui/spinner";
 import {
 	Table,
 	TableBody,
@@ -16,13 +17,18 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { TypographyH1, TypographyH4, TypographyP, TypographySpanXSmall } from "@/components/ui/typography";
+import {
+	TypographyH1,
+	TypographyH4,
+	TypographyP,
+	TypographySpanXSmall,
+} from "@/components/ui/typography";
 import { useGetApiClientMeHomeSuspense } from "@/gen/hooks/useGetApiClientMeHomeSuspense";
 import { useGetApiClientMeRoutineWorkoutsSuspense } from "@/gen/hooks/useGetApiClientMeRoutineWorkoutsSuspense";
 import type { GetApiClientMeRoutineWorkouts200 } from "@/gen/types/GetApiClientMeRoutineWorkouts";
 import { useStartWorkoutWithDraftGuard } from "@/hooks/use-start-workout-with-draft-guard";
-import { clientPortalQueryOptions } from "@/lib/client-query";
 import { getClientTimeZone } from "@/lib/client-portal";
+import { clientPortalQueryOptions } from "@/lib/client-query";
 import { Link } from "@tanstack/react-router";
 import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -41,7 +47,10 @@ function PrescribedExerciseItem({
 	return (
 		<Collapsible open={open} onOpenChange={setOpen}>
 			<CollapsibleTrigger asChild>
-				<Button variant="ghost" className="h-auto w-full justify-between px-0 py-2">
+				<Button
+					variant="ghost"
+					className="h-auto w-full justify-between px-0 py-2"
+				>
 					<div className="flex min-w-0 items-center gap-4">
 						<Avatar className="size-10">
 							<AvatarImage
@@ -62,7 +71,11 @@ function PrescribedExerciseItem({
 						</div>
 					</div>
 					<ChevronDown
-						className={open ? "size-4 rotate-180 transition-transform" : "size-4 transition-transform"}
+						className={
+							open
+								? "size-4 rotate-180 transition-transform"
+								: "size-4 transition-transform"
+						}
 					/>
 				</Button>
 			</CollapsibleTrigger>
@@ -78,24 +91,29 @@ function PrescribedExerciseItem({
 					<TableBody>
 						{exercise.sets.length === 0 ? (
 							<TableRow>
-								<TableCell className="text-center text-muted-foreground" colSpan={3}>
+								<TableCell
+									className="text-center text-muted-foreground"
+									colSpan={3}
+								>
 									Nenhuma série prescrita.
 								</TableCell>
 							</TableRow>
 						) : (
-							exercise.sets.map((set: WorkoutExercise["sets"][number], index: number) => (
-								<TableRow key={`${exercise.id}-${index}`}>
-									<TableCell className="text-center">
-										{set.weight != null ? `${set.weight}kg` : "—"}
-									</TableCell>
-									<TableCell className="text-center">
-										{set.reps != null ? set.reps : "—"}
-									</TableCell>
-									<TableCell className="text-center">
-										{set.rest != null ? `${set.rest}s` : "—"}
-									</TableCell>
-								</TableRow>
-							))
+							exercise.sets.map(
+								(set: WorkoutExercise["sets"][number], index: number) => (
+									<TableRow key={`${exercise.id}-${index}`}>
+										<TableCell className="text-center">
+											{set.weight != null ? `${set.weight}kg` : "—"}
+										</TableCell>
+										<TableCell className="text-center">
+											{set.reps != null ? set.reps : "—"}
+										</TableCell>
+										<TableCell className="text-center">
+											{set.rest != null ? `${set.rest}s` : "—"}
+										</TableCell>
+									</TableRow>
+								),
+							)
 						)}
 					</TableBody>
 				</Table>
@@ -115,16 +133,23 @@ function PrescribedExerciseItem({
 }
 
 export default function ClientWorkoutsPage() {
-	const { data: home } = useGetApiClientMeHomeSuspense({
-		timeZone: getClientTimeZone(),
-	}, {
-		query: clientPortalQueryOptions,
-	});
+	const { data: home } = useGetApiClientMeHomeSuspense(
+		{
+			timeZone: getClientTimeZone(),
+		},
+		{
+			query: clientPortalQueryOptions,
+		},
+	);
 	const { data: routine } = useGetApiClientMeRoutineWorkoutsSuspense({
 		query: clientPortalQueryOptions,
 	});
-	const { requestStartWorkout, replaceDraftDialogProps } =
-		useStartWorkoutWithDraftGuard();
+	const {
+		requestStartWorkout,
+		isStartWorkoutPending,
+		pendingWorkoutId,
+		replaceDraftDialogProps,
+	} = useStartWorkoutWithDraftGuard();
 
 	const workouts = useMemo(
 		() => [...routine.workouts].sort((left, right) => left.order - right.order),
@@ -165,7 +190,8 @@ export default function ClientWorkoutsPage() {
 					<Card>
 						<CardContent>
 							<TypographyP className="text-muted-foreground">
-								Nenhum treino disponível no programa. Fale com seu treinador.
+								Os treinos deste programa não estão disponíveis no momento.
+								Fale com seu treinador.
 							</TypographyP>
 						</CardContent>
 					</Card>
@@ -195,9 +221,17 @@ export default function ClientWorkoutsPage() {
 
 								<Button
 									className="w-full"
+									disabled={isStartWorkoutPending}
 									onClick={() => void requestStartWorkout(workout.id)}
 								>
-									Iniciar treino
+									{isStartWorkoutPending && pendingWorkoutId === workout.id ? (
+										<>
+											<Spinner className="size-4" />
+											Iniciando...
+										</>
+									) : (
+										"Iniciar treino"
+									)}
 								</Button>
 							</CardContent>
 						</Card>

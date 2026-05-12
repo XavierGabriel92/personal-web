@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PostApiClientByIdResendActivationMutationResponse, PostApiClientByIdResendActivationPathParams, PostApiClientByIdResendActivation400 } from "../types/PostApiClientByIdResendActivation.ts";
+import type { PostApiClientByIdResendActivationMutationResponse, PostApiClientByIdResendActivationPathParams, PostApiClientByIdResendActivation400, PostApiClientByIdResendActivation409 } from "../types/PostApiClientByIdResendActivation.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getPostApiClientByIdResendActivationUrl(id: PostApiClientByIdResendActivationPathParams["id"]) {
@@ -13,13 +13,13 @@ function getPostApiClientByIdResendActivationUrl(id: PostApiClientByIdResendActi
 }
 
 /**
- * @description Resends the email confirmation link to a client who has not verified yet.
- * @summary Resend activation email
+ * @description Resends the invite link to a client who has not completed registration yet.
+ * @summary Resend invite email
  * {@link /api/client/:id/resend-activation}
  */
 export async function postApiClientByIdResendActivation(id: PostApiClientByIdResendActivationPathParams["id"], config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400>, unknown>({ method : "POST", url : getPostApiClientByIdResendActivationUrl(id).url.toString(), ... requestConfig })  
+  const res = await request<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400 | PostApiClientByIdResendActivation409>, unknown>({ method : "POST", url : getPostApiClientByIdResendActivationUrl(id).url.toString(), ... requestConfig })  
   return res.data
 }

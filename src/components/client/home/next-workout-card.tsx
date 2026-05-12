@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { TypographyH4, TypographyP, TypographySpanXSmall } from "@/components/ui/typography";
+import { Spinner } from "@/components/ui/spinner";
+import {
+	TypographyH4,
+	TypographyP,
+	TypographySpanXSmall,
+} from "@/components/ui/typography";
 import type { GetApiClientMeHome200 } from "@/gen/types/GetApiClientMeHome";
 
 interface NextWorkoutCardProps {
@@ -44,7 +49,14 @@ export function NextWorkoutCard({
 					disabled={isPending}
 					onClick={() => void onStart(workout.id)}
 				>
-					Iniciar treino
+					{isPending ? (
+						<>
+							<Spinner className="size-4" />
+							Iniciando...
+						</>
+					) : (
+						"Iniciar treino"
+					)}
 				</Button>
 			</CardContent>
 		</Card>

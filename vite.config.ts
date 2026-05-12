@@ -44,10 +44,16 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": fileURLToPath(new URL("./src", import.meta.url)),
+			// Vite's dep optimizer sometimes resolves `module` to a non-existent
+			// `dist/esm/lucide-react.js`; the package only ships `lucide-react.mjs`.
+			"lucide-react": fileURLToPath(
+				new URL("./node_modules/lucide-react/dist/esm/lucide-react.mjs", import.meta.url),
+			),
 		},
 	},
 	optimizeDeps: {
 		include: [
+			"lucide-react",
 			"@radix-ui/react-dialog",
 			"@radix-ui/react-dropdown-menu",
 			"@radix-ui/react-popover",

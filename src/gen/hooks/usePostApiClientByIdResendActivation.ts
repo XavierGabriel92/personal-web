@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PostApiClientByIdResendActivationMutationResponse, PostApiClientByIdResendActivationPathParams, PostApiClientByIdResendActivation400 } from "../types/PostApiClientByIdResendActivation.ts";
+import type { PostApiClientByIdResendActivationMutationResponse, PostApiClientByIdResendActivationPathParams, PostApiClientByIdResendActivation400, PostApiClientByIdResendActivation409 } from "../types/PostApiClientByIdResendActivation.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { UseMutationOptions, UseMutationResult, QueryClient } from "@tanstack/react-query";
 import { postApiClientByIdResendActivation } from "../clients/postApiClientByIdResendActivation.ts";
@@ -16,7 +16,7 @@ export type PostApiClientByIdResendActivationMutationKey = ReturnType<typeof pos
 
 export function postApiClientByIdResendActivationMutationOptions(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const mutationKey = postApiClientByIdResendActivationMutationKey()
-  return mutationOptions<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400>, {id: PostApiClientByIdResendActivationPathParams["id"]}, typeof mutationKey>({
+  return mutationOptions<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400 | PostApiClientByIdResendActivation409>, {id: PostApiClientByIdResendActivationPathParams["id"]}, typeof mutationKey>({
     mutationKey,
     mutationFn: async({ id }) => {
       return postApiClientByIdResendActivation(id, config)
@@ -25,13 +25,13 @@ export function postApiClientByIdResendActivationMutationOptions(config: Partial
 }
 
 /**
- * @description Resends the email confirmation link to a client who has not verified yet.
- * @summary Resend activation email
+ * @description Resends the invite link to a client who has not completed registration yet.
+ * @summary Resend invite email
  * {@link /api/client/:id/resend-activation}
  */
 export function usePostApiClientByIdResendActivation<TContext>(options: 
 {
-  mutation?: UseMutationOptions<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext> & { client?: QueryClient },
+  mutation?: UseMutationOptions<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400 | PostApiClientByIdResendActivation409>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch },
 }
  = {}) {
@@ -39,11 +39,11 @@ export function usePostApiClientByIdResendActivation<TContext>(options:
   const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey = mutationOptions.mutationKey ?? postApiClientByIdResendActivationMutationKey()
 
-  const baseOptions = postApiClientByIdResendActivationMutationOptions(config) as UseMutationOptions<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext>
+  const baseOptions = postApiClientByIdResendActivationMutationOptions(config) as UseMutationOptions<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400 | PostApiClientByIdResendActivation409>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext>
 
-  return useMutation<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext>({
+  return useMutation<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400 | PostApiClientByIdResendActivation409>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext>({
     ...baseOptions,
     mutationKey,
     ...mutationOptions,
-  }, queryClient) as UseMutationResult<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext>
+  }, queryClient) as UseMutationResult<PostApiClientByIdResendActivationMutationResponse, ResponseErrorConfig<PostApiClientByIdResendActivation400 | PostApiClientByIdResendActivation409>, {id: PostApiClientByIdResendActivationPathParams["id"]}, TContext>
 }

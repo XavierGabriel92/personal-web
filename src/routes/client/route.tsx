@@ -1,3 +1,4 @@
+import { InstallBranding } from "@/components/client/install-branding";
 import { cachedSession } from "@/hooks/auth";
 import {
 	fetchClientRegistrationComplete,
@@ -38,5 +39,10 @@ export const Route = createFileRoute("/client")({
 });
 
 function ClientLayout() {
-	return <Outlet />;
+	return (
+		<>
+			<InstallBranding />
+			<Outlet />
+		</>
+	);
 }

@@ -40,6 +40,14 @@ export type GetApiClientMeHome200 = {
         email?: string;
         image?: (string | null);
     };
+    /**
+     * @type object
+    */
+    branding: {
+        appName: (string | null);
+        welcomeMessage: (string | null);
+        iconUrl: (string | null);
+    };
     program: ({
         /**
          * @type string

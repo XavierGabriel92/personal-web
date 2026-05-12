@@ -110,11 +110,10 @@ Rich, typed event records that capture significant client events (workout comple
 
 ### Trainer onboarding
 1. Sign up → arrive at trainer home dashboard
-2. If no phone on file → redirected to `/trainer/phone-setup` to add a Brazilian phone number before accessing any other page
-3. Create a training program (routine + workouts + exercises)
-4. Invite a client by email
-5. Assign the program to the client
-6. Client confirms the account and accesses the app experience
+2. Create a training program (routine + workouts + exercises)
+3. Invite a client by email
+4. Assign the program to the client
+5. Client confirms the account and accesses the app experience
 
 ### Trainer daily workflow
 - Check trainer home: client stats, latest activity, weekly active chart
@@ -173,7 +172,6 @@ User (Trainer)
 | Route | Description |
 |-------|-------------|
 | `/trainer/home` | Dashboard: stats, latest activity, weekly chart |
-| `/trainer/phone-setup` | Forced phone setup — shown when trainer has no phone on file |
 | `/trainer/clients` | Client list with search and filters |
 | `/trainer/clients/:id` | Client detail: program, progress charts, sessions |
 | `/trainer/clients/:id/anamnesis` | Client's assigned anamneses; edit questions while PENDING |
@@ -198,7 +196,5 @@ User (Trainer)
 **Client anamnesis isolation**: When a trainer assigns an anamnesis to a client, a client anamnesis record is created (not a pointer to the library item). The trainer can then add, reorder, and delete questions on that client's copy independently of the library anamnesis.
 
 **Billing plan gates client creation**: Before opening the create-client sheet, the frontend reads the cached billing plan from TanStack Query (`queryClient.getQueryData`) to avoid an extra network call. If `remainingClients <= 0`, the upgrade dialog opens immediately without ever showing the create form.
-
-**Phone required to access trainer area**: The `/trainer` route guard checks `data.user?.phone` and redirects to `/trainer/phone-setup` when it is absent. This ensures every trainer account has a valid Brazilian phone number before they can interact with the rest of the app.
 
 **Kubb codegen**: The frontend never writes API call code by hand. All API clients and React Query hooks are generated from the backend's OpenAPI spec via `bun run generate`. This keeps the frontend/backend contract always in sync.

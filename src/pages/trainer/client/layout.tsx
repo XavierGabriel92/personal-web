@@ -2,33 +2,14 @@ import EditClientSheet from "@/components/clients/sheet/edit-client";
 import ClientsTab from "@/components/clients/tab";
 import PageTitle from "@/components/core/page-title";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useGetApiClientByIdSuspense } from "@/gen/hooks/useGetApiClientByIdSuspense";
-import { usePostApiClientByIdResendActivation } from "@/gen/hooks/usePostApiClientByIdResendActivation";
-import { CheckCircle2, HelpCircle, Mail } from "lucide-react";
-import { toast } from "sonner";
 
 interface TrainerLayoutClientProps {
 	clientId: string;
 }
 
 export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientProps) {
-	const { data: client, refetch } = useGetApiClientByIdSuspense(clientId);
-	const { mutateAsync: resendActivation, isPending } = usePostApiClientByIdResendActivation();
-
-	const handleResendActivation = async () => {
-		try {
-			await resendActivation({ id: clientId });
-			toast.success("Convite reenviado.");
-			await refetch();
-		} catch {
-			toast.error("Não foi possível reenviar o convite. Tente novamente.");
-		}
-	};
-
-	const hasAuthUser = Boolean(client.userId);
-	const showResend = !hasAuthUser && Boolean(client.email);
+	const { data: client } = useGetApiClientByIdSuspense(clientId);
 
 	return (
 		<div className="w-full space-y-6">
@@ -40,37 +21,9 @@ export default function TrainerLayoutClient({ clientId }: TrainerLayoutClientPro
 						<Badge variant={client.active ? "success" : "secondary"}>
 							{client.active ? "Ativo" : "Inativo"}
 						</Badge>
-						{hasAuthUser ? (
-							<Badge variant="success" className="gap-1">
-								<CheckCircle2 className="h-3.5 w-3.5" />
-								Conta criada
-							</Badge>
-						) : (
-							<Badge variant="outline">Convite pendente</Badge>
-						)}
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger type="button">
-									<HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
-								</TooltipTrigger>
-								<TooltipContent>
-									Novos alunos recebem um email para confirmar a conta. Após confirmar, ficam ativos e podem entrar com link mágico.
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
 					</div>
 				}
-				actions={
-					<div className="flex items-center gap-2">
-						{showResend ? (
-							<Button variant="outline" size="sm" onClick={handleResendActivation} disabled={isPending}>
-								<Mail className="h-4 w-4" />
-								{isPending ? "Enviando..." : "Reenviar convite"}
-							</Button>
-						) : null}
-						<EditClientSheet clientId={clientId} />
-					</div>
-				}
+				actions={<EditClientSheet clientId={clientId} />}
 			/>
 			{client.email ? (
 				<p className="text-sm text-muted-foreground">

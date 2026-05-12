@@ -25,7 +25,7 @@ export function postApiClientCreateMutationOptions(config: Partial<RequestConfig
 }
 
 /**
- * @description Creates a roster client and a Better Auth user (type client). Sends an email so the client can confirm and activate. Returns 409 if email is already in use.
+ * @description Creates a roster client and sends an invite link so the client can finish registration on the web.
  * @summary Create client
  * {@link /api/client/create}
  */

@@ -77,7 +77,6 @@ export default function ClientsList() {
 								<TableHead>Nome</TableHead>
 								<TableHead>Telefone</TableHead>
 								<TableHead>Status</TableHead>
-								<TableHead>Conta no app</TableHead>
 								<TableHead>Ultimo treino registrado</TableHead>
 								<TableHead>Data de Cadastro</TableHead>
 							</TableRow>
@@ -86,7 +85,7 @@ export default function ClientsList() {
 							{filteredClients.length === 0 ? (
 								<TableRow>
 									<TableCell
-										colSpan={6}
+										colSpan={5}
 										className="text-center text-muted-foreground"
 									>
 										Nenhum aluno encontrado
@@ -114,15 +113,6 @@ export default function ClientsList() {
 											<Badge variant={client.active ? "success" : "secondary"}>
 												{client.active ? "Ativo" : "Inativo"}
 											</Badge>
-										</TableCell>
-										<TableCell>
-											{!client.userId ? (
-												<Badge variant="outline">Sem app</Badge>
-											) : client.emailVerified ? (
-												<Badge variant="success">Confirmado</Badge>
-											) : (
-												<Badge variant="secondary">Email pendente</Badge>
-											)}
 										</TableCell>
 										<TableCell>
 											<div className="min-w-[220px]">

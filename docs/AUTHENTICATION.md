@@ -58,8 +58,7 @@ export const {
 1. **Sign In**: User submits credentials → Better Auth handles session → Cookie set
 2. **Session Check**: Routes use `cachedSession()` in `beforeLoad`
 3. **Redirect**: If no session, redirect to `/sign-in`
-4. **Phone Gate**: If trainer has no phone, redirect to `/trainer/phone-setup`
-5. **User Type**: Redirect based on `user.type` ("trainer" or "client")
+4. **User Type**: Redirect based on `user.type` ("trainer" or "client")
 
 ## Sign Up Flow (Access Code Gate)
 
@@ -268,7 +267,7 @@ export const useCachedSession = () => {
 
 ### Protected Route Example
 
-The trainer layout route performs two checks in `beforeLoad`: authentication and phone setup. The `location` parameter is used to avoid redirect loops.
+The trainer layout route performs two checks in `beforeLoad`: authentication and trainer role.
 
 ```typescript
 // src/routes/trainer/route.tsx
@@ -277,22 +276,19 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/trainer")({
   component: TrainerDashboardLayout,
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async () => {
     const data = await cachedSession();
 
     if (!data?.session) {
       throw redirect({ to: "/sign-in" });
     }
 
-    // Force trainers to set up a phone before accessing any trainer route
-    if (!data.user?.phone && location.pathname !== '/trainer/phone-setup') {
-      throw redirect({ to: "/trainer/phone-setup" });
+    if (data.user?.type !== "trainer") {
+      throw redirect({ to: "/client/home" });
     }
   },
 });
 ```
-
-The `/trainer/phone-setup` path is explicitly excluded from the phone guard to prevent an infinite redirect loop.
 
 ### Auth Layout (Redirect if Authenticated)
 
@@ -430,7 +426,7 @@ The flag is set via `PATCH /api/trainer/onboarding-finished` and the session is 
 
 ### `phone`
 
-A Brazilian phone number stored on the user account. Validated with `libphonenumber-js` on both the registration form (optional for trainers, hidden for organization client sign-up) and the account settings dialog. When a trainer has no phone, the `/trainer` route guard redirects them to `/trainer/phone-setup` before they can access any other trainer page.
+A Brazilian phone number stored on the user account. Validated with `libphonenumber-js` on both the registration form (optional for trainers, hidden for organization client sign-up) and the account settings dialog.
 
 ### Onboarding step detection
 

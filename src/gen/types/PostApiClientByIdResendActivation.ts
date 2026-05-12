@@ -31,10 +31,20 @@ export type PostApiClientByIdResendActivation400 = {
     message: string;
 };
 
+/**
+ * @description Response for status 409
+*/
+export type PostApiClientByIdResendActivation409 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
 export type PostApiClientByIdResendActivationMutationResponse = PostApiClientByIdResendActivation200;
 
 export type PostApiClientByIdResendActivationMutation = {
     Response: PostApiClientByIdResendActivation200;
     PathParams: PostApiClientByIdResendActivationPathParams;
-    Errors: PostApiClientByIdResendActivation400;
+    Errors: PostApiClientByIdResendActivation400 | PostApiClientByIdResendActivation409;
 };

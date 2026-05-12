@@ -1,5 +1,5 @@
-import { getApiClientMeSessionsDraftQueryKey } from "@/gen/hooks/useGetApiClientMeSessionsDraft";
 import { useDeleteApiClientMeSessionsBySessionId } from "@/gen/hooks/useDeleteApiClientMeSessionsBySessionId";
+import { getApiClientMeSessionsDraftQueryKey } from "@/gen/hooks/useGetApiClientMeSessionsDraft";
 import { usePostApiClientMeSessionsStart } from "@/gen/hooks/usePostApiClientMeSessionsStart";
 import { useDraftSession } from "@/hooks/use-draft-session";
 import { getErrorMessage } from "@/lib/client-portal";
@@ -20,27 +20,38 @@ export function useStartWorkoutWithDraftGuard() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 	const draftSession = draftQuery.data;
+	const isStartWorkoutPending = isStarting || isDiscarding;
 
 	const goToActiveSession = async () => {
 		await navigate({ to: "/client/sessions/active" });
 	};
 
 	const startRequestedWorkout = async (workoutId: string) => {
-		await startWorkout(
-			{ data: { workoutId } },
-			{
-				onSuccess: async (session) => {
-					queryClient.setQueryData(
-						getApiClientMeSessionsDraftQueryKey(),
-						session,
-					);
-					await goToActiveSession();
+		setPendingWorkoutId(workoutId);
+
+		try {
+			await startWorkout(
+				{ data: { workoutId } },
+				{
+					onSuccess: async (session) => {
+						queryClient.setQueryData(
+							getApiClientMeSessionsDraftQueryKey(),
+							session,
+						);
+						await goToActiveSession();
+					},
+					onError: (error) => {
+						toast.error(
+							getErrorMessage(error, "Não foi possível iniciar o treino."),
+						);
+					},
 				},
-				onError: (error) => {
-					toast.error(getErrorMessage(error, "Não foi possível iniciar o treino."));
-				},
-			},
-		);
+			);
+		} finally {
+			setPendingWorkoutId((currentWorkoutId) =>
+				currentWorkoutId === workoutId ? null : currentWorkoutId,
+			);
+		}
 	};
 
 	const requestStartWorkout = async (workoutId: string) => {
@@ -71,7 +82,10 @@ export function useStartWorkoutWithDraftGuard() {
 					},
 					onError: (error) => {
 						toast.error(
-							getErrorMessage(error, "Não foi possível descartar o treino atual."),
+							getErrorMessage(
+								error,
+								"Não foi possível descartar o treino atual.",
+							),
 						);
 					},
 				},
@@ -83,14 +97,24 @@ export function useStartWorkoutWithDraftGuard() {
 		setPendingWorkoutId(null);
 	};
 
+	const handleDialogOpenChange = (open: boolean) => {
+		setIsDialogOpen(open);
+
+		if (!open && !isStartWorkoutPending) {
+			setPendingWorkoutId(null);
+		}
+	};
+
 	return {
 		activeDraft: draftSession?.status === "draft" ? draftSession : null,
+		isStartWorkoutPending,
+		pendingWorkoutId,
 		requestStartWorkout,
 		replaceDraftDialogProps: {
 			open: isDialogOpen,
-			onOpenChange: setIsDialogOpen,
+			onOpenChange: handleDialogOpenChange,
 			onConfirm: confirmReplaceDraft,
-			isPending: isStarting || isDiscarding,
+			isPending: isStartWorkoutPending,
 		},
 	};
 }
