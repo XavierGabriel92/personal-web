@@ -214,7 +214,7 @@ export function ImageLoader({
   }, [onError])
 
   const handleImageRef = useCallback((img: HTMLImageElement | null) => {
-    if (img && img.complete && img.naturalHeight !== 0) {
+    if (img?.complete && img?.naturalHeight !== 0) {
       setIsLoaded(true)
     }
   }, [])
