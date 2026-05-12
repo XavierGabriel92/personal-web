@@ -5,6 +5,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const DEFAULT_TITLE = "Homug";
+const DEFAULT_MANIFEST_PATH = "/api/client/me/manifest.json";
+
+type InstallBrandingData = {
+	appName?: string | null;
+	iconUrl?: string | null;
+};
 
 function upsertMeta(name: string, content: string) {
 	let el = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
@@ -14,6 +20,69 @@ function upsertMeta(name: string, content: string) {
 		document.head.appendChild(el);
 	}
 	el.setAttribute("content", content);
+}
+
+function upsertLink(rel: string) {
+	let el = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
+	if (!el) {
+		el = document.createElement("link");
+		el.rel = rel;
+		document.head.appendChild(el);
+	}
+	return el;
+}
+
+function resolveBaseUrl(base: string) {
+	return base.replace(/\/$/, "");
+}
+
+function buildManifestHref({
+	apiBase,
+	appName,
+	iconUrl,
+}: {
+	apiBase: string;
+	appName: string;
+	iconUrl: string | null;
+}) {
+	const manifestUrl = new URL(DEFAULT_MANIFEST_PATH, `${resolveBaseUrl(apiBase)}/`);
+	const manifestVersion = [appName, iconUrl?.trim() || "default-icon"].join("|");
+	manifestUrl.searchParams.set("v", manifestVersion);
+	return manifestUrl.toString();
+}
+
+export function applyInstallBranding(
+	data: InstallBrandingData,
+	options?: {
+		apiBase?: string;
+		locationOrigin?: string;
+	},
+) {
+	const appName = data.appName?.trim() || DEFAULT_TITLE;
+	const rawIcon = data.iconUrl?.trim() || null;
+	const apiBase =
+		options?.apiBase?.trim() || import.meta.env.VITE_API_URL || window.location.origin;
+	const locationOrigin = options?.locationOrigin?.trim() || window.location.origin;
+	const iconHref =
+		rawIcon && rawIcon.length > 0
+			? rawIcon
+			: new URL("/favicon.ico", `${resolveBaseUrl(locationOrigin)}/`).toString();
+	const manifestHref = buildManifestHref({ apiBase, appName, iconUrl: rawIcon });
+
+	document.title = appName;
+
+	const linkManifest = upsertLink("manifest");
+	linkManifest.href = manifestHref;
+	linkManifest.type = "application/manifest+json";
+	linkManifest.setAttribute("crossorigin", "use-credentials");
+
+	const appleIcon = upsertLink("apple-touch-icon");
+	appleIcon.href = iconHref;
+
+	upsertMeta("application-name", appName);
+	upsertMeta("apple-mobile-web-app-title", appName);
+	upsertMeta("apple-mobile-web-app-capable", "yes");
+	upsertMeta("mobile-web-app-capable", "yes");
 }
 
 export function InstallBranding() {
@@ -28,41 +97,7 @@ export function InstallBranding() {
 			return;
 		}
 
-		const apiBase = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(
-			/\/$/,
-			"",
-		);
-		const manifestHref = `${apiBase}/api/client/me/manifest.json`;
-
-		const appName = data.appName?.trim() || DEFAULT_TITLE;
-		const rawIcon = data.iconUrl?.trim();
-		const iconHref =
-			rawIcon && rawIcon.length > 0
-				? rawIcon
-				: `${window.location.origin}/favicon.ico`;
-
-		document.title = appName;
-
-		let linkManifest = document.querySelector('link[rel="manifest"]') as HTMLLinkElement | null;
-		if (!linkManifest) {
-			linkManifest = document.createElement("link");
-			linkManifest.rel = "manifest";
-			document.head.appendChild(linkManifest);
-		}
-		linkManifest.href = manifestHref;
-
-		let appleIcon = document.querySelector(
-			'link[rel="apple-touch-icon"]',
-		) as HTMLLinkElement | null;
-		if (!appleIcon) {
-			appleIcon = document.createElement("link");
-			appleIcon.rel = "apple-touch-icon";
-			document.head.appendChild(appleIcon);
-		}
-		appleIcon.href = iconHref;
-
-		upsertMeta("apple-mobile-web-app-title", appName);
-		upsertMeta("apple-mobile-web-app-capable", "yes");
+		applyInstallBranding(data);
 	}, [data]);
 
 	return null;
