@@ -3,7 +3,7 @@ import ClientAnamnesisDetailPage from "@/pages/client/anamnesis-detail";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 
-export const Route = createFileRoute("/client/anamneses/$clientAnamnesisId")({
+export const Route = createFileRoute("/client/anamneses/$clientAnamnesisId/")({
 	component: RouteComponent,
 });
 

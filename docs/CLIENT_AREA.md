@@ -116,7 +116,7 @@ Client code is split by role:
 | `app/edit-profile.tsx` | `/client/profile/edit` | `usePatchApiClientMeProfile` |
 | `app/anamnesis-list.tsx` | `/client/anamneses` | `useGetApiClientMeAnamnesisSuspense` |
 | `app/anamnesis-detail.tsx` | `/client/anamneses/$clientAnamnesisId` | `useGetApiClientMeAnamnesisByClientAnamnesisIdSuspense` |
-| `app/anamnesis-respond.tsx` | `/client/anamneses/$clientAnamnesisId/respond` | `useGetApiClientMeAnamnesisByClientAnamnesisIdSuspense`, `usePutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId`, `usePostApiClientMeAnamnesisByClientAnamnesisIdFinish` |
+| `app/anamnesis-respond.tsx` | `/client/anamneses/$clientAnamnesisId/respond` | `useGetApiClientMeAnamnesisByClientAnamnesisIdSuspense`, `usePostApiClientMeAnamnesisByClientAnamnesisIdSubmit` |
 | `app/activities.tsx` | `/client/activities` | `getApiClientMeActivities` via `useSuspenseInfiniteQuery` |
 | `app/exercise-detail.tsx` | `/client/exercises/$exerciseId` | `useGetApiExerciseByIdSuspense` |
 | `app/select-exercise.tsx` | `/client/sessions/select-exercise` | `useGetApiExercisesFiltersSuspense`, `usePostApiExercisesSearch` |

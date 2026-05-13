@@ -38,7 +38,6 @@ import { Route as ClientSessionsSelectExerciseRouteImport } from './routes/clien
 import { Route as ClientSessionsActiveRouteImport } from './routes/client/sessions/active'
 import { Route as ClientProfileEditRouteImport } from './routes/client/profile/edit'
 import { Route as ClientExercisesExerciseIdRouteImport } from './routes/client/exercises/$exerciseId'
-import { Route as ClientAnamnesesClientAnamnesisIdRouteImport } from './routes/client/anamneses/$clientAnamnesisId'
 import { Route as ClienttabsWorkoutsRouteImport } from './routes/client/(tabs)/workouts'
 import { Route as ClienttabsProfileRouteImport } from './routes/client/(tabs)/profile'
 import { Route as ClienttabsHomeRouteImport } from './routes/client/(tabs)/home'
@@ -48,6 +47,7 @@ import { Route as TrainerAccountsectionsRouteRouteImport } from './routes/traine
 import { Route as TrainerRoutinesRoutinesLayoutIndexRouteImport } from './routes/trainer/routines/_routinesLayout.index'
 import { Route as TrainerAnamnesisAnamnesisLayoutIndexRouteImport } from './routes/trainer/anamnesis/_anamnesisLayout.index'
 import { Route as TrainerAccountsectionsIndexRouteImport } from './routes/trainer/account/(sections)/index'
+import { Route as ClientAnamnesesClientAnamnesisIdIndexRouteImport } from './routes/client/anamneses/$clientAnamnesisId/index'
 import { Route as TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport } from './routes/trainer/routines/_routinesLayout.homug-programs'
 import { Route as TrainerClientsClientIdWorkoutSessionRouteImport } from './routes/trainer/clients/$clientId/workout-session'
 import { Route as TrainerClientsClientIdWeightEvolutionRouteImport } from './routes/trainer/clients/$clientId/weight-evolution'
@@ -213,12 +213,6 @@ const ClientExercisesExerciseIdRoute =
     path: '/exercises/$exerciseId',
     getParentRoute: () => ClientRouteRoute,
   } as any)
-const ClientAnamnesesClientAnamnesisIdRoute =
-  ClientAnamnesesClientAnamnesisIdRouteImport.update({
-    id: '/anamneses/$clientAnamnesisId',
-    path: '/anamneses/$clientAnamnesisId',
-    getParentRoute: () => ClientRouteRoute,
-  } as any)
 const ClienttabsWorkoutsRoute = ClienttabsWorkoutsRouteImport.update({
   id: '/workouts',
   path: '/workouts',
@@ -268,6 +262,12 @@ const TrainerAccountsectionsIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => TrainerAccountsectionsRouteRoute,
+  } as any)
+const ClientAnamnesesClientAnamnesisIdIndexRoute =
+  ClientAnamnesesClientAnamnesisIdIndexRouteImport.update({
+    id: '/anamneses/$clientAnamnesisId/',
+    path: '/anamneses/$clientAnamnesisId/',
+    getParentRoute: () => ClientRouteRoute,
   } as any)
 const TrainerRoutinesRoutinesLayoutHomugProgramsRoute =
   TrainerRoutinesRoutinesLayoutHomugProgramsRouteImport.update({
@@ -343,9 +343,9 @@ const ClientSessionsActiveSaveRoute =
   } as any)
 const ClientAnamnesesClientAnamnesisIdRespondRoute =
   ClientAnamnesesClientAnamnesisIdRespondRouteImport.update({
-    id: '/respond',
-    path: '/respond',
-    getParentRoute: () => ClientAnamnesesClientAnamnesisIdRoute,
+    id: '/anamneses/$clientAnamnesisId/respond',
+    path: '/anamneses/$clientAnamnesisId/respond',
+    getParentRoute: () => ClientRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -369,7 +369,6 @@ export interface FileRoutesByFullPath {
   '/client/home': typeof ClienttabsHomeRoute
   '/client/profile': typeof ClienttabsProfileRoute
   '/client/workouts': typeof ClienttabsWorkoutsRoute
-  '/client/anamneses/$clientAnamnesisId': typeof ClientAnamnesesClientAnamnesisIdRouteWithChildren
   '/client/exercises/$exerciseId': typeof ClientExercisesExerciseIdRoute
   '/client/profile/edit': typeof ClientProfileEditRoute
   '/client/sessions/active': typeof ClientSessionsActiveRouteWithChildren
@@ -394,6 +393,7 @@ export interface FileRoutesByFullPath {
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
+  '/client/anamneses/$clientAnamnesisId': typeof ClientAnamnesesClientAnamnesisIdIndexRoute
   '/trainer/account/': typeof TrainerAccountsectionsIndexRoute
   '/trainer/anamnesis/': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
@@ -417,7 +417,6 @@ export interface FileRoutesByTo {
   '/client/home': typeof ClienttabsHomeRoute
   '/client/profile': typeof ClienttabsProfileRoute
   '/client/workouts': typeof ClienttabsWorkoutsRoute
-  '/client/anamneses/$clientAnamnesisId': typeof ClientAnamnesesClientAnamnesisIdRouteWithChildren
   '/client/exercises/$exerciseId': typeof ClientExercisesExerciseIdRoute
   '/client/profile/edit': typeof ClientProfileEditRoute
   '/client/sessions/active': typeof ClientSessionsActiveRouteWithChildren
@@ -442,6 +441,7 @@ export interface FileRoutesByTo {
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
+  '/client/anamneses/$clientAnamnesisId': typeof ClientAnamnesesClientAnamnesisIdIndexRoute
   '/trainer/account': typeof TrainerAccountsectionsIndexRoute
 }
 export interface FileRoutesById {
@@ -468,7 +468,6 @@ export interface FileRoutesById {
   '/client/(tabs)/home': typeof ClienttabsHomeRoute
   '/client/(tabs)/profile': typeof ClienttabsProfileRoute
   '/client/(tabs)/workouts': typeof ClienttabsWorkoutsRoute
-  '/client/anamneses/$clientAnamnesisId': typeof ClientAnamnesesClientAnamnesisIdRouteWithChildren
   '/client/exercises/$exerciseId': typeof ClientExercisesExerciseIdRoute
   '/client/profile/edit': typeof ClientProfileEditRoute
   '/client/sessions/active': typeof ClientSessionsActiveRouteWithChildren
@@ -495,6 +494,7 @@ export interface FileRoutesById {
   '/trainer/clients/$clientId/weight-evolution': typeof TrainerClientsClientIdWeightEvolutionRoute
   '/trainer/clients/$clientId/workout-session': typeof TrainerClientsClientIdWorkoutSessionRoute
   '/trainer/routines/_routinesLayout/homug-programs': typeof TrainerRoutinesRoutinesLayoutHomugProgramsRoute
+  '/client/anamneses/$clientAnamnesisId/': typeof ClientAnamnesesClientAnamnesisIdIndexRoute
   '/trainer/account/(sections)/': typeof TrainerAccountsectionsIndexRoute
   '/trainer/anamnesis/_anamnesisLayout/': typeof TrainerAnamnesisAnamnesisLayoutIndexRoute
   '/trainer/routines/_routinesLayout/': typeof TrainerRoutinesRoutinesLayoutIndexRoute
@@ -522,7 +522,6 @@ export interface FileRouteTypes {
     | '/client/home'
     | '/client/profile'
     | '/client/workouts'
-    | '/client/anamneses/$clientAnamnesisId'
     | '/client/exercises/$exerciseId'
     | '/client/profile/edit'
     | '/client/sessions/active'
@@ -547,6 +546,7 @@ export interface FileRouteTypes {
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
+    | '/client/anamneses/$clientAnamnesisId'
     | '/trainer/account/'
     | '/trainer/anamnesis/'
     | '/trainer/routines/'
@@ -570,7 +570,6 @@ export interface FileRouteTypes {
     | '/client/home'
     | '/client/profile'
     | '/client/workouts'
-    | '/client/anamneses/$clientAnamnesisId'
     | '/client/exercises/$exerciseId'
     | '/client/profile/edit'
     | '/client/sessions/active'
@@ -595,6 +594,7 @@ export interface FileRouteTypes {
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/homug-programs'
+    | '/client/anamneses/$clientAnamnesisId'
     | '/trainer/account'
   id:
     | '__root__'
@@ -620,7 +620,6 @@ export interface FileRouteTypes {
     | '/client/(tabs)/home'
     | '/client/(tabs)/profile'
     | '/client/(tabs)/workouts'
-    | '/client/anamneses/$clientAnamnesisId'
     | '/client/exercises/$exerciseId'
     | '/client/profile/edit'
     | '/client/sessions/active'
@@ -647,6 +646,7 @@ export interface FileRouteTypes {
     | '/trainer/clients/$clientId/weight-evolution'
     | '/trainer/clients/$clientId/workout-session'
     | '/trainer/routines/_routinesLayout/homug-programs'
+    | '/client/anamneses/$clientAnamnesisId/'
     | '/trainer/account/(sections)/'
     | '/trainer/anamnesis/_anamnesisLayout/'
     | '/trainer/routines/_routinesLayout/'
@@ -866,13 +866,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientExercisesExerciseIdRouteImport
       parentRoute: typeof ClientRouteRoute
     }
-    '/client/anamneses/$clientAnamnesisId': {
-      id: '/client/anamneses/$clientAnamnesisId'
-      path: '/anamneses/$clientAnamnesisId'
-      fullPath: '/client/anamneses/$clientAnamnesisId'
-      preLoaderRoute: typeof ClientAnamnesesClientAnamnesisIdRouteImport
-      parentRoute: typeof ClientRouteRoute
-    }
     '/client/(tabs)/workouts': {
       id: '/client/(tabs)/workouts'
       path: '/workouts'
@@ -935,6 +928,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/trainer/account/'
       preLoaderRoute: typeof TrainerAccountsectionsIndexRouteImport
       parentRoute: typeof TrainerAccountsectionsRouteRoute
+    }
+    '/client/anamneses/$clientAnamnesisId/': {
+      id: '/client/anamneses/$clientAnamnesisId/'
+      path: '/anamneses/$clientAnamnesisId'
+      fullPath: '/client/anamneses/$clientAnamnesisId'
+      preLoaderRoute: typeof ClientAnamnesesClientAnamnesisIdIndexRouteImport
+      parentRoute: typeof ClientRouteRoute
     }
     '/trainer/routines/_routinesLayout/homug-programs': {
       id: '/trainer/routines/_routinesLayout/homug-programs'
@@ -1022,10 +1022,10 @@ declare module '@tanstack/react-router' {
     }
     '/client/anamneses/$clientAnamnesisId/respond': {
       id: '/client/anamneses/$clientAnamnesisId/respond'
-      path: '/respond'
+      path: '/anamneses/$clientAnamnesisId/respond'
       fullPath: '/client/anamneses/$clientAnamnesisId/respond'
       preLoaderRoute: typeof ClientAnamnesesClientAnamnesisIdRespondRouteImport
-      parentRoute: typeof ClientAnamnesesClientAnamnesisIdRoute
+      parentRoute: typeof ClientRouteRoute
     }
   }
 }
@@ -1064,21 +1064,6 @@ const ClienttabsRouteRouteWithChildren = ClienttabsRouteRoute._addFileChildren(
   ClienttabsRouteRouteChildren,
 )
 
-interface ClientAnamnesesClientAnamnesisIdRouteChildren {
-  ClientAnamnesesClientAnamnesisIdRespondRoute: typeof ClientAnamnesesClientAnamnesisIdRespondRoute
-}
-
-const ClientAnamnesesClientAnamnesisIdRouteChildren: ClientAnamnesesClientAnamnesisIdRouteChildren =
-  {
-    ClientAnamnesesClientAnamnesisIdRespondRoute:
-      ClientAnamnesesClientAnamnesisIdRespondRoute,
-  }
-
-const ClientAnamnesesClientAnamnesisIdRouteWithChildren =
-  ClientAnamnesesClientAnamnesisIdRoute._addFileChildren(
-    ClientAnamnesesClientAnamnesisIdRouteChildren,
-  )
-
 interface ClientSessionsActiveRouteChildren {
   ClientSessionsActiveSaveRoute: typeof ClientSessionsActiveSaveRoute
 }
@@ -1094,25 +1079,28 @@ interface ClientRouteRouteChildren {
   ClienttabsRouteRoute: typeof ClienttabsRouteRouteWithChildren
   ClientActivitiesRoute: typeof ClientActivitiesRoute
   ClientSetPasswordRoute: typeof ClientSetPasswordRoute
-  ClientAnamnesesClientAnamnesisIdRoute: typeof ClientAnamnesesClientAnamnesisIdRouteWithChildren
   ClientExercisesExerciseIdRoute: typeof ClientExercisesExerciseIdRoute
   ClientProfileEditRoute: typeof ClientProfileEditRoute
   ClientSessionsActiveRoute: typeof ClientSessionsActiveRouteWithChildren
   ClientSessionsSelectExerciseRoute: typeof ClientSessionsSelectExerciseRoute
   ClientAnamnesesIndexRoute: typeof ClientAnamnesesIndexRoute
+  ClientAnamnesesClientAnamnesisIdRespondRoute: typeof ClientAnamnesesClientAnamnesisIdRespondRoute
+  ClientAnamnesesClientAnamnesisIdIndexRoute: typeof ClientAnamnesesClientAnamnesisIdIndexRoute
 }
 
 const ClientRouteRouteChildren: ClientRouteRouteChildren = {
   ClienttabsRouteRoute: ClienttabsRouteRouteWithChildren,
   ClientActivitiesRoute: ClientActivitiesRoute,
   ClientSetPasswordRoute: ClientSetPasswordRoute,
-  ClientAnamnesesClientAnamnesisIdRoute:
-    ClientAnamnesesClientAnamnesisIdRouteWithChildren,
   ClientExercisesExerciseIdRoute: ClientExercisesExerciseIdRoute,
   ClientProfileEditRoute: ClientProfileEditRoute,
   ClientSessionsActiveRoute: ClientSessionsActiveRouteWithChildren,
   ClientSessionsSelectExerciseRoute: ClientSessionsSelectExerciseRoute,
   ClientAnamnesesIndexRoute: ClientAnamnesesIndexRoute,
+  ClientAnamnesesClientAnamnesisIdRespondRoute:
+    ClientAnamnesesClientAnamnesisIdRespondRoute,
+  ClientAnamnesesClientAnamnesisIdIndexRoute:
+    ClientAnamnesesClientAnamnesisIdIndexRoute,
 }
 
 const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(

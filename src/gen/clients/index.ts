@@ -48,7 +48,7 @@ export { postApiClientByIdAssignRoutine } from "./postApiClientByIdAssignRoutine
 export { postApiClientByIdResendActivation } from "./postApiClientByIdResendActivation.ts";
 export { postApiClientCreate } from "./postApiClientCreate.ts";
 export { postApiClientInvites } from "./postApiClientInvites.ts";
-export { postApiClientMeAnamnesisByClientAnamnesisIdFinish } from "./postApiClientMeAnamnesisByClientAnamnesisIdFinish.ts";
+export { postApiClientMeAnamnesisByClientAnamnesisIdSubmit } from "./postApiClientMeAnamnesisByClientAnamnesisIdSubmit.ts";
 export { postApiClientMeSessionsBySessionIdFinish } from "./postApiClientMeSessionsBySessionIdFinish.ts";
 export { postApiClientMeSessionsStart } from "./postApiClientMeSessionsStart.ts";
 export { postApiExerciseByIdVideo } from "./postApiExerciseByIdVideo.ts";
@@ -65,7 +65,6 @@ export { putApiAnamnesisById } from "./putApiAnamnesisById.ts";
 export { putApiAnamnesisByIdQuestionsReorder } from "./putApiAnamnesisByIdQuestionsReorder.ts";
 export { putApiClientById } from "./putApiClientById.ts";
 export { putApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder } from "./putApiClientByIdAnamnesisByClientAnamnesisIdQuestionsReorder.ts";
-export { putApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId } from "./putApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId.ts";
 export { putApiClientMeSessionsBySessionIdExercises } from "./putApiClientMeSessionsBySessionIdExercises.ts";
 export { putApiExerciseById } from "./putApiExerciseById.ts";
 export { putApiRoutineById } from "./putApiRoutineById.ts";
