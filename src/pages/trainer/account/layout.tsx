@@ -1,11 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { CreditCard, type LucideIcon, Palette, UserCircle } from "lucide-react";
+import {
+	CreditCard,
+	type LucideIcon,
+	Palette,
+	SunMoon,
+	UserCircle,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 const items: {
-	to: "/trainer/account/conta" | "/trainer/account/tema" | "/trainer/account/plano";
+	to:
+		| "/trainer/account/conta"
+		| "/trainer/account/preference"
+		| "/trainer/account/tema"
+		| "/trainer/account/plano";
 	label: string;
 	description: string;
 	icon: LucideIcon;
@@ -15,6 +25,12 @@ const items: {
 			label: "Conta",
 			description: "Dados pessoais da sua conta",
 			icon: UserCircle,
+		},
+		{
+			to: "/trainer/account/preference",
+			label: "Preferências",
+			description: "Aparência do painel (claro ou escuro)",
+			icon: SunMoon,
 		},
 		{
 			to: "/trainer/account/tema",

@@ -56,6 +56,7 @@ import { Route as TrainerClientsClientIdOverviewRouteImport } from './routes/tra
 import { Route as TrainerClientsClientIdMeasurementsRouteImport } from './routes/trainer/clients/$clientId/measurements'
 import { Route as TrainerClientsClientIdAnamnesisRouteImport } from './routes/trainer/clients/$clientId/anamnesis'
 import { Route as TrainerAccountsectionsTemaRouteImport } from './routes/trainer/account/(sections)/tema'
+import { Route as TrainerAccountsectionsPreferenceRouteImport } from './routes/trainer/account/(sections)/preference'
 import { Route as TrainerAccountsectionsPlanoRouteImport } from './routes/trainer/account/(sections)/plano'
 import { Route as TrainerAccountsectionsContaRouteImport } from './routes/trainer/account/(sections)/conta'
 import { Route as ClientSessionsActiveSaveRouteImport } from './routes/client/sessions/active.save'
@@ -316,6 +317,12 @@ const TrainerAccountsectionsTemaRoute =
     path: '/tema',
     getParentRoute: () => TrainerAccountsectionsRouteRoute,
   } as any)
+const TrainerAccountsectionsPreferenceRoute =
+  TrainerAccountsectionsPreferenceRouteImport.update({
+    id: '/preference',
+    path: '/preference',
+    getParentRoute: () => TrainerAccountsectionsRouteRoute,
+  } as any)
 const TrainerAccountsectionsPlanoRoute =
   TrainerAccountsectionsPlanoRouteImport.update({
     id: '/plano',
@@ -378,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/client/sessions/active/save': typeof ClientSessionsActiveSaveRoute
   '/trainer/account/conta': typeof TrainerAccountsectionsContaRoute
   '/trainer/account/plano': typeof TrainerAccountsectionsPlanoRoute
+  '/trainer/account/preference': typeof TrainerAccountsectionsPreferenceRoute
   '/trainer/account/tema': typeof TrainerAccountsectionsTemaRoute
   '/trainer/clients/$clientId/anamnesis': typeof TrainerClientsClientIdAnamnesisRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
@@ -425,6 +433,7 @@ export interface FileRoutesByTo {
   '/client/sessions/active/save': typeof ClientSessionsActiveSaveRoute
   '/trainer/account/conta': typeof TrainerAccountsectionsContaRoute
   '/trainer/account/plano': typeof TrainerAccountsectionsPlanoRoute
+  '/trainer/account/preference': typeof TrainerAccountsectionsPreferenceRoute
   '/trainer/account/tema': typeof TrainerAccountsectionsTemaRoute
   '/trainer/clients/$clientId/anamnesis': typeof TrainerClientsClientIdAnamnesisRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
@@ -477,6 +486,7 @@ export interface FileRoutesById {
   '/client/sessions/active/save': typeof ClientSessionsActiveSaveRoute
   '/trainer/account/(sections)/conta': typeof TrainerAccountsectionsContaRoute
   '/trainer/account/(sections)/plano': typeof TrainerAccountsectionsPlanoRoute
+  '/trainer/account/(sections)/preference': typeof TrainerAccountsectionsPreferenceRoute
   '/trainer/account/(sections)/tema': typeof TrainerAccountsectionsTemaRoute
   '/trainer/clients/$clientId/anamnesis': typeof TrainerClientsClientIdAnamnesisRoute
   '/trainer/clients/$clientId/measurements': typeof TrainerClientsClientIdMeasurementsRoute
@@ -528,6 +538,7 @@ export interface FileRouteTypes {
     | '/client/sessions/active/save'
     | '/trainer/account/conta'
     | '/trainer/account/plano'
+    | '/trainer/account/preference'
     | '/trainer/account/tema'
     | '/trainer/clients/$clientId/anamnesis'
     | '/trainer/clients/$clientId/measurements'
@@ -575,6 +586,7 @@ export interface FileRouteTypes {
     | '/client/sessions/active/save'
     | '/trainer/account/conta'
     | '/trainer/account/plano'
+    | '/trainer/account/preference'
     | '/trainer/account/tema'
     | '/trainer/clients/$clientId/anamnesis'
     | '/trainer/clients/$clientId/measurements'
@@ -626,6 +638,7 @@ export interface FileRouteTypes {
     | '/client/sessions/active/save'
     | '/trainer/account/(sections)/conta'
     | '/trainer/account/(sections)/plano'
+    | '/trainer/account/(sections)/preference'
     | '/trainer/account/(sections)/tema'
     | '/trainer/clients/$clientId/anamnesis'
     | '/trainer/clients/$clientId/measurements'
@@ -979,6 +992,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainerAccountsectionsTemaRouteImport
       parentRoute: typeof TrainerAccountsectionsRouteRoute
     }
+    '/trainer/account/(sections)/preference': {
+      id: '/trainer/account/(sections)/preference'
+      path: '/preference'
+      fullPath: '/trainer/account/preference'
+      preLoaderRoute: typeof TrainerAccountsectionsPreferenceRouteImport
+      parentRoute: typeof TrainerAccountsectionsRouteRoute
+    }
     '/trainer/account/(sections)/plano': {
       id: '/trainer/account/(sections)/plano'
       path: '/plano'
@@ -1102,6 +1122,7 @@ const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(
 interface TrainerAccountsectionsRouteRouteChildren {
   TrainerAccountsectionsContaRoute: typeof TrainerAccountsectionsContaRoute
   TrainerAccountsectionsPlanoRoute: typeof TrainerAccountsectionsPlanoRoute
+  TrainerAccountsectionsPreferenceRoute: typeof TrainerAccountsectionsPreferenceRoute
   TrainerAccountsectionsTemaRoute: typeof TrainerAccountsectionsTemaRoute
   TrainerAccountsectionsIndexRoute: typeof TrainerAccountsectionsIndexRoute
 }
@@ -1110,6 +1131,8 @@ const TrainerAccountsectionsRouteRouteChildren: TrainerAccountsectionsRouteRoute
   {
     TrainerAccountsectionsContaRoute: TrainerAccountsectionsContaRoute,
     TrainerAccountsectionsPlanoRoute: TrainerAccountsectionsPlanoRoute,
+    TrainerAccountsectionsPreferenceRoute:
+      TrainerAccountsectionsPreferenceRoute,
     TrainerAccountsectionsTemaRoute: TrainerAccountsectionsTemaRoute,
     TrainerAccountsectionsIndexRoute: TrainerAccountsectionsIndexRoute,
   }
