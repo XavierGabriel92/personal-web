@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PatchApiTrainerOnboardingFinishedMutationResponse } from "../types/PatchApiTrainerOnboardingFinished.ts";
+import type { PatchApiTrainerOnboardingFinishedMutationResponse, PatchApiTrainerOnboardingFinished403 } from "../types/PatchApiTrainerOnboardingFinished.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getPatchApiTrainerOnboardingFinishedUrl() {
@@ -20,6 +20,6 @@ function getPatchApiTrainerOnboardingFinishedUrl() {
 export async function patchApiTrainerOnboardingFinished(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<Error>, unknown>({ method : "PATCH", url : getPatchApiTrainerOnboardingFinishedUrl().url.toString(), ... requestConfig })  
+  const res = await request<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<PatchApiTrainerOnboardingFinished403>, unknown>({ method : "PATCH", url : getPatchApiTrainerOnboardingFinishedUrl().url.toString(), ... requestConfig })  
   return res.data
 }

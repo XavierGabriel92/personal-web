@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams, PostApiClientMeAnamnesisByClientAnamnesisIdFinish400, PostApiClientMeAnamnesisByClientAnamnesisIdFinish403, PostApiClientMeAnamnesisByClientAnamnesisIdFinish404, PostApiClientMeAnamnesisByClientAnamnesisIdFinish500 } from "../types/PostApiClientMeAnamnesisByClientAnamnesisIdFinish.ts";
+import type { PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams, PostApiClientMeAnamnesisByClientAnamnesisIdFinish400, PostApiClientMeAnamnesisByClientAnamnesisIdFinish403, PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 } from "../types/PostApiClientMeAnamnesisByClientAnamnesisIdFinish.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { UseMutationOptions, UseMutationResult, QueryClient } from "@tanstack/react-query";
 import { postApiClientMeAnamnesisByClientAnamnesisIdFinish } from "../clients/postApiClientMeAnamnesisByClientAnamnesisIdFinish.ts";
@@ -16,7 +16,7 @@ export type PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationKey = Retur
 
 export function postApiClientMeAnamnesisByClientAnamnesisIdFinishMutationOptions(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const mutationKey = postApiClientMeAnamnesisByClientAnamnesisIdFinishMutationKey()
-  return mutationOptions<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish500>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, typeof mutationKey>({
+  return mutationOptions<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, typeof mutationKey>({
     mutationKey,
     mutationFn: async({ clientAnamnesisId }) => {
       return postApiClientMeAnamnesisByClientAnamnesisIdFinish(clientAnamnesisId, config)
@@ -31,7 +31,7 @@ export function postApiClientMeAnamnesisByClientAnamnesisIdFinishMutationOptions
  */
 export function usePostApiClientMeAnamnesisByClientAnamnesisIdFinish<TContext>(options: 
 {
-  mutation?: UseMutationOptions<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish500>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext> & { client?: QueryClient },
+  mutation?: UseMutationOptions<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch },
 }
  = {}) {
@@ -39,11 +39,11 @@ export function usePostApiClientMeAnamnesisByClientAnamnesisIdFinish<TContext>(o
   const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey = mutationOptions.mutationKey ?? postApiClientMeAnamnesisByClientAnamnesisIdFinishMutationKey()
 
-  const baseOptions = postApiClientMeAnamnesisByClientAnamnesisIdFinishMutationOptions(config) as UseMutationOptions<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish500>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext>
+  const baseOptions = postApiClientMeAnamnesisByClientAnamnesisIdFinishMutationOptions(config) as UseMutationOptions<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext>
 
-  return useMutation<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish500>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext>({
+  return useMutation<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext>({
     ...baseOptions,
     mutationKey,
     ...mutationOptions,
-  }, queryClient) as UseMutationResult<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish500>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext>
+  }, queryClient) as UseMutationResult<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404>, {clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]}, TContext>
 }

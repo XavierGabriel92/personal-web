@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PatchApiClientMeProfileMutationRequest, PatchApiClientMeProfileMutationResponse, PatchApiClientMeProfile400, PatchApiClientMeProfile403, PatchApiClientMeProfile409, PatchApiClientMeProfile500 } from "../types/PatchApiClientMeProfile.ts";
+import type { PatchApiClientMeProfileMutationRequest, PatchApiClientMeProfileMutationResponse, PatchApiClientMeProfile400, PatchApiClientMeProfile403, PatchApiClientMeProfile404, PatchApiClientMeProfile409, PatchApiClientMeProfile500 } from "../types/PatchApiClientMeProfile.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { UseMutationOptions, UseMutationResult, QueryClient } from "@tanstack/react-query";
 import { patchApiClientMeProfile } from "../clients/patchApiClientMeProfile.ts";
@@ -16,7 +16,7 @@ export type PatchApiClientMeProfileMutationKey = ReturnType<typeof patchApiClien
 
 export function patchApiClientMeProfileMutationOptions(config: Partial<RequestConfig<PatchApiClientMeProfileMutationRequest>> & { client?: typeof fetch } = {}) {
   const mutationKey = patchApiClientMeProfileMutationKey()
-  return mutationOptions<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, typeof mutationKey>({
+  return mutationOptions<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile404 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, typeof mutationKey>({
     mutationKey,
     mutationFn: async({ data }) => {
       return patchApiClientMeProfile(data, config)
@@ -31,7 +31,7 @@ export function patchApiClientMeProfileMutationOptions(config: Partial<RequestCo
  */
 export function usePatchApiClientMeProfile<TContext>(options: 
 {
-  mutation?: UseMutationOptions<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext> & { client?: QueryClient },
+  mutation?: UseMutationOptions<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile404 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig<PatchApiClientMeProfileMutationRequest>> & { client?: typeof fetch },
 }
  = {}) {
@@ -39,11 +39,11 @@ export function usePatchApiClientMeProfile<TContext>(options:
   const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey = mutationOptions.mutationKey ?? patchApiClientMeProfileMutationKey()
 
-  const baseOptions = patchApiClientMeProfileMutationOptions(config) as UseMutationOptions<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext>
+  const baseOptions = patchApiClientMeProfileMutationOptions(config) as UseMutationOptions<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile404 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext>
 
-  return useMutation<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext>({
+  return useMutation<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile404 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext>({
     ...baseOptions,
     mutationKey,
     ...mutationOptions,
-  }, queryClient) as UseMutationResult<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext>
+  }, queryClient) as UseMutationResult<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile404 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, {data?: PatchApiClientMeProfileMutationRequest}, TContext>
 }

@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams, PostApiClientMeAnamnesisByClientAnamnesisIdFinish400, PostApiClientMeAnamnesisByClientAnamnesisIdFinish403, PostApiClientMeAnamnesisByClientAnamnesisIdFinish404, PostApiClientMeAnamnesisByClientAnamnesisIdFinish500 } from "../types/PostApiClientMeAnamnesisByClientAnamnesisIdFinish.ts";
+import type { PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams, PostApiClientMeAnamnesisByClientAnamnesisIdFinish400, PostApiClientMeAnamnesisByClientAnamnesisIdFinish403, PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 } from "../types/PostApiClientMeAnamnesisByClientAnamnesisIdFinish.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getPostApiClientMeAnamnesisByClientAnamnesisIdFinishUrl(clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"]) {
@@ -20,6 +20,6 @@ function getPostApiClientMeAnamnesisByClientAnamnesisIdFinishUrl(clientAnamnesis
 export async function postApiClientMeAnamnesisByClientAnamnesisIdFinish(clientAnamnesisId: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams["clientAnamnesisId"], config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish500>, unknown>({ method : "POST", url : getPostApiClientMeAnamnesisByClientAnamnesisIdFinishUrl(clientAnamnesisId).url.toString(), ... requestConfig })  
+  const res = await request<PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse, ResponseErrorConfig<PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404>, unknown>({ method : "POST", url : getPostApiClientMeAnamnesisByClientAnamnesisIdFinishUrl(clientAnamnesisId).url.toString(), ... requestConfig })  
   return res.data
 }

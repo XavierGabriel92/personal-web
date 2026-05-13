@@ -12,6 +12,7 @@ export { getApiAnamnesisById } from "./getApiAnamnesisById.ts";
 export { getApiBillingPlan } from "./getApiBillingPlan.ts";
 export { getApiClientById } from "./getApiClientById.ts";
 export { getApiClientByIdAnamnesis } from "./getApiClientByIdAnamnesis.ts";
+export { getApiClientByIdInvite } from "./getApiClientByIdInvite.ts";
 export { getApiClientMeActivities } from "./getApiClientMeActivities.ts";
 export { getApiClientMeAnamnesis } from "./getApiClientMeAnamnesis.ts";
 export { getApiClientMeAnamnesisByClientAnamnesisId } from "./getApiClientMeAnamnesisByClientAnamnesisId.ts";
@@ -53,7 +54,6 @@ export { postApiClientMeSessionsStart } from "./postApiClientMeSessionsStart.ts"
 export { postApiExerciseByIdVideo } from "./postApiExerciseByIdVideo.ts";
 export { postApiExerciseCreate } from "./postApiExerciseCreate.ts";
 export { postApiExercisesSearch } from "./postApiExercisesSearch.ts";
-export { postApiLead } from "./postApiLead.ts";
 export { postApiRoutineByIdCloneToLibrary } from "./postApiRoutineByIdCloneToLibrary.ts";
 export { postApiRoutineCreate } from "./postApiRoutineCreate.ts";
 export { postApiRoutinesTemplatesByIdClone } from "./postApiRoutinesTemplatesByIdClone.ts";

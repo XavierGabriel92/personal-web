@@ -40,6 +40,16 @@ export type PatchApiClientMeProfile403 = {
 };
 
 /**
+ * @description Response for status 404
+*/
+export type PatchApiClientMeProfile404 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
+/**
  * @description Response for status 409
 */
 export type PatchApiClientMeProfile409 = {
@@ -77,5 +87,5 @@ export type PatchApiClientMeProfileMutationResponse = PatchApiClientMeProfile200
 export type PatchApiClientMeProfileMutation = {
     Response: PatchApiClientMeProfile200;
     Request: PatchApiClientMeProfileMutationRequest;
-    Errors: PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500;
+    Errors: PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile404 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500;
 };

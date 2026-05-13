@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiClientMeAnamnesisByClientAnamnesisIdQueryResponse, GetApiClientMeAnamnesisByClientAnamnesisIdPathParams, GetApiClientMeAnamnesisByClientAnamnesisId403, GetApiClientMeAnamnesisByClientAnamnesisId404, GetApiClientMeAnamnesisByClientAnamnesisId500 } from "../types/GetApiClientMeAnamnesisByClientAnamnesisId.ts";
+import type { GetApiClientMeAnamnesisByClientAnamnesisIdQueryResponse, GetApiClientMeAnamnesisByClientAnamnesisIdPathParams, GetApiClientMeAnamnesisByClientAnamnesisId403, GetApiClientMeAnamnesisByClientAnamnesisId404 } from "../types/GetApiClientMeAnamnesisByClientAnamnesisId.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getGetApiClientMeAnamnesisByClientAnamnesisIdUrl(clientAnamnesisId: GetApiClientMeAnamnesisByClientAnamnesisIdPathParams["clientAnamnesisId"]) {
@@ -20,6 +20,6 @@ function getGetApiClientMeAnamnesisByClientAnamnesisIdUrl(clientAnamnesisId: Get
 export async function getApiClientMeAnamnesisByClientAnamnesisId(clientAnamnesisId: GetApiClientMeAnamnesisByClientAnamnesisIdPathParams["clientAnamnesisId"], config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<GetApiClientMeAnamnesisByClientAnamnesisIdQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesisByClientAnamnesisId403 | GetApiClientMeAnamnesisByClientAnamnesisId404 | GetApiClientMeAnamnesisByClientAnamnesisId500>, unknown>({ method : "GET", url : getGetApiClientMeAnamnesisByClientAnamnesisIdUrl(clientAnamnesisId).url.toString(), ... requestConfig })  
+  const res = await request<GetApiClientMeAnamnesisByClientAnamnesisIdQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesisByClientAnamnesisId403 | GetApiClientMeAnamnesisByClientAnamnesisId404>, unknown>({ method : "GET", url : getGetApiClientMeAnamnesisByClientAnamnesisIdUrl(clientAnamnesisId).url.toString(), ... requestConfig })  
   return res.data
 }

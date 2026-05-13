@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiClientMeAnamnesisQueryResponse, GetApiClientMeAnamnesis403, GetApiClientMeAnamnesis404, GetApiClientMeAnamnesis500 } from "../types/GetApiClientMeAnamnesis.ts";
+import type { GetApiClientMeAnamnesisQueryResponse, GetApiClientMeAnamnesis403, GetApiClientMeAnamnesis404 } from "../types/GetApiClientMeAnamnesis.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getGetApiClientMeAnamnesisUrl() {
@@ -20,6 +20,6 @@ function getGetApiClientMeAnamnesisUrl() {
 export async function getApiClientMeAnamnesis(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500>, unknown>({ method : "GET", url : getGetApiClientMeAnamnesisUrl().url.toString(), ... requestConfig })  
+  const res = await request<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404>, unknown>({ method : "GET", url : getGetApiClientMeAnamnesisUrl().url.toString(), ... requestConfig })  
   return res.data
 }

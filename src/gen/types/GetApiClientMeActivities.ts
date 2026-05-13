@@ -162,20 +162,10 @@ export type GetApiClientMeActivities404 = {
     message: string;
 };
 
-/**
- * @description Response for status 500
-*/
-export type GetApiClientMeActivities500 = {
-    /**
-     * @type string
-    */
-    message: string;
-};
-
 export type GetApiClientMeActivitiesQueryResponse = GetApiClientMeActivities200;
 
 export type GetApiClientMeActivitiesQuery = {
     Response: GetApiClientMeActivities200;
     QueryParams: GetApiClientMeActivitiesQueryParams;
-    Errors: GetApiClientMeActivities403 | GetApiClientMeActivities404 | GetApiClientMeActivities500;
+    Errors: GetApiClientMeActivities403 | GetApiClientMeActivities404;
 };

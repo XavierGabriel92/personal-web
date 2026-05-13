@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PatchApiTrainerOnboardingFinishedMutationResponse } from "../types/PatchApiTrainerOnboardingFinished.ts";
+import type { PatchApiTrainerOnboardingFinishedMutationResponse, PatchApiTrainerOnboardingFinished403 } from "../types/PatchApiTrainerOnboardingFinished.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { UseMutationOptions, UseMutationResult, QueryClient } from "@tanstack/react-query";
 import { patchApiTrainerOnboardingFinished } from "../clients/patchApiTrainerOnboardingFinished.ts";
@@ -16,7 +16,7 @@ export type PatchApiTrainerOnboardingFinishedMutationKey = ReturnType<typeof pat
 
 export function patchApiTrainerOnboardingFinishedMutationOptions(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const mutationKey = patchApiTrainerOnboardingFinishedMutationKey()
-  return mutationOptions<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<Error>, void, typeof mutationKey>({
+  return mutationOptions<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<PatchApiTrainerOnboardingFinished403>, void, typeof mutationKey>({
     mutationKey,
     mutationFn: async() => {
       return patchApiTrainerOnboardingFinished(config)
@@ -31,7 +31,7 @@ export function patchApiTrainerOnboardingFinishedMutationOptions(config: Partial
  */
 export function usePatchApiTrainerOnboardingFinished<TContext>(options: 
 {
-  mutation?: UseMutationOptions<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<Error>, void, TContext> & { client?: QueryClient },
+  mutation?: UseMutationOptions<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<PatchApiTrainerOnboardingFinished403>, void, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch },
 }
  = {}) {
@@ -39,11 +39,11 @@ export function usePatchApiTrainerOnboardingFinished<TContext>(options:
   const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey = mutationOptions.mutationKey ?? patchApiTrainerOnboardingFinishedMutationKey()
 
-  const baseOptions = patchApiTrainerOnboardingFinishedMutationOptions(config) as UseMutationOptions<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<Error>, void, TContext>
+  const baseOptions = patchApiTrainerOnboardingFinishedMutationOptions(config) as UseMutationOptions<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<PatchApiTrainerOnboardingFinished403>, void, TContext>
 
-  return useMutation<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<Error>, void, TContext>({
+  return useMutation<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<PatchApiTrainerOnboardingFinished403>, void, TContext>({
     ...baseOptions,
     mutationKey,
     ...mutationOptions,
-  }, queryClient) as UseMutationResult<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<Error>, void, TContext>
+  }, queryClient) as UseMutationResult<PatchApiTrainerOnboardingFinishedMutationResponse, ResponseErrorConfig<PatchApiTrainerOnboardingFinished403>, void, TContext>
 }

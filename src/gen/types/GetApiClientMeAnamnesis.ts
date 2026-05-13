@@ -107,19 +107,9 @@ export type GetApiClientMeAnamnesis404 = {
     message: string;
 };
 
-/**
- * @description Response for status 500
-*/
-export type GetApiClientMeAnamnesis500 = {
-    /**
-     * @type string
-    */
-    message: string;
-};
-
 export type GetApiClientMeAnamnesisQueryResponse = GetApiClientMeAnamnesis200;
 
 export type GetApiClientMeAnamnesisQuery = {
     Response: GetApiClientMeAnamnesis200;
-    Errors: GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500;
+    Errors: GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404;
 };

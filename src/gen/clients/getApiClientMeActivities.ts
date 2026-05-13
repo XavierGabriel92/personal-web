@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiClientMeActivitiesQueryResponse, GetApiClientMeActivitiesQueryParams, GetApiClientMeActivities403, GetApiClientMeActivities404, GetApiClientMeActivities500 } from "../types/GetApiClientMeActivities.ts";
+import type { GetApiClientMeActivitiesQueryResponse, GetApiClientMeActivitiesQueryParams, GetApiClientMeActivities403, GetApiClientMeActivities404 } from "../types/GetApiClientMeActivities.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getGetApiClientMeActivitiesUrl() {
@@ -20,6 +20,6 @@ function getGetApiClientMeActivitiesUrl() {
 export async function getApiClientMeActivities(params?: GetApiClientMeActivitiesQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  
   
-  const res = await request<GetApiClientMeActivitiesQueryResponse, ResponseErrorConfig<GetApiClientMeActivities403 | GetApiClientMeActivities404 | GetApiClientMeActivities500>, unknown>({ method : "GET", url : getGetApiClientMeActivitiesUrl().url.toString(), params, ... requestConfig })  
+  const res = await request<GetApiClientMeActivitiesQueryResponse, ResponseErrorConfig<GetApiClientMeActivities403 | GetApiClientMeActivities404>, unknown>({ method : "GET", url : getGetApiClientMeActivitiesUrl().url.toString(), params, ... requestConfig })  
   return res.data
 }

@@ -9,6 +9,9 @@ import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 import { ThemeProvider } from "./components/theme-provider/index.tsx";
 import reportWebVitals from "./reportWebVitals.ts";
+import { bootstrapInstallBranding } from "./install-branding-bootstrap";
+
+await bootstrapInstallBranding();
 
 // Create a new router instance
 const router = createRouter({

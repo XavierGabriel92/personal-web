@@ -4,9 +4,19 @@
 */
 
 
+/**
+ * @description Response for status 403
+*/
+export type PatchApiTrainerOnboardingFinished403 = {
+    /**
+     * @type string
+    */
+    message: string;
+};
+
 export type PatchApiTrainerOnboardingFinishedMutationResponse = any;
 
 export type PatchApiTrainerOnboardingFinishedMutation = {
     Response: any;
-    Errors: any;
+    Errors: PatchApiTrainerOnboardingFinished403;
 };

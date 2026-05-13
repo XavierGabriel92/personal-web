@@ -1,15 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { TypographySpanXSmall } from "@/components/ui/typography";
 import { getMobilePlatform } from "@/hooks/use-install-app";
+import { useVisualViewportBottomOffset } from "@/hooks/use-visual-viewport-bottom-offset";
 import { cn } from "@/lib/utils";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { Dumbbell, House, type LucideIcon, UserRound } from "lucide-react";
 import { useMemo } from "react";
-import {
-	Dumbbell,
-	House,
-	type LucideIcon,
-	UserRound,
-} from "lucide-react";
 
 const routes: Array<{
 	path: string;
@@ -17,32 +13,44 @@ const routes: Array<{
 	icon: LucideIcon;
 	activeIcon?: LucideIcon;
 }> = [
-		{
-			path: "/client/home",
-			label: "Home",
-			icon: House,
-			activeIcon: House,
-		},
-		{
-			path: "/client/workouts",
-			label: "Treinos",
-			icon: Dumbbell,
-			activeIcon: Dumbbell,
-		},
-		{
-			path: "/client/profile",
-			label: "Perfil",
-			icon: UserRound,
-			activeIcon: UserRound,
-		},
-	];
+	{
+		path: "/client/home",
+		label: "Home",
+		icon: House,
+		activeIcon: House,
+	},
+	{
+		path: "/client/workouts",
+		label: "Treinos",
+		icon: Dumbbell,
+		activeIcon: Dumbbell,
+	},
+	{
+		path: "/client/profile",
+		label: "Perfil",
+		icon: UserRound,
+		activeIcon: UserRound,
+	},
+];
 
 export default function ClientNavBar() {
-	const pathname = useRouterState({ select: (state) => state.location.pathname });
+	const pathname = useRouterState({
+		select: (state) => state.location.pathname,
+	});
 	const isAndroid = useMemo(() => getMobilePlatform().isAndroid, []);
+	const visualViewportBottomOffset = useVisualViewportBottomOffset();
 
 	return (
-		<div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[env(safe-area-inset-bottom)]">
+		<div
+			className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[env(safe-area-inset-bottom)]"
+			style={
+				visualViewportBottomOffset > 0
+					? {
+							transform: `translate3d(0, ${visualViewportBottomOffset}px, 0)`,
+						}
+					: undefined
+			}
+		>
 			<div className="pointer-events-auto w-full max-w-2xl border bg-background/95 shadow-lg backdrop-blur supports-backdrop-filter:bg-background/80">
 				<nav
 					className={cn(
@@ -70,9 +78,7 @@ export default function ClientNavBar() {
 									<Icon
 										className={cn(
 											"size-5 transition-colors",
-											isActive
-												? "text-primary"
-												: "text-muted-foreground",
+											isActive ? "text-primary" : "text-muted-foreground",
 										)}
 									/>
 									<TypographySpanXSmall

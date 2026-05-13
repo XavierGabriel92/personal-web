@@ -123,16 +123,6 @@ export type PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId404 =
     message: string;
 };
 
-/**
- * @description Response for status 500
-*/
-export type PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId500 = {
-    /**
-     * @type string
-    */
-    message: string;
-};
-
 export type PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionIdMutationRequest = {
     /**
      * @type string
@@ -146,5 +136,5 @@ export type PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionIdMutat
     Response: PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId200;
     Request: PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionIdMutationRequest;
     PathParams: PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionIdPathParams;
-    Errors: PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId400 | PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId403 | PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId404 | PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId500;
+    Errors: PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId400 | PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId403 | PutApiClientMeAnamnesisByClientAnamnesisIdQuestionsByQuestionId404;
 };

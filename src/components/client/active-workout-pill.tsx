@@ -15,6 +15,7 @@ import { useDeleteApiClientMeSessionsBySessionId } from "@/gen/hooks/useDeleteAp
 import { getApiClientMeSessionsDraftQueryKey } from "@/gen/hooks/useGetApiClientMeSessionsDraft";
 import { useDraftSession } from "@/hooks/use-draft-session";
 import { formatDuration } from "@/hooks/use-relative-date";
+import { useVisualViewportBottomOffset } from "@/hooks/use-visual-viewport-bottom-offset";
 import { getErrorMessage } from "@/lib/client-portal";
 import { queryClient } from "@/routes/__root";
 import { useNavigate } from "@tanstack/react-router";
@@ -30,6 +31,7 @@ export function ActiveWorkoutPill() {
 		useDeleteApiClientMeSessionsBySessionId();
 	const [open, setOpen] = useState(false);
 	const [now, setNow] = useState(Date.now());
+	const visualViewportBottomOffset = useVisualViewportBottomOffset();
 
 	useEffect(() => {
 		const interval = setInterval(() => setNow(Date.now()), 1000);
@@ -52,7 +54,16 @@ export function ActiveWorkoutPill() {
 
 	return (
 		<>
-			<div className="pointer-events-none fixed inset-x-0 bottom-[calc(6rem+env(safe-area-inset-bottom))] z-40 flex justify-center px-4">
+			<div
+				className="pointer-events-none fixed inset-x-0 bottom-[calc(6rem+env(safe-area-inset-bottom))] z-40 flex justify-center px-4"
+				style={
+					visualViewportBottomOffset > 0
+						? {
+								transform: `translate3d(0, ${visualViewportBottomOffset}px, 0)`,
+							}
+						: undefined
+				}
+			>
 				<div className="pointer-events-auto w-full max-w-lg">
 					<Card className="flex-row items-center justify-between gap-2 rounded-full border bg-background/95 px-2 py-2 shadow-xl backdrop-blur supports-backdrop-filter:bg-background/80">
 						<div className="flex min-w-0 items-center gap-2">

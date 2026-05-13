@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiClientMeAnamnesisQueryResponse, GetApiClientMeAnamnesis403, GetApiClientMeAnamnesis404, GetApiClientMeAnamnesis500 } from "../types/GetApiClientMeAnamnesis.ts";
+import type { GetApiClientMeAnamnesisQueryResponse, GetApiClientMeAnamnesis403, GetApiClientMeAnamnesis404 } from "../types/GetApiClientMeAnamnesis.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from "@tanstack/react-query";
 import { getApiClientMeAnamnesis } from "../clients/getApiClientMeAnamnesis.ts";
@@ -16,7 +16,7 @@ export type GetApiClientMeAnamnesisQueryKey = ReturnType<typeof getApiClientMeAn
 
 export function getApiClientMeAnamnesisQueryOptions(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const queryKey = getApiClientMeAnamnesisQueryKey()
-  return queryOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500>, GetApiClientMeAnamnesisQueryResponse, typeof queryKey>({
+  return queryOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404>, GetApiClientMeAnamnesisQueryResponse, typeof queryKey>({
  
    queryKey,
    queryFn: async ({ signal }) => {
@@ -33,7 +33,7 @@ export function getApiClientMeAnamnesisQueryOptions(config: Partial<RequestConfi
  */
 export function useGetApiClientMeAnamnesis<TData = GetApiClientMeAnamnesisQueryResponse, TQueryData = GetApiClientMeAnamnesisQueryResponse, TQueryKey extends QueryKey = GetApiClientMeAnamnesisQueryKey>(options: 
 {
-  query?: Partial<QueryObserverOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  query?: Partial<QueryObserverOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch }
 }
  = {}) {
@@ -45,7 +45,7 @@ export function useGetApiClientMeAnamnesis<TData = GetApiClientMeAnamnesisQueryR
    ...getApiClientMeAnamnesisQueryOptions(config),
    queryKey,
    ...queryOptions
-  } as unknown as QueryObserverOptions, queryClient) as UseQueryResult<TData, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500>> & { queryKey: TQueryKey }
+  } as unknown as QueryObserverOptions, queryClient) as UseQueryResult<TData, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404>> & { queryKey: TQueryKey }
 
   query.queryKey = queryKey as TQueryKey
 

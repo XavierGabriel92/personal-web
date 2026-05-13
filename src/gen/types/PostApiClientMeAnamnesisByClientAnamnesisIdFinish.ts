@@ -119,20 +119,10 @@ export type PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 = {
     message: string;
 };
 
-/**
- * @description Response for status 500
-*/
-export type PostApiClientMeAnamnesisByClientAnamnesisIdFinish500 = {
-    /**
-     * @type string
-    */
-    message: string;
-};
-
 export type PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutationResponse = PostApiClientMeAnamnesisByClientAnamnesisIdFinish200;
 
 export type PostApiClientMeAnamnesisByClientAnamnesisIdFinishMutation = {
     Response: PostApiClientMeAnamnesisByClientAnamnesisIdFinish200;
     PathParams: PostApiClientMeAnamnesisByClientAnamnesisIdFinishPathParams;
-    Errors: PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish500;
+    Errors: PostApiClientMeAnamnesisByClientAnamnesisIdFinish400 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish403 | PostApiClientMeAnamnesisByClientAnamnesisIdFinish404;
 };

@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { PatchApiClientMeProfileMutationRequest, PatchApiClientMeProfileMutationResponse, PatchApiClientMeProfile400, PatchApiClientMeProfile403, PatchApiClientMeProfile409, PatchApiClientMeProfile500 } from "../types/PatchApiClientMeProfile.ts";
+import type { PatchApiClientMeProfileMutationRequest, PatchApiClientMeProfileMutationResponse, PatchApiClientMeProfile400, PatchApiClientMeProfile403, PatchApiClientMeProfile404, PatchApiClientMeProfile409, PatchApiClientMeProfile500 } from "../types/PatchApiClientMeProfile.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 
 function getPatchApiClientMeProfileUrl() {
@@ -22,6 +22,6 @@ export async function patchApiClientMeProfile(data?: PatchApiClientMeProfileMuta
   
   const requestData = data  
   
-  const res = await request<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, PatchApiClientMeProfileMutationRequest>({ method : "PATCH", url : getPatchApiClientMeProfileUrl().url.toString(), data : requestData, ... requestConfig })  
+  const res = await request<PatchApiClientMeProfileMutationResponse, ResponseErrorConfig<PatchApiClientMeProfile400 | PatchApiClientMeProfile403 | PatchApiClientMeProfile404 | PatchApiClientMeProfile409 | PatchApiClientMeProfile500>, PatchApiClientMeProfileMutationRequest>({ method : "PATCH", url : getPatchApiClientMeProfileUrl().url.toString(), data : requestData, ... requestConfig })  
   return res.data
 }

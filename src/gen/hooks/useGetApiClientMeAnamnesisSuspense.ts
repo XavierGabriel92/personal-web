@@ -4,7 +4,7 @@
 */
 
 import fetch from "@/lib/client.ts";
-import type { GetApiClientMeAnamnesisQueryResponse, GetApiClientMeAnamnesis403, GetApiClientMeAnamnesis404, GetApiClientMeAnamnesis500 } from "../types/GetApiClientMeAnamnesis.ts";
+import type { GetApiClientMeAnamnesisQueryResponse, GetApiClientMeAnamnesis403, GetApiClientMeAnamnesis404 } from "../types/GetApiClientMeAnamnesis.ts";
 import type { RequestConfig, ResponseErrorConfig } from "@/lib/client.ts";
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 import { getApiClientMeAnamnesis } from "../clients/getApiClientMeAnamnesis.ts";
@@ -16,7 +16,7 @@ export type GetApiClientMeAnamnesisSuspenseQueryKey = ReturnType<typeof getApiCl
 
 export function getApiClientMeAnamnesisSuspenseQueryOptions(config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const queryKey = getApiClientMeAnamnesisSuspenseQueryKey()
-  return queryOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500>, GetApiClientMeAnamnesisQueryResponse, typeof queryKey>({
+  return queryOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404>, GetApiClientMeAnamnesisQueryResponse, typeof queryKey>({
  
    queryKey,
    queryFn: async ({ signal }) => {
@@ -33,7 +33,7 @@ export function getApiClientMeAnamnesisSuspenseQueryOptions(config: Partial<Requ
  */
 export function useGetApiClientMeAnamnesisSuspense<TData = GetApiClientMeAnamnesisQueryResponse, TQueryKey extends QueryKey = GetApiClientMeAnamnesisSuspenseQueryKey>(options: 
 {
-  query?: Partial<UseSuspenseQueryOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500>, TData, TQueryKey>> & { client?: QueryClient },
+  query?: Partial<UseSuspenseQueryOptions<GetApiClientMeAnamnesisQueryResponse, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404>, TData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: typeof fetch }
 }
  = {}) {
@@ -45,7 +45,7 @@ export function useGetApiClientMeAnamnesisSuspense<TData = GetApiClientMeAnamnes
    ...getApiClientMeAnamnesisSuspenseQueryOptions(config),
    queryKey,
    ...queryOptions
-  } as unknown as UseSuspenseQueryOptions, queryClient) as UseSuspenseQueryResult<TData, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404 | GetApiClientMeAnamnesis500>> & { queryKey: TQueryKey }
+  } as unknown as UseSuspenseQueryOptions, queryClient) as UseSuspenseQueryResult<TData, ResponseErrorConfig<GetApiClientMeAnamnesis403 | GetApiClientMeAnamnesis404>> & { queryKey: TQueryKey }
 
   query.queryKey = queryKey as TQueryKey
 
