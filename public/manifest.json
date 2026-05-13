@@ -5,7 +5,7 @@
 	"description": "Acompanhe seus treinos e atividades pelo app Homug.",
 	"icons": [
 		{
-			"src": "/homug_gorilla_logo.svg",
+			"src": "/homug_gorilla_logo_white_bg.svg",
 			"sizes": "any",
 			"type": "image/svg+xml",
 			"purpose": "any"

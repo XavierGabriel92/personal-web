@@ -1,3 +1,4 @@
+import TrainerHeader from "@/components/trainer/header";
 import AppSidebar from "@/components/trainer/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cachedSession } from "@/hooks/auth";
@@ -22,8 +23,11 @@ function TrainerDashboardLayout() {
 	return (
 		<SidebarProvider className="h-svh overflow-hidden">
 			<AppSidebar />
-			<SidebarInset className="overflow-hidden">
-				<div className="flex flex-1 flex-col gap-4 px-5 md:px-10 py-6 text-sm overflow-y-auto overflow-x-hidden">
+			<SidebarInset className="min-h-0 overflow-hidden">
+				<div className=" lg:hidden">
+					<TrainerHeader />
+				</div>
+				<div className="flex min-h-0 flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto px-5 py-0 lg:py-6 text-sm md:px-10">
 					<Outlet />
 				</div>
 			</SidebarInset>

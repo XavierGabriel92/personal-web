@@ -25,7 +25,7 @@ export default defineConfig({
 			injectRegister: false,
 			registerType: "autoUpdate",
 			manifest: false,
-			includeAssets: ["homug_gorilla_logo.svg", "robots.txt"],
+			includeAssets: ["homug_gorilla_logo_white_bg.svg", "robots.txt"],
 			workbox: {
 				cleanupOutdatedCaches: true,
 				globPatterns: ["**/*.{css,html,ico,js,png,svg}"],
