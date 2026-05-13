@@ -75,7 +75,6 @@ export default function ClientsList() {
 						<TableHeader>
 							<TableRow>
 								<TableHead>Nome</TableHead>
-								<TableHead>Telefone</TableHead>
 								<TableHead>Status</TableHead>
 								<TableHead>Ultimo treino registrado</TableHead>
 								<TableHead>Data de Cadastro</TableHead>
@@ -103,12 +102,10 @@ export default function ClientsList() {
 										}
 										className="cursor-pointer hover:bg-muted"
 									>
-									<TableCell className="font-medium">
-										{client.name || client.email || "—"}
-									</TableCell>
-									<TableCell>
-										{client.phone || "Aguardando"}
-									</TableCell>
+										<TableCell className="font-medium">
+											{client.name || client.email || "—"}
+										</TableCell>
+
 										<TableCell>
 											<Badge variant={client.active ? "success" : "secondary"}>
 												{client.active ? "Ativo" : "Inativo"}
