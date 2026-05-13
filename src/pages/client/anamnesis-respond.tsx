@@ -78,12 +78,12 @@ export default function ClientAnamnesisRespondPage({
 		const payload =
 			data.status === "PENDING"
 				? {
-						answers: Object.fromEntries(
-							[...data.questions]
-								.sort((left, right) => left.order - right.order)
-								.map((q) => [q.id, (answers[q.id] ?? "").trim()]),
-						),
-					}
+					answers: Object.fromEntries(
+						[...data.questions]
+							.sort((left, right) => left.order - right.order)
+							.map((q) => [q.id, (answers[q.id] ?? "").trim()]),
+					),
+				}
 				: {};
 
 		await submitAnamnesis(
@@ -136,12 +136,6 @@ export default function ClientAnamnesisRespondPage({
 								</div>
 								<AnamnesisStatusBadge status={data.status} />
 							</div>
-							{data.status === "PENDING" ? (
-								<TypographySpanXSmall className="text-muted-foreground">
-									Preencha todas as perguntas e use o botão Enviar ao final para
-									salvar de uma vez.
-								</TypographySpanXSmall>
-							) : null}
 						</CardContent>
 					</Card>
 

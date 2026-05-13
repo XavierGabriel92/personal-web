@@ -182,10 +182,6 @@ export default function ClientSaveSessionPage() {
 						<TypographyH3 className="font-semibold tracking-tight">
 							{session.workoutName}
 						</TypographyH3>
-						<TypographyP className="text-muted-foreground">
-							Confira o resumo do treino e adicione uma observação, se quiser,
-							antes de salvar.
-						</TypographyP>
 					</div>
 
 					<div className="border-y">
@@ -201,15 +197,6 @@ export default function ClientSaveSessionPage() {
 
 					<div className="space-y-4">
 						<div className="space-y-3 px-4">
-							<div className="space-y-1">
-								<TypographySpanXSmall className="uppercase tracking-[0.12em] text-muted-foreground">
-									Detalhes
-								</TypographySpanXSmall>
-								<TypographyP className="text-muted-foreground">
-									Um resumo simples do que vai ser salvo nesta sessão.
-								</TypographyP>
-							</div>
-
 							<div className="space-y-4">
 								<div className="flex items-start justify-between gap-4">
 									<TypographyP className="text-muted-foreground">
@@ -238,10 +225,6 @@ export default function ClientSaveSessionPage() {
 						<div className="space-y-3 px-4">
 							<div className="space-y-1">
 								<TypographyH4>Observações</TypographyH4>
-								<TypographyP className="text-muted-foreground">
-									Esse campo é opcional e pode te ajudar a lembrar como foi o
-									treino depois.
-								</TypographyP>
 							</div>
 							<Textarea
 								value={notes}
