@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/theme-provider/mode-toggle";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function TrainerHeader() {
