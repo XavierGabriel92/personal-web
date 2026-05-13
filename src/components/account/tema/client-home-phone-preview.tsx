@@ -1,4 +1,3 @@
-import { InstallAppPromoCard } from "@/components/client/home/install-app-card";
 import { NextWorkoutCard } from "@/components/client/home/next-workout-card";
 import { PendingAnamnesisCard } from "@/components/client/home/pending-anamnesis-card";
 import { WelcomeCard } from "@/components/client/home/welcome-card";
@@ -113,7 +112,6 @@ export function ClientHomePhonePreview({
 										welcomeMessage={welcomeMessage}
 										iconUrl={iconUrl}
 									/>
-									<InstallAppPromoCard isIosLike isDisabled />
 									<PendingAnamnesisCard anamnesis={previewAnamnesis} />
 									<NextWorkoutCard
 										workout={previewWorkout}
