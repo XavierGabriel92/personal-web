@@ -6,6 +6,11 @@ import {
 	isClientInstallPath,
 } from "@/lib/install-branding-dom";
 
+function isAnonymousClientInvitePath(pathname = window.location.pathname) {
+	const p = pathname.replace(/\/+$/, "") || "/";
+	return p === "/client/set-password";
+}
+
 function resolveApiBase() {
 	const fromEnv = import.meta.env.VITE_API_URL as string | undefined;
 	if (fromEnv?.trim()) {
@@ -22,6 +27,11 @@ export async function bootstrapInstallBranding() {
 	const apiBase = resolveApiBase();
 
 	if (!isClientInstallPath()) {
+		applyHomugPublicInstallBranding();
+		return;
+	}
+
+	if (isAnonymousClientInvitePath()) {
 		applyHomugPublicInstallBranding();
 		return;
 	}

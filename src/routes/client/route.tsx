@@ -13,7 +13,10 @@ export const Route = createFileRoute("/client")({
 		const data = await cachedSession();
 
 		if (!data?.session) {
-			throw redirect({ to: "/sign-in" });
+			if (path !== "/client/set-password") {
+				throw redirect({ to: "/sign-in" });
+			}
+			return;
 		}
 
 		if (data.user?.type === "trainer") {
