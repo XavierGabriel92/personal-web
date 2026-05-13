@@ -40,17 +40,9 @@ export function InstallAppPromoCard({
 							<Smartphone className="size-5" />
 						</div>
 						Instale o app no seu celular</CardTitle>
-					<CardDescription>
-						Abra mais rapido pela tela inicial e use como um app.
-					</CardDescription>
 				</div>
 
 			</CardHeader>
-			<CardContent>
-				<div className="bg-muted text-muted-foreground flex items-start gap-2 rounded-lg p-4">
-					<Download className="mt-0.5 size-4 shrink-0" />
-				</div>
-			</CardContent>
 			<CardFooter>
 				<Button
 					type="button"

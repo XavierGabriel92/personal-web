@@ -13,7 +13,7 @@ Only clients with `clients.active = true` can access workouts and see the next w
 
 1. Trainer creates a client with email and optional goals.
 2. The client may receive an email to confirm the account.
-3. The trainer controls whether the student is `Ativo` or `Inativo`.
+3. New roster clients are **`Ativo` by default**; the trainer can switch them to **`Inativo`** via `PUT /api/client/:id` when needed.
 4. Inactive clients cannot access workouts or next-workout actions in the client app.
 
 ## API fields
