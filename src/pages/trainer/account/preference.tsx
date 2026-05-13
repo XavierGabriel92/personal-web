@@ -10,7 +10,7 @@ export function TrainerAccountPreferencePage() {
 				</p>
 			</div>
 
-			<div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card p-4">
+			<div className="mt-6 flex flex-wrap items-center justify-start gap-4">
 				<span className="text-sm font-medium">Aparência</span>
 				<ModeToggle />
 			</div>

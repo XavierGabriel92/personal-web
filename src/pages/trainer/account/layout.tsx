@@ -12,10 +12,10 @@ import type { ReactNode } from "react";
 
 const items: {
 	to:
-		| "/trainer/account/conta"
-		| "/trainer/account/preference"
-		| "/trainer/account/tema"
-		| "/trainer/account/plano";
+	| "/trainer/account/conta"
+	| "/trainer/account/tema"
+	| "/trainer/account/preference"
+	| "/trainer/account/plano";
 	label: string;
 	description: string;
 	icon: LucideIcon;
@@ -27,16 +27,16 @@ const items: {
 			icon: UserCircle,
 		},
 		{
-			to: "/trainer/account/preference",
-			label: "Preferências",
-			description: "Aparência do painel (claro ou escuro)",
-			icon: SunMoon,
-		},
-		{
 			to: "/trainer/account/tema",
 			label: "Tema",
 			description: "Marca e aparência no app do cliente",
 			icon: Palette,
+		},
+		{
+			to: "/trainer/account/preference",
+			label: "Preferências",
+			description: "Aparência do painel (claro ou escuro)",
+			icon: SunMoon,
 		},
 		{
 			to: "/trainer/account/plano",

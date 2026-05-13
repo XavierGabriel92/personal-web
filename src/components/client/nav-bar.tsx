@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { TypographySpanXSmall } from "@/components/ui/typography";
+import { getMobilePlatform } from "@/hooks/use-install-app";
 import { cn } from "@/lib/utils";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useMemo } from "react";
 import {
 	Dumbbell,
 	House,
@@ -37,11 +39,17 @@ const routes: Array<{
 
 export default function ClientNavBar() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
+	const isAndroid = useMemo(() => getMobilePlatform().isAndroid, []);
 
 	return (
 		<div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[env(safe-area-inset-bottom)]">
 			<div className="pointer-events-auto w-full max-w-2xl border bg-background/95 shadow-lg backdrop-blur supports-backdrop-filter:bg-background/80">
-				<nav className="grid grid-cols-3 gap-1 px-2 pt-1 pb-5">
+				<nav
+					className={cn(
+						"grid grid-cols-3 gap-1 px-2 pt-1",
+						isAndroid ? "pb-1" : "pb-5",
+					)}
+				>
 					{routes.map((route) => {
 						const isActive =
 							pathname === route.path || pathname.startsWith(`${route.path}/`);

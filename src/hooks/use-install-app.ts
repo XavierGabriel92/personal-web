@@ -33,6 +33,22 @@ function isAndroidUserAgent(userAgent: string) {
 	return /android/i.test(userAgent);
 }
 
+/** Pure UA check; safe to call from useMemo (no listeners). */
+export function getMobilePlatform() {
+	if (typeof window === "undefined") {
+		return { isAndroid: false, isIosLike: false };
+	}
+
+	return {
+		isAndroid: isAndroidUserAgent(window.navigator.userAgent),
+		isIosLike: isIosLikeUserAgent(
+			window.navigator.userAgent,
+			window.navigator.platform,
+			window.navigator.maxTouchPoints,
+		),
+	};
+}
+
 function isStandaloneMode() {
 	const isStandaloneDisplayMode = window.matchMedia(
 		"(display-mode: standalone)",
@@ -49,23 +65,7 @@ export function useInstallApp() {
 		React.useState<BeforeInstallPromptEvent | null>(null);
 	const [isInstalled, setIsInstalled] = React.useState(false);
 
-	const platform = React.useMemo(() => {
-		if (typeof window === "undefined") {
-			return {
-				isAndroid: false,
-				isIosLike: false,
-			};
-		}
-
-		return {
-			isAndroid: isAndroidUserAgent(window.navigator.userAgent),
-			isIosLike: isIosLikeUserAgent(
-				window.navigator.userAgent,
-				window.navigator.platform,
-				window.navigator.maxTouchPoints,
-			),
-		};
-	}, []);
+	const platform = React.useMemo(() => getMobilePlatform(), []);
 
 	React.useEffect(() => {
 		const standaloneMedia = window.matchMedia("(display-mode: standalone)");

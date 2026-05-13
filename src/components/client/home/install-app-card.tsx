@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { TypographyP } from "@/components/ui/typography";
 import { useInstallApp } from "@/hooks/use-install-app";
-import { Download, Share, Smartphone } from "lucide-react";
+import { Download, Plus, Share, Smartphone } from "lucide-react";
 import { useState } from "react";
 
 type InstallAppPromoCardProps = {
@@ -27,7 +27,6 @@ type InstallAppPromoCardProps = {
 };
 
 export function InstallAppPromoCard({
-	isIosLike,
 	isPending = false,
 	isDisabled = false,
 	onInstallClick,
@@ -36,23 +35,20 @@ export function InstallAppPromoCard({
 		<Card>
 			<CardHeader className="gap-4 sm:grid-cols-[1fr_auto]">
 				<div className="space-y-1">
-					<CardTitle>Instale o app no seu celular</CardTitle>
+					<CardTitle>
+						<div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-full">
+							<Smartphone className="size-5" />
+						</div>
+						Instale o app no seu celular</CardTitle>
 					<CardDescription>
 						Abra mais rapido pela tela inicial e use como um app.
 					</CardDescription>
 				</div>
-				<div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-full">
-					<Smartphone className="size-5" />
-				</div>
+
 			</CardHeader>
 			<CardContent>
 				<div className="bg-muted text-muted-foreground flex items-start gap-2 rounded-lg p-4">
 					<Download className="mt-0.5 size-4 shrink-0" />
-					<TypographyP>
-						{isIosLike
-							? "No iPhone, vamos te mostrar como adicionar o app na tela de inicio."
-							: "No Android, toque no botao abaixo para abrir o atalho de instalacao do navegador."}
-					</TypographyP>
 				</div>
 			</CardContent>
 			<CardFooter>
@@ -124,7 +120,7 @@ export function InstallAppCard() {
 									1. Toque em Compartilhar
 								</TypographyP>
 								<TypographyP className="text-muted-foreground">
-									Abra o menu do navegador e toque no botao de compartilhamento.
+									Procure pelo icone <Share className="text-primary mt-0.5 size-4 shrink-0" /> proximo ao endereço do site.
 								</TypographyP>
 							</div>
 						</div>
@@ -133,10 +129,22 @@ export function InstallAppCard() {
 							<Download className="text-primary mt-0.5 size-4 shrink-0" />
 							<div className="space-y-1">
 								<TypographyP className="font-medium">
-									2. Escolha Adicionar a Tela de Inicio
+									2. Procure pela opção "Adicionar a Tela de Inicio
 								</TypographyP>
 								<TypographyP className="text-muted-foreground">
-									Confirme a acao para salvar o app na sua tela inicial.
+									Em alguns casos você precisa entrar em "Ver mais" para encontrar a opção.
+								</TypographyP>
+							</div>
+						</div>
+
+						<div className="bg-muted flex items-start gap-2 rounded-lg p-4">
+							<Plus className="text-primary mt-0.5 size-4 shrink-0" />
+							<div className="space-y-1">
+								<TypographyP className="font-medium">
+									3. Basta clicar em "Adicionar"
+								</TypographyP>
+								<TypographyP className="text-muted-foreground">
+									Pronto, o app vai ser instalado no seu celular.
 								</TypographyP>
 							</div>
 						</div>
