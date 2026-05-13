@@ -35,7 +35,6 @@ export function TrainerAccountTemaPage() {
 	const { data: branding } = useGetApiTrainerBrandingSuspense();
 	const [cropOpen, setCropOpen] = useState(false);
 	const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
-	const [iconRefreshKey, setIconRefreshKey] = useState(0);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const form = useForm<TemaFormValues>({
@@ -51,9 +50,7 @@ export function TrainerAccountTemaPage() {
 	const patchMutation = usePatchApiTrainerBranding();
 	const postIconMutation = usePostApiTrainerBrandingIcon();
 	const deleteIconMutation = useDeleteApiTrainerBrandingIcon();
-	const resolvedIconUrl = branding.iconUrl
-		? `${branding.iconUrl}${branding.iconUrl.includes("?") ? "&" : "?"}v=${iconRefreshKey}`
-		: null;
+	const resolvedIconUrl = branding.iconUrl?.trim() || null;
 
 	const onSubmit = (values: TemaFormValues) => {
 		patchMutation.mutate(
@@ -101,7 +98,6 @@ export function TrainerAccountTemaPage() {
 			await queryClient.invalidateQueries({
 				queryKey: getApiTrainerBrandingSuspenseQueryKey(),
 			});
-			setIconRefreshKey((current) => current + 1);
 			toast.success("Ícone atualizado.");
 			return true;
 		} catch (error) {
@@ -117,7 +113,6 @@ export function TrainerAccountTemaPage() {
 				await queryClient.invalidateQueries({
 					queryKey: getApiTrainerBrandingSuspenseQueryKey(),
 				});
-				setIconRefreshKey((current) => current + 1);
 				toast.success("Ícone removido.");
 			},
 			onError: (error) => {
