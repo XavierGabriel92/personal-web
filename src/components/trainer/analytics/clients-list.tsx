@@ -8,12 +8,12 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import type { GetApiClients200 } from "@/gen/types/GetApiClients";
 import { formatDateToLocaleString } from "@/lib/date";
 import {
 	formatLastWorkoutSessionDate,
 	formatWorkoutSessionName,
 } from "@/lib/last-workout-session";
-import type { GetApiClients200 } from "@/gen/types/GetApiClients";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -65,7 +65,6 @@ export default function AnalyticsClientsList({
 				<TableHeader>
 					<TableRow>
 						<TableHead>Nome</TableHead>
-						<TableHead>Telefone</TableHead>
 						<TableHead>Ativo {periodLabel}</TableHead>
 						<TableHead>Ultimo treino registrado</TableHead>
 						<TableHead>Data de Cadastro</TableHead>
@@ -98,7 +97,6 @@ export default function AnalyticsClientsList({
 									<TableCell className="font-medium">
 										{client.name ?? "—"}
 									</TableCell>
-									<TableCell>{client.phone ?? "—"}</TableCell>
 									<TableCell>
 										<Badge variant={isActive ? "success" : "secondary"}>
 											{isActive ? "Ativo" : "Inativo"}
